@@ -20,7 +20,7 @@ function GeminiTest() {
   };
 
   useEffect(() => {
-    const apiKey = 'AIzaSyDOTovjPlINp3oouLnwrhqn5j2xHNhlunc'; // Replace with your actual API key
+    const apiKey = 'YOUR_GEMINI_API_KEY'; // Sua api gemini cua minh nha
 
     if (!apiKey) {
       setError('Please set the REACT_APP_GEMINI_API_KEY environment variable.');
