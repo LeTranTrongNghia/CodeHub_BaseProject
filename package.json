@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.8.0",
+    "@monaco-editor/react": "^4.6.0",
     "ace-builds": "^1.33.0",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
     "react": "^18.2.0",
     "react-ace-editor": "^0.0.3",
     "react-dom": "^18.2.0",
