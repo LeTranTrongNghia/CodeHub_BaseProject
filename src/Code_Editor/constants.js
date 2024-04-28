@@ -2,9 +2,9 @@ export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
   typescript: "5.0.3",
   python: "3.10.0",
-  java: "15.0.2",
-  csharp: "6.12.0",
-  php: "8.2.3",
+  // java: "15.0.2",
+  // csharp: "6.12.0",
+  // php: "8.2.3",
 };
 
 export const CODE_SNIPPETS = {
@@ -32,27 +32,27 @@ def greet(name):
 
 greet("ivel")
 `,
-  java: `
-public class HelloWorld {
-  public static void main(String[] args) {
-    System.out.println("Hello World");
-  }
-}
-`,
-  csharp: `
-using System;
+//   java: `
+// public class HelloWorld {
+//   public static void main(String[] args) {
+//     System.out.println("Hello ivel!");
+//   }
+// }
+// `,
+//   csharp: `
+// using System;
 
-namespace HelloWorld {
-  class Hello { 
-    static void Main(string[] args) {
-      Console.WriteLine("Hello World in C#");
-    }
-  }
-}
-`,
-  php: `<?php
+// namespace HelloWorld {
+//   class Hello { 
+//     static void Main(string[] args) {
+//       Console.WriteLine("Hello ivel!");
+//     }
+//   }
+// }
+// `,
+//   php: `<?php
 
-$name = 'ivel';
-echo $name;
-`,
+// $name = 'ivel';
+// echo $name;
+// `,
 };

@@ -3,34 +3,17 @@ import "./App.css";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
-// Function to check for valid code based on common keywords and structure
-function isValidCode(code) {
-  const keywords = /\b(function|const|let|var|if|else|for|while|return|class|import|public|private|static|void|abstract|final|protected|synchronized|transient|native|interface|enum|extends|implements|package|break|continue|do|switch|case|default|goto|try|catch|finally|throw|throws|instanceof|new|super|this|\=|boolean|byte|char|short|int|long|float|double|String|System|out|println|Scanner|Math|Arrays|ArrayList|HashMap|LinkedList|HashSet|Collections)\b/;
-
-  // Check for basic keywords and some basic structure (parentheses, curly braces)
-  if (keywords.test(code) && /[(){}\[\]]/.test(code)) {
-    return true;
-  }
-  return false;
-}
-
 function App() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [generatingAnswer, setGeneratingAnswer] = useState(false);
-  const problemText = "tìm số nhỏ nhất trong dãy 10 số ngẫu nhiên.";
+  const problemText = "Find the smallest number in a array of 10 random numbers.";
 
   async function generateAnswer(e) {
     setGeneratingAnswer(true);
     e.preventDefault();
 
-    if (!isValidCode(question)) {
-      setAnswer("Please enter valid code for review.");
-      setGeneratingAnswer(false);
-      return;
-    }
-
-    setAnswer("Analyzing your code... \n It might take upto 10 seconds");
+    setAnswer("Gemini is thinking... \n It might take upto 10 seconds.");
     try {
       const response = await axios({
         url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
@@ -52,7 +35,7 @@ function App() {
 
   async function guideCode() {
     setGeneratingAnswer(true);
-    setAnswer("Generating guide... \n It might take upto 10 seconds");
+    setAnswer("Generating guide... \n It might take upto 10 seconds.");
 
     try {
       const response = await axios({
@@ -60,7 +43,7 @@ function App() {
         method: "post",
         data: {
           contents: [
-            { parts: [{ text: "Hãy tưởng tượng bạn là giáo sư chuyên ngành Công nghệ thông tin. Hướng dẫn tôi cách viết hàm" + problemText + "Chỉ cho tôi ý tưởng và hướng dẫn từng bước để giúp tôi tìm cách giải quyết vấn đề về mã. Đừng viết ra mã gợi ý hay mã giả, hãy để tôi tự viết." }] },
+            { parts: [{ text: "Imagine you are a professor majoring in Information Technology. Teach me how to write functions" + problemText + "Show me ideas and step-by-step instructions to help me find a way to solve a code problem. Don't write out hint code or pseudocode, let me write it myself." }] },
           ],
         },
       });
@@ -77,24 +60,22 @@ function App() {
 
   return (
     <>
-      <div className="bg-white h-screen p-3 flex flex-col md:flex-row">
-        <div className="w-full md:w-1/2 mr-2 border rounded bg-gray-50 p-3">
+      <div className="bg-gray-900 h-screen p-3 flex flex-col md:flex-row mt-5 ml-3 mr-3">
+        <div className="w-2/3 bg-gray-800 text-gray-300 p-4 rounded-md mr-4">
           <form onSubmit={generateAnswer} className="text-center">
-            <a href="https://github.com/Vishesh-Pandey/chat-ai" target="_blank">
-              <h1 className="text-3xl text-center">Code Reviewer</h1>
-            </a>
+            <h1 className="text-3xl text-center mb-4">Gemini AI</h1>
             <textarea
               required
-              className="border rounded w-full min-h-fit p-3"
+              className="border rounded w-full min-h-fit p-3 bg-gray-800 text-gray-300"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Enter code for review"
+              placeholder="Enter a promt here"
               style={{ height: "450px" }}
             ></textarea>
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-2">
               <button
                 type="submit"
-                className="bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2"
+                className="bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white"
                 disabled={generatingAnswer}
               >
                 Analyze Code
@@ -102,7 +83,7 @@ function App() {
               <button
                 type="button"
                 onClick={guideCode}
-                className="bg-green-300 p-3 rounded-md hover:bg-green-400 transition-all duration-300"
+                className="bg-blue-300 p-3 rounded-md hover:bg-green-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-2"
                 disabled={generatingAnswer}
               >
                 Guide Code
@@ -110,10 +91,8 @@ function App() {
             </div>
           </form>
         </div>
-        <div className="w-full md:w-1/2 ml-2 border rounded bg-gray-50 p-3">
-          <div className="text-center">
-            <ReactMarkdown className="p-3">{answer}</ReactMarkdown>
-          </div>
+        <div className="w-1/3 bg-gray-800 text-gray-300 p-4 rounded-md overflow-y-auto">
+          <ReactMarkdown className="p-3">{answer}</ReactMarkdown>
         </div>
       </div>
     </>
