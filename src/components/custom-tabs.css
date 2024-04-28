@@ -1,0 +1,15 @@
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #ffffff !important;
+}
+
+.ant-tabs-tab {
+  color: #ffffff !important;
+}
+
+.ant-tabs-tab-active {
+  color: #ffffff !important;
+}
+
+.ant-tabs-ink-bar {
+  border-bottom: 5px solid #ffffff; 
+}
