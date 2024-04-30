@@ -3,11 +3,12 @@ import "./App.css";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
-function App() {
+function AI_chat() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [generatingAnswer, setGeneratingAnswer] = useState(false);
-  const problemText = "Find the smallest number in a array of 10 random numbers.";
+  const problemText = `Write a function that takes a string as input and returns a new string with the characters reversed. 
+  For example, if the input is "hello", the output should be "olleh".`;
 
   async function generateAnswer(e) {
     setGeneratingAnswer(true);
@@ -43,7 +44,7 @@ function App() {
         method: "post",
         data: {
           contents: [
-            { parts: [{ text: "Imagine you are a professor majoring in Information Technology. Teach me how to write functions" + problemText + "Show me ideas and step-by-step instructions to help me find a way to solve a code problem. Don't write out hint code or pseudocode, let me write it myself." }] },
+            { parts: [{ text: "Imagine you are a professor majoring in Information Technology. Teach me how to write functions" + problemText + "Show me ideas and step-by-step instructions to help me find a way to solve a code problem. Don't write out hint code or example code, let me write it myself." }] },
           ],
         },
       });
@@ -60,10 +61,18 @@ function App() {
 
   return (
     <>
-      <div className="bg-gray-900 h-screen p-3 flex flex-col md:flex-row mt-5 ml-3 mr-3">
+      <div className="flex min-h-screen bg-gray-900 text-gray-400 px-6 py-8">
         <div className="w-2/3 bg-gray-800 text-gray-300 p-4 rounded-md mr-4">
           <form onSubmit={generateAnswer} className="text-center">
-            <h1 className="text-3xl text-center mb-4">Gemini AI</h1>
+            <div class="flex justify-content: flex-start mt-2">
+              <button
+                type="submit"
+                class="bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2 text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white"
+              >
+                Code Editor
+              </button>
+            </div>
+            <h1 class="text-3xl text-center mb-4">Gemini AI</h1>
             <textarea
               required
               className="border rounded w-full min-h-fit p-3 bg-gray-800 text-gray-300"
@@ -78,7 +87,7 @@ function App() {
                 className="bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white"
                 disabled={generatingAnswer}
               >
-                Analyze Code
+                Analyze Promt
               </button>
               <button
                 type="button"
@@ -101,4 +110,4 @@ function App() {
 
 }
 
-export default App;
+export default AI_chat;
