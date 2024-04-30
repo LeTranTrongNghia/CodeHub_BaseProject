@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LANGUAGE_VERSIONS } from './constants';
+import { LANGUAGE_VERSIONS } from '/src/container/Workspace/Code_Editor/constant/constants';
 import { useNavigate } from 'react-router-dom';
 
 const LanguageSelector = ({ onSelect }) => {
@@ -23,7 +23,7 @@ const LanguageSelector = ({ onSelect }) => {
 		<div className='ml-4 mb-4'>
 			<h2 className='mb-2 text-lg'>Language:</h2>
 			<button
-				className={`text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+				className={`text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-blue-400 ${
 					selectedLanguage
 						? `bg-gray-900 text-white`
 						: `border border-gray-300 hover:bg-gray-100`

@@ -13,8 +13,8 @@ const MainHomePage = React.lazy(() =>
 	import('../container/Home/pages/MainHome'),
 );
 const ProfilePage = React.lazy(() => import('../container/Profile/Profile'));
-const CodingPage = React.lazy(() => import('../Code_Editor/code_editor.jsx'));
-const AIPage = React.lazy(() => import('../main/AI_chat.jsx'));
+const CodingPage = React.lazy(() => import('../container/Workspace/Code_Editor/code_editor.jsx'));
+const AIPage = React.lazy(() => import('../container/Workspace/AI_chat/AI_chat.jsx'));
 
 const publicRoute = [
 	{
