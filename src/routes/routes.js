@@ -13,6 +13,8 @@ const MainHomePage = React.lazy(() =>
 	import('../container/Home/pages/MainHome'),
 );
 const ProfilePage = React.lazy(() => import('../container/Profile/Profile'));
+const CodingPage = React.lazy(() => import('../Code_Editor/code_editor.jsx'));
+const AIPage = React.lazy(() => import('../main/AI_chat.jsx'));
 
 const publicRoute = [
 	{
@@ -38,6 +40,14 @@ const publicRoute = [
 	{
 		path: config.routes.profile,
 		component: ProfilePage,
+	},
+	{
+		path: config.routes.coding,
+		component: CodingPage,
+	},
+	{
+		path: config.routes.AIassistant,
+		component: AIPage,
 	},
 ];
 
