@@ -1,7 +1,7 @@
 // Output.jsx
 
 import React, { useState } from 'react';
-import { executeCode } from './api';
+import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 
 const Output = ({ editorRef, language }) => {
 	// Receive runCode prop from CodeEditorWrapper
