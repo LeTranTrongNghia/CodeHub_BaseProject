@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { LANGUAGE_VERSIONS } from "./constants";
+import { useNavigate } from "react-router-dom";
 
 const LanguageSelector = ({ onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,14 +17,14 @@ const LanguageSelector = ({ onSelect }) => {
     onSelect(lang);
     setIsOpen(false); // Close the dropdown list when a language is selected
   };
+  
 
   return (
     <div className="ml-4 mb-4">
       <h2 className="mb-2 text-lg">Language:</h2>
       <button
-        className={`text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-          selectedLanguage ? `bg-gray-900 text-white` : `border border-gray-300 hover:bg-gray-100`
-        }`}
+        className={`text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${selectedLanguage ? `bg-gray-900 text-white` : `border border-gray-300 hover:bg-gray-100`
+          }`}
         onClick={() => setIsOpen(!isOpen)}
       >
         {selectedLanguage || "Select Language"}
@@ -35,9 +36,8 @@ const LanguageSelector = ({ onSelect }) => {
           {Object.entries(LANGUAGE_VERSIONS).map(([lang, version]) => (
             <li
               key={lang}
-              className={`px-4 py-2 hover:bg-gray-800 cursor-pointer ${
-                selectedLanguage === lang ? `bg-blue-500 text-white` : ""
-              }`}
+              className={`px-4 py-2 hover:bg-gray-800 cursor-pointer ${selectedLanguage === lang ? `bg-blue-500 text-white` : ""
+                }`}
               onClick={() => handleClick(lang)}
             >
               {lang} &nbsp;
@@ -46,6 +46,14 @@ const LanguageSelector = ({ onSelect }) => {
           ))}
         </ul>
       )}
+
+      {/* AI Assistant */}
+      <button
+        type="submit"
+        className="bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-2"
+      >
+        AI Assistant
+      </button>
     </div>
   );
 };

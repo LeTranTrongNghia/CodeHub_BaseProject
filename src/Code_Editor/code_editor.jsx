@@ -5,6 +5,7 @@ import Editor from "@monaco-editor/react";
 import Output from "./output";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "./constants";
+import ProblemDescription from "./ProblemDescription";
 
 const CodeEditorWrapper = () => {
   const [value, setValue] = useState("");
@@ -24,10 +25,14 @@ const CodeEditorWrapper = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-900 text-gray-400 px-6 py-8">
-      <div className="w-2/3 bg-gray-800 text-gray-300 p-4 rounded-md  mr-4">
+      <div className="w-3/5 bg-gray-800 text-gray-300 p-4 rounded-md  mr-4">
+        <ProblemDescription />
+      </div>
+
+      <div className="w-2/5 bg-gray-800 text-gray-300 p-4 rounded-md">
         <LanguageSelector language={language} onSelect={onSelect} />
         <Editor
-          height="75vh"
+          height="58vh"
           defaultLanguage={language}
           defaultValue={CODE_SNIPPETS[language]}
           theme="vs-dark"
@@ -37,9 +42,6 @@ const CodeEditorWrapper = () => {
           value={value}
           onChange={(value) => setValue(value)}
         />
-      </div>
-
-      <div className="w-1/3 bg-gray-800 text-gray-300 p-4 rounded-md">
         <Output editorRef={editorRef} language={language} />
       </div>
     </div>
