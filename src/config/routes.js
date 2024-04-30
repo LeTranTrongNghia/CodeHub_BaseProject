@@ -6,6 +6,8 @@ const routes = {
 	resetPassword: '/reset-password',
 	changePassword: '/change-password',
 	notFound: '*',
+	coding: '/coding',
+	AIassistant: '/ai-assistant',
 };
 
 export default routes;
