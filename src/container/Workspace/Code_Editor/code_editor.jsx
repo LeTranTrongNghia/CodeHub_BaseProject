@@ -1,7 +1,6 @@
-// CodeEditorWrapper.jsx
-
 import React, { useState, useRef, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
+import * as monaco from 'monaco-editor'; // Import monaco-editor
 import LanguageSelector from "/src/components/Code_Editor/LanguageSelector";
 import Output from "/src/components/Code_Editor/Output";
 import ProblemDescription from "/src/components/Code_Editor/ProblemDescription";
@@ -11,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const CodeEditorWrapper = () => {
 	const navigate = useNavigate();
 	const [value, setValue] = useState('');
-	const [language, setLanguage] = useState('javascript');
+	const [language, setLanguage] = useState('');
 	const editorRef = useRef();
 
 	const onSelect = language => {
@@ -21,13 +20,16 @@ const CodeEditorWrapper = () => {
 
 	useEffect(() => {
 		if (editorRef.current) {
-			editorRef.current.setValue(CODE_SNIPPETS[language]);
+			monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+				noSemanticValidation: true,
+				noSyntaxValidation: true,
+			});
 		}
-	}, [language]);
+	}, [editorRef]);
 
 	return (
 		<div className='flex min-h-screen bg-gray-900 text-gray-400 px-6 py-8'>
-			<div className='w-3/5 bg-gray-800 text-gray-300 p-4 rounded-md  mr-4'>
+			<div className='w-3/5 bg-gray-800 text-gray-300 p-4 rounded-md mr-4'>
 				<button
 					type='submit'
 					class='bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2 text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-4'
@@ -43,7 +45,7 @@ const CodeEditorWrapper = () => {
 				<Editor
 					height='58vh'
 					defaultLanguage={language}
-					defaultValue={CODE_SNIPPETS[language]}
+					defaultValue= {CODE_SNIPPETS[language]}
 					theme='vs-dark'
 					onMount={editor => {
 						editorRef.current = editor;
