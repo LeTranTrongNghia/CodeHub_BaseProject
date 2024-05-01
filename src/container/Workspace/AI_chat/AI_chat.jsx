@@ -18,9 +18,8 @@ function AI_chat() {
 		setAnswer('Gemini is thinking... \n It might take upto 10 seconds.');
 		try {
 			const response = await axios({
-				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${
-					import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
-				}`,
+				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
+					}`,
 				method: 'post',
 				data: {
 					contents: [{ parts: [{ text: question }] }],
@@ -45,9 +44,8 @@ function AI_chat() {
 
 		try {
 			const response = await axios({
-				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${
-					import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
-				}`,
+				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
+					}`,
 				method: 'post',
 				data: {
 					contents: [
@@ -78,50 +76,38 @@ function AI_chat() {
 
 	return (
 		<>
-			<div className='flex min-h-screen bg-gray-900 text-gray-400 px-6 py-8'>
-				<div className='w-2/3 bg-gray-800 text-gray-300 p-4 rounded-md mr-4'>
-					<form onSubmit={generateAnswer} className='text-center'>
-						<div class='flex justify-content: flex-start mt-2'>
-							<button
-								type='submit'
-								class='bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2 text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white'
-								onClick={() => navigate('/coding')}
-							>
-								Code Editor
-							</button>
-						</div>
-						<h1 class='text-3xl text-center mb-4'>Gemini AI</h1>
-						<textarea
-							required
-							className='border rounded w-full min-h-fit p-3 bg-gray-800 text-gray-300'
-							value={question}
-							onChange={e => setQuestion(e.target.value)}
-							placeholder='Enter a promt here'
-							style={{ height: '450px' }}
-						></textarea>
-						<div className='flex justify-center mt-2'>
-							<button
-								type='submit'
-								className='bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white'
-								disabled={generatingAnswer}
-							>
-								Analyze Promt
-							</button>
-							<button
-								type='button'
-								onClick={guideCode}
-								className='bg-blue-300 p-3 rounded-md hover:bg-green-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-2'
-								disabled={generatingAnswer}
-							>
-								Guide Code
-							</button>
-						</div>
-					</form>
+			<form onSubmit={generateAnswer} className='text-center'>
+				<h1 class='text-3xl text-center mb-4 mt-4'>Gemini AI</h1>
+				<div className="h-200 overflow-auto mb-4">  <ReactMarkdown className="p-3 prose max-w-prose mx-auto">
+					{answer}
+				</ReactMarkdown>
 				</div>
-				<div className='w-1/3 bg-gray-800 text-gray-300 p-4 rounded-md overflow-y-auto'>
-					<ReactMarkdown className='p-3'>{answer}</ReactMarkdown>
+				<textarea
+					required
+					className='border rounded w-full min-h-fit p-3 bg-gray-800 text-gray-300'
+					value={question}
+					onChange={e => setQuestion(e.target.value)}
+					placeholder='Enter a promt here'
+					style={{ height: '200px' }}
+				></textarea>
+				<div className='flex justify-center mt-2'>
+					<button
+						type='submit'
+						className='bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white'
+						disabled={generatingAnswer}
+					>
+						Analyze Promt
+					</button>
+					<button
+						type='button'
+						onClick={guideCode}
+						className='bg-blue-300 p-3 rounded-md hover:bg-green-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-2'
+						disabled={generatingAnswer}
+					>
+						Guide Code
+					</button>
 				</div>
-			</div>
+			</form>
 		</>
 	);
 }

@@ -33,7 +33,7 @@ const Output = ({ editorRef, language }) => {
 		<div className='w-full mt-4'>
 			<h2 className='mb-2 text-lg'>Output</h2>
 			<button
-				className={`text-green-500 border border-green-500 hover:bg-green-100 hover:text-green-700 py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 mt-2 ${
+				className={`bg-green-500 p-3 rounded-md hover:bg-green-700 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ${
 					isLoading ? 'disabled opacity-50 cursor-not-allowed' : ''
 				}`}
 				isLoading={isLoading}
@@ -41,6 +41,7 @@ const Output = ({ editorRef, language }) => {
 			>
 				Run Code
 			</button>
+			
 			<div
 				className={`h-full p-2 mt-6 ${
 					isError ? 'text-red-400 border-red-500' : 'border-gray-300'
