@@ -1,4 +1,6 @@
+import { Alert, Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import './style.css';
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -19,7 +21,7 @@ const Register = () => {
 							Or
 							<a
 								onClick={() => navigate('/login')}
-								className='font-medium text-blue-600 hover:text-blue-500 pl-1 cursor-pointer'
+								className='font-medium text-indigo-700 hover:text-blue-500 ml-1 cursor-pointer'
 							>
 								Login
 							</a>
@@ -28,74 +30,155 @@ const Register = () => {
 
 					<div className='mt-6 sm:mx-auto sm:w-full sm:max-w-md'>
 						<div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-							<form>
-								<div className='py-2'>
+							<Form>
+								<div>
 									<label
 										htmlFor='email'
 										className='block text-sm font-medium text-gray-700'
 									>
-										Email
+										Email address
 									</label>
-									<div className='mt-1'>
-										<input
-											id='email'
-											name='email'
-											type='email'
-											autocomplete='email'
-											required
+									<Form.Item
+										name='email'
+										className='mt-1'
+										rules={[
+											{
+												type: 'email',
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='invalid email'
+														banner
+														type='error'
+													/>
+												),
+											},
+											{
+												required: true,
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='please enter email'
+														banner
+														type='error'
+													/>
+												),
+											},
+										]}
+									>
+										<Input
 											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-											placeholder='Enter your email address'
+											classNames={{
+												input: 'text-md font-normal',
+											}}
+											placeholder='Enter your email'
 										/>
-									</div>
+									</Form.Item>
 								</div>
 
-								<div className='py-2'>
+								<div>
 									<label
-										for='password'
+										htmlFor='password'
 										className='block text-sm font-medium text-gray-700'
 									>
 										Password
 									</label>
-									<div className='mt-1'>
-										<input
-											id='password'
-											name='password'
-											type='password'
-											autocomplete='current-password'
-											required
+									<Form.Item
+										name='password'
+										className='mt-1'
+										rules={[
+											{
+												type: 'password',
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='invalid password'
+														banner
+														type='error'
+													/>
+												),
+											},
+											{
+												required: true,
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='please enter password'
+														banner
+														type='error'
+													/>
+												),
+											},
+										]}
+									>
+										<Input
 											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+											classNames={{
+												input: 'text-md font-normal',
+											}}
 											placeholder='Enter your password'
 										/>
-									</div>
+									</Form.Item>
 								</div>
 
-								<div className='py-2'>
+								<div>
 									<label
-										for='password'
+										htmlFor='password'
 										className='block text-sm font-medium text-gray-700'
 									>
-										Confirm Password
+										Confirm password
 									</label>
-									<div className='mt-1'>
-										<input
-											id='password'
-											name='password'
-											type='password'
-											autocomplete='current-password'
-											required
+									<Form.Item
+										name='confirm_password'
+										className='mt-1'
+										rules={[
+											{
+												required: true,
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='please enter confirm password'
+														banner
+														type='error'
+													/>
+												),
+											},
+											({ getFieldValue }) => ({
+												validator(_, value) {
+													if (!value || getFieldValue('password') === value) {
+														return Promise.resolve();
+													}
+													return Promise.reject(
+														<Alert
+															className='ml-2 bg-transparent text-sm text-red-700'
+															message='The new password that you entered do not match!'
+															banner
+															type='error'
+														/>,
+													);
+												},
+											}),
+										]}
+									>
+										<Input
 											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-											placeholder='Enter your password'
+											classNames={{
+												input: 'text-md font-normal',
+											}}
+											placeholder='confirm password'
 										/>
-									</div>
+									</Form.Item>
 								</div>
 
-								<button
-									type='submit'
-									className='group relative w-full flex justify-center mt-5 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-								>
-									Sign up
-								</button>
-							</form>
+								<Form.Item>
+									<Button
+										htmlType='submit'
+										className='btn-submit w-full p-0 mt-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-offset-2 focus:ring-indigo-500'
+									>
+										Sign up
+									</Button>
+								</Form.Item>
+							</Form>
 							<div className='mt-6'>
 								<div className='relative'>
 									<div className='absolute inset-0 flex items-center'>
