@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+	const navigate = useNavigate();
 	return (
 		<>
 			<div
@@ -17,7 +18,7 @@ function Login() {
 						<p class='mt-2 text-center text-sm text-gray-600 max-w'>
 							Or
 							<a
-								href='#'
+								onClick={() => navigate('/register')}
 								class='font-medium text-blue-600 hover:text-blue-500 pl-2'
 							>
 								create an account
