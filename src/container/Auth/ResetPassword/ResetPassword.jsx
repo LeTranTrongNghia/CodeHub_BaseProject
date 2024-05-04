@@ -1,3 +1,8 @@
+import { Alert, Button, Form, Input } from 'antd';
+import { Typography } from 'antd';
+
+const { Text } = Typography;
+
 const ResetPassword = () => {
 	return (
 		<>
@@ -16,34 +21,64 @@ const ResetPassword = () => {
 
 					<div className='mt-6 sm:mx-auto sm:w-full sm:max-w-md'>
 						<div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-							<form className='py-2'>
-								<div className='py-2'>
+							<Form>
+								<h3 className='mb-5 text-center'>
+									Enter your email to get your new password!
+								</h3>
+								<div>
 									<label
 										htmlFor='email'
 										className='block text-sm font-medium text-gray-700'
 									>
-										Enter your email
+										Email address
 									</label>
-									<div className='mt-1'>
-										<input
-											id='email'
-											name='email'
-											type='email'
-											autocomplete='email'
-											required
+									<Form.Item
+										name='email'
+										className='mt-1'
+										rules={[
+											{
+												type: 'email',
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='invalid email'
+														banner
+														type='error'
+													/>
+												),
+											},
+											{
+												required: true,
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='please input your email'
+														banner
+														type='error'
+													/>
+												),
+											},
+										]}
+									>
+										<Input
 											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-											placeholder='Enter your email address'
+											classNames={{
+												input: 'text-md font-normal',
+											}}
+											placeholder='Enter your email'
 										/>
-									</div>
+									</Form.Item>
 								</div>
 
-								<button
-									type='submit'
-									className='group relative w-full flex justify-center mt-5 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-								>
-									RESET
-								</button>
-							</form>
+								<Form.Item>
+									<Button
+										htmlType='submit'
+										className='btn-submit w-full p-0 mt-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-offset-2 focus:ring-indigo-500'
+									>
+										RESET
+									</Button>
+								</Form.Item>
+							</Form>
 						</div>
 					</div>
 				</div>
