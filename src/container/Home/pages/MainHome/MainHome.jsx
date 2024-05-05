@@ -139,91 +139,95 @@ const MainHome = () => {
 						</div>
 					</p>
 				</div>
-
-				<div class="grid grid-cols-3 gap-4 mb-4">
-					<div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-					<div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-					<div class="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-				</div>
-
 				<div class="grid grid-cols-2 gap-4 mb-4">
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
+					<div class="grid grid-rows-2 h-[520px] items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+						<div class="flex mt-4 h-[250px] w-[600px] rounded">
+							<div class="h-full w-[395px] rounded mr-5">
+								<div class="flex h-[170px] w-[395px] rounded h-28 mb-4">
+									<article
+										class="h-[170px] w-[395px] rounded-lg bg-white p-6 dark:bg-gray-700"
+									>
+										<div class="flex items-center justify-between">
+											<div>
+												<p class="text-xl text-white mb-1">Assignments</p>
+
+												<p class="text-4xl font-medium text-gray-900 dark:text-white mb-2">12</p>
+											</div>
+
+											<span class="rounded-full bg-blue-100 p-3 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
+												<svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.5 8C6.88071 8 8 6.88071 8 5.5C8 4.11929 6.88071 3 5.5 3C4.11929 3 3 4.11929 3 5.5C3 6.88071 4.11929 8 5.5 8ZM5.5 8V16M5.5 16C4.11929 16 3 17.1193 3 18.5C3 19.8807 4.11929 21 5.5 21C6.88071 21 8 19.8807 8 18.5C8 17.1193 6.88071 16 5.5 16ZM18.5 16V8.7C18.5 7.5799 18.5 7.01984 18.282 6.59202C18.0903 6.21569 17.7843 5.90973 17.408 5.71799C16.9802 5.5 16.4201 5.5 15.3 5.5H12M18.5 16C19.8807 16 21 17.1193 21 18.5C21 19.8807 19.8807 21 18.5 21C17.1193 21 16 19.8807 16 18.5C16 17.1193 17.1193 16 18.5 16ZM12 5.5L14.5 8M12 5.5L14.5 3" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+											</span>
+										</div>
+
+										<div class="mt-1 flex gap-1 text-green-600">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												class="h-7 w-7"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+												/>
+											</svg>
+
+											<p class="flex gap-2 text-xl">
+												<span class="font-medium"> 24.81% </span>
+
+												<span class="text-lg text-gray-400 ml-1"> Since last week </span>
+											</p>
+										</div>
+									</article>
+
+								</div>
+								<div class="grid grid-cols-2 h-[78px] w-[395px] rounded h-28">
+									<div class="flex items-center justify-center h-full w-[190px] rounded bg-gray-700 h-28 mt-1 mr-2">
+										<div class="w-3 h-3 rounded-full bg-green-300 mb-5 mr-4"></div>
+										<div>
+											<h1 className='text-xl text-white font-medium'>28</h1>
+											<h1 className='text-sm text-white font-medium'>Lesson complete</h1>
+										</div>
+									</div>
+									<div class="flex items-center justify-center h-full w-[190px] rounded bg-gray-700 h-28 mt-1 ml-2">
+										<div class="w-3 h-3 rounded-full bg-blue-300 mb-5 mr-4"></div>
+										<div>
+											<h1 className='text-xl text-white font-medium'>120</h1>
+											<h1 className='text-sm text-white font-medium'>Homework complete</h1>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="h-full w-[195px] rounded h-28">
+								<div class="flex items-center justify-center h-[80px] w-full rounded mb-3 bg-gray-700">
+									<svg width="28px" height="28px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 7V12L14.5 10.5M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+									<span class="ms-3 text-lg text-white">3 this week</span>
+								</div>
+								<div class="flex items-center justify-center h-[80px] w-full rounded mb-3 bg-gray-700">
+									<svg fill="#ffffff" width="28px" height="28px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M19,4H17V3a1,1,0,0,0-2,0V4H9V3A1,1,0,0,0,7,3V4H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V7A3,3,0,0,0,19,4Zm1,15a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V12H20Zm0-9H4V7A1,1,0,0,1,5,6H7V7A1,1,0,0,0,9,7V6h6V7a1,1,0,0,0,2,0V6h2a1,1,0,0,1,1,1Z"></path></g></svg>
+									<span class="ms-3 text-lg text-white">76 all time</span>
+								</div>
+								<div class="flex items-center justify-center h-[80px] w-full rounded mb-3 bg-gray-700 mt-4">
+									<div class="w-3 h-3 rounded-full bg-purple-300 mb-5 mr-2"></div>
+									<div>
+										<h1 className='text-xl text-white font-medium'>6</h1>
+										<h1 className='text-sm text-white font-medium'>Average learning time</h1>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="flex h-[200px] items-center justify-center rounded bg-gray-50 h-28 dark:bg-green-600 mt-8">
+							<p class="text-2xl text-gray-400 dark:text-gray-500">
+								<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+								</svg>
+							</p>
+						</div>
 					</div>
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-				</div>
-				<div class="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-					<p class="text-2xl text-gray-400 dark:text-gray-500">
-						<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-						</svg>
-					</p>
-				</div>
-				<div class="grid grid-cols-2 gap-4">
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
-					</div>
-					<div class="flex items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+					<div class="flex h-[520px] items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
 						<p class="text-2xl text-gray-400 dark:text-gray-500">
 							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
 								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
@@ -233,7 +237,6 @@ const MainHome = () => {
 				</div>
 			</div>
 		</div>
-
 	</div>;
 };
 
