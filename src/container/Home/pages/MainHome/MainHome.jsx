@@ -1,24 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import Problem from '../../../../components/MainHome/Problem';
+import DateButton from '../../../../components/MainHome/DateButton';
 
 const MainHome = () => {
-	const [date, setDate] = useState(null);
-
-	useEffect(() => {
-		const updateDate = () => {
-			const today = new Date();
-			const formattedDate = today.toLocaleDateString();
-			setDate(formattedDate);
-		};
-
-		updateDate();
-
-		const intervalId = setInterval(updateDate, 1000);
-
-		// Cleanup function to clear the interval on component unmount
-		return () => clearInterval(intervalId);
-	}, []);
-
-	return <div className="bg-gray-900 text-gray-400">
+	return <div className="h-screen bg-black text-gray-400 overflow-hidden">
 		{/* Sidebar */}
 		<button data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
 			<span class="sr-only">Open sidebar</span>
@@ -27,7 +12,7 @@ const MainHome = () => {
 			</svg>
 		</button>
 		<aside id="separator-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-			<div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+			<div class="h-full px-3 py-4 overflow-y-auto bg-black">
 				<a href="" class="flex items-center ps-2.5 mb-5">
 					<svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
 					<span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">CodeSpace</span>
@@ -118,20 +103,16 @@ const MainHome = () => {
 
 		{/* Main */}
 		<div class="p-4 sm:ml-64">
-			<div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700">
-				<div class="flex h-400 mb-4 rounded bg-gray-50 dark:bg-gray-800 bg-[url('https://media.istockphoto.com/id/1406263653/nl/vector/dark-blue-abstract-with-colorful-light-for-background.jpg?s=612x612&w=0&k=20&c=q_hOjh_XpzA4ZxaApExc7CBbAtW3Se2hw7ZxlvDfujw=')] bg-cover">
+			{/* class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700" */}
+			<div className='p-4'>
+				<div class="flex h-300 mb-4 rounded bg-gray-800 bg-[url('https://media.istockphoto.com/id/1406263653/nl/vector/dark-blue-abstract-with-colorful-light-for-background.jpg?s=612x612&w=0&k=20&c=q_hOjh_XpzA4ZxaApExc7CBbAtW3Se2hw7ZxlvDfujw=')] bg-cover">
 					<p class="text-5xl font-bold text-white dark:text-white mt-6 ml-10">
 						<h1>WELCOME BACK,</h1>
 						<h1 className="mt-4">IVEL</h1>
 						<div className="flex items-center w-[1280px]">
 							<h1 className="flex-1 text-base text-white font-medium mt-4 mb-4">Track your progress, manage your courses activity and conversion</h1>
 							<div className="flex items-center">
-								<div className="flex items-center p-3 rounded-md hover:bg-gray-700 transition-all duration-300 mx-2 text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white text-sm">
-									<svg class="w-6 h-6 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-										<path fill-rule="evenodd" d="M5 5a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1h1a1 1 0 0 0 1-1 1 1 0 1 1 2 0 1 1 0 0 0 1 1v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a2 2 0 0 1 2-2ZM3 19v-7a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm6.01-6a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 0-2 0 1 1 0 0 1 2 0Zm-10 4a1 1 0 1 1 2 0 1 1 0 0 1-2 0Zm6 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm2 0a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z" clip-rule="evenodd" />
-									</svg>
-									Today's Date: {date}
-								</div>
+								<DateButton />
 								<button className="bg-green-400 p-3 rounded-md hover:bg-green-300 transition-all duration-300 mx-2 text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-black text-sm">
 									Add course +
 								</button>
@@ -140,12 +121,24 @@ const MainHome = () => {
 					</p>
 				</div>
 				<div class="grid grid-cols-2 gap-4 mb-4">
-					<div class="grid grid-rows-2 h-[520px] items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
+					<div class="flex h-[520px] items-center justify-center rounded h-28 bg-gray-800">
+						<div className="flex h-[515px] rounded h-28 bg-gray-800">
+							<div className='w-[650px] items-center justify-center overflow-auto scrollbar ml-2 mr-2'>
+								<Problem />
+								<Problem />
+								<Problem />
+								<Problem />
+								<Problem />
+								<Problem />
+							</div>
+						</div>
+					</div>
+					<div class="grid grid-rows-2 h-[520px] items-center justify-center rounded h-28 bg-gray-800">
 						<div class="flex mt-4 h-[250px] w-[600px] rounded">
 							<div class="h-full w-[395px] rounded mr-5">
 								<div class="flex h-[170px] w-[395px] rounded h-28 mb-4">
 									<article
-										class="h-[170px] w-[395px] rounded-lg bg-white p-6 dark:bg-gray-700"
+										class="h-[170px] w-[395px] rounded-lg p-6 bg-gray-700"
 									>
 										<div class="flex items-center justify-between">
 											<div>
@@ -219,20 +212,22 @@ const MainHome = () => {
 								</div>
 							</div>
 						</div>
-						<div class="flex h-[200px] items-center justify-center rounded bg-gray-50 h-28 dark:bg-green-600 mt-8">
-							<p class="text-2xl text-gray-400 dark:text-gray-500">
-								<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-								</svg>
-							</p>
+
+						<div class="h-[200px] w-[600px] relative flex flex-col md:flex-row md:space-x-5 space-y-3 md:space-y-0 rounded-xl shadow-lg p-3 max-w-xs md:max-w-3xl mx-auto border border-gray-700 bg-gray-700 mt-8">
+							<div class="w-full md:w-1/3 grid place-items-center bg-green-300 bg-[url('https://media.istockphoto.com/id/1406263653/nl/vector/dark-blue-abstract-with-colorful-light-for-background.jpg?s=612x612&w=0&k=20&c=q_hOjh_XpzA4ZxaApExc7CBbAtW3Se2hw7ZxlvDfujw=')] bg-cover rounded">
+								<svg width="100px" height="100px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+								<span class="mb-4 self-center text-2xl font-semibold whitespace-nowrap dark:text-white">CodeSpace</span>
+							</div>
+							<div class="w-full md:w-2/3 flex flex-col p-3">
+								<h3 class="font-black text-white md:text-3xl text-xl"> Grand Coding Contest</h3>
+								<p class="md:text-lg text-white font-medium mt-4">Biggest Coding Contest
+									<br />Prizes Worth 1 Million $
+									<br />Grand Coding Contest World Wide
+									</p>
+							</div>
+
+
 						</div>
-					</div>
-					<div class="flex h-[520px] items-center justify-center rounded bg-gray-50 h-28 dark:bg-gray-800">
-						<p class="text-2xl text-gray-400 dark:text-gray-500">
-							<svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-							</svg>
-						</p>
 					</div>
 				</div>
 			</div>
