@@ -1,6 +1,6 @@
 import React from 'react';
 import { BsCheck2Circle } from "react-icons/bs";
-import { AiFillLike, AiFillDislike, AiOutlineLoading3Quarters, AiFillStar } from "react-icons/ai";
+import { AiFillLike, AiFillDislike, AiFillStar } from "react-icons/ai";
 
 const ProblemDescription = () => {
     const problem = {
