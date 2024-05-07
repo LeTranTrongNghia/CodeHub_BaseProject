@@ -86,11 +86,11 @@ import DateButton from "@/components/MainHome/DateButton";
 
 const MainHome = () => {
 
-	return <div className="flex min-h-screen w-full flex-col">
+	return <div className="flex min-h-screen w-full flex-col bg-black">
 		{/* Topbar */}
-		<header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+		<header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6">
 			<nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-				<h1 className="ml-16 text-xl font-semibold">Explore</h1>
+				<h1 className="ml-16 text-xl font-semibold text-white">Explore</h1>
 			</nav>
 			<Sheet>
 				<SheetTrigger asChild>
@@ -104,7 +104,7 @@ const MainHome = () => {
 					</Button>
 				</SheetTrigger>
 				<SheetContent side="left">
-					<nav className="grid gap-6 text-lg font-medium">
+					{/* <nav className="grid gap-6 text-lg font-medium">
 						<div
 							href="#"
 							className="flex items-center gap-2 text-lg font-semibold"
@@ -139,7 +139,7 @@ const MainHome = () => {
 						>
 							Analytics
 						</div>
-					</nav>
+					</nav> */}
 				</SheetContent>
 			</Sheet>
 			<div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
@@ -148,8 +148,8 @@ const MainHome = () => {
 						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 						<Input
 							type="search"
-							placeholder="Search products..."
-							className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+							placeholder="Search problems..."
+							className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-black text-white"
 						/>
 					</div>
 				</form>
@@ -172,8 +172,8 @@ const MainHome = () => {
 			</div>
 		</header>
 		{/* Sidebar */}
-		<aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
-			<div className="p-2 mt-1">
+		<aside className="inset-y fixed bg-black left-0 z-20 flex h-full flex-col border-r">
+			<div className="p-2 mt-1 bg-black">
 				<TooltipProvider>
 					<Tooltip>
 						<TooltipTrigger asChild>
@@ -195,7 +195,7 @@ const MainHome = () => {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="rounded-lg bg-muted"
+								className="rounded-lg bg-muted bg-black text-white"
 								aria-label="Playground"
 							>
 								<SquareTerminal className="size-5" />
@@ -212,7 +212,7 @@ const MainHome = () => {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="rounded-lg"
+								className="rounded-lg bg-black text-white"
 								aria-label="Models"
 							>
 								<Bot className="size-5" />
@@ -229,7 +229,7 @@ const MainHome = () => {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="rounded-lg"
+								className="rounded-lg bg-black text-white"
 								aria-label="API"
 							>
 								<Code2 className="size-5" />
@@ -246,7 +246,7 @@ const MainHome = () => {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="rounded-lg"
+								className="rounded-lg bg-black text-white"
 								aria-label="Documentation"
 							>
 								<Book className="size-5" />
@@ -263,7 +263,7 @@ const MainHome = () => {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="rounded-lg"
+								className="rounded-lg bg-black text-white"
 								aria-label="Settings"
 							>
 								<Settings2 className="size-5" />
@@ -282,7 +282,7 @@ const MainHome = () => {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="mt-auto rounded-lg"
+								className="mt-auto rounded-lg bg-black text-white"
 								aria-label="Help"
 							>
 								<LifeBuoy className="size-5" />
@@ -298,70 +298,71 @@ const MainHome = () => {
 		{/* Mainbar */}
 		<main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
 			<Card x-chunk="dashboard-01-chunk-0">
-				<CardHeader className="flex flex-row items-center justify-between bg">
+				<CardHeader className="flex flex-row items-center justify-between text-white">
 					<CardTitle className="text-sm font-medium">
 						<p className="text-2xl font-bold">Welcome back, Ivel!</p>
 					</CardTitle>
 				</CardHeader>
-				<CardContent className="flex flex-row items-center justify-between">
+				<CardContent className="flex flex-row items-center justify-between text-white">
 					<div className="text-xl">Track your progress, manage your courses activity and conversion</div>
 					<div className="flex items-center">
 						<DateButton />
-						<button className="bg-green-400 p-3 rounded-md hover:bg-green-300 transition-all duration-300 mx-2 text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-black text-sm">
-							Add course +
+						<button className="flex items-center bg-black border border-white rounded-md text-white text-sm p-3 ml-2 hover:bg-blue-400">
+							<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12H20M12 4V20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+							<p className="ml-2">Add course</p>
 						</button>
 					</div>
 				</CardContent>
 			</Card>
 			<div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
 				<Card x-chunk="dashboard-01-chunk-0">
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 text-white">
 						<CardTitle className="text-sm font-medium">
 							Total Problems solved
 						</CardTitle>
-						<Code2 className="h-4 w-4 text-muted-foreground" />
+						<Code2 className="h-4 w-4 text-white" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">132</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold text-white">132</div>
+						<p className="text-2xs text-white mt-2">
 							+20.1% from last month
 						</p>
 					</CardContent>
 				</Card>
 				<Card x-chunk="dashboard-01-chunk-1">
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 text-white">
 						<CardTitle className="text-sm font-medium">
 							Lessons completed
 						</CardTitle>
-						<BookMarked className="h-4 w-4 text-muted-foreground" />
+						<BookMarked className="h-4 w-4 text-white mt-2" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">12</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold text-white">12</div>
+						<p className="text-2xs text-white">
 							+180.1% from last month
 						</p>
 					</CardContent>
 				</Card>
 				<Card x-chunk="dashboard-01-chunk-2">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Average learning time</CardTitle>
-						<CreditCard className="h-4 w-4 text-muted-foreground" />
+						<CardTitle className="text-sm font-medium text-white">Average learning time</CardTitle>
+						<CreditCard className="h-4 w-4 text-white" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">3.2 hours</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold text-white">3.2 hours</div>
+						<p className="text-2xs text-white mt-2">
 							+19% from last month
 						</p>
 					</CardContent>
 				</Card>
 				<Card x-chunk="dashboard-01-chunk-3">
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Longest streak</CardTitle>
-						<Activity className="h-4 w-4 text-muted-foreground" />
+						<CardTitle className="text-sm font-medium text-white">Longest streak</CardTitle>
+						<Activity className="h-4 w-4 text-white" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">29 days</div>
-						<p className="text-xs text-muted-foreground">
+						<div className="text-2xl font-bold text-white">29 days</div>
+						<p className="text-2xs text-white mt-2">
 							Best since last month
 						</p>
 					</CardContent>
@@ -369,7 +370,7 @@ const MainHome = () => {
 			</div>
 			<div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
 				<Card
-					className="xl:col-span-2" x-chunk="dashboard-01-chunk-4"
+					className="xl:col-span-2 text-white" x-chunk="dashboard-01-chunk-4"
 				>
 					<CardHeader className="flex flex-row items-center">
 						<div className="grid gap-2">
@@ -447,9 +448,8 @@ const MainHome = () => {
 						</Table>
 					</CardContent>
 				</Card>
-
 				<Card
-					className="overflow-hidden" x-chunk="dashboard-07-chunk-4"
+					className="overflow-hidden text-white" x-chunk="dashboard-07-chunk-4"
 				>
 					<CardHeader>
 						<CardTitle>Grand Coding Contest</CardTitle>
