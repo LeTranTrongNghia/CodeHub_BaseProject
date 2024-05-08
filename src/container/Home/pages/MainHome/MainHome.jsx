@@ -88,7 +88,7 @@ const MainHome = () => {
 
 	return <div className="flex min-h-screen w-full flex-col bg-black">
 		{/* Topbar */}
-		<header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6">
+		<header className="flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6">
 			<nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
 				<h1 className="ml-16 text-xl font-semibold text-white">Explore</h1>
 			</nav>
@@ -186,7 +186,6 @@ const MainHome = () => {
 						</TooltipContent>
 					</Tooltip>
 				</TooltipProvider>
-
 			</div>
 			<div className="grid gap-1 p-2">
 				<TooltipProvider>
