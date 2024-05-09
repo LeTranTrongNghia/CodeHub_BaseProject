@@ -1,9 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
 import { publicRoute } from './routes/routes';
 import { Suspense } from 'react';
+import ProblemsPage from './container/Home/pages/MainHome/ProblemsPage';
 
 const App = () => {
 	return (
+		// <ProblemsPage />
 		<Suspense>
 			<Routes>
 				{publicRoute.map((route, idx) => {

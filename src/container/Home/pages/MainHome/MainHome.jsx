@@ -1,37 +1,10 @@
 import {
 	Activity,
 	ArrowUpRight,
-	CircleUser,
 	CreditCard,
-	DollarSign,
-	Menu,
-	Package2,
-	Search,
-	Users,
-	Bird,
-	Book,
-	Bot,
 	Code2,
-	CornerDownLeft,
-	LifeBuoy,
-	Mic,
-	Paperclip,
-	Rabbit,
-	Settings,
-	Settings2,
-	Share,
-	SquareTerminal,
-	SquareUser,
-	Triangle,
-	Turtle,
 	BookMarked
 } from "lucide-react"
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-} from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -41,24 +14,6 @@ import {
 	CardTitle,
 } from "@/components/ui/card"
 import {
-	Drawer,
-	DrawerContent,
-	DrawerDescription,
-	DrawerHeader,
-	DrawerTitle,
-	DrawerTrigger,
-} from "@/components/ui/drawer"
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import {
 	Table,
 	TableBody,
 	TableCell,
@@ -66,234 +21,18 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
-import { Label } from "@/components/ui/label"
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip"
-import React, { useState } from 'react';
+import React from 'react';
 import DateButton from "@/components/MainHome/DateButton";
+import Sidebar from "@/components/MainHome/Sidebar";
+import Topbar from "@/components/MainHome/Topbar";
 
 const MainHome = () => {
 
 	return <div className="flex min-h-screen w-full flex-col bg-black">
 		{/* Topbar */}
-		<header className="flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6">
-			<nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-				<h1 className="ml-16 text-xl font-semibold text-white">Explore</h1>
-			</nav>
-			<Sheet>
-				<SheetTrigger asChild>
-					<Button
-						variant="outline"
-						size="icon"
-						className="shrink-0 md:hidden"
-					>
-						<Menu className="h-5 w-5" />
-						<span className="sr-only">Toggle navigation menu</span>
-					</Button>
-				</SheetTrigger>
-				<SheetContent side="left">
-					{/* <nav className="grid gap-6 text-lg font-medium">
-						<div
-							href="#"
-							className="flex items-center gap-2 text-lg font-semibold"
-						>
-							<Package2 className="h-6 w-6" />
-							<span className="sr-only">Acme Inc</span>
-						</div>
-						<div href="#" className="hover:text-foreground">
-							Dashboard
-						</div>
-						<div
-							href="#"
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Orders
-						</div>
-						<div
-							href="#"
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Products
-						</div>
-						<div
-							href="#"
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Customers
-						</div>
-						<div
-							href="#"
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Analytics
-						</div>
-					</nav> */}
-				</SheetContent>
-			</Sheet>
-			<div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-				<form className="ml-auto flex-1 sm:flex-initial">
-					<div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-						<Input
-							type="search"
-							placeholder="Search problems..."
-							className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-black text-white"
-						/>
-					</div>
-				</form>
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="secondary" size="icon" className="rounded-full">
-							<CircleUser className="h-5 w-5" />
-							<span className="sr-only">Toggle user menu</span>
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuLabel>My Account</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>Settings</DropdownMenuItem>
-						<DropdownMenuItem>Support</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem>Logout</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			</div>
-		</header>
+		<Topbar />
 		{/* Sidebar */}
-		<aside className="inset-y fixed bg-black left-0 z-20 flex h-full flex-col border-r">
-			<div className="p-2 mt-1 bg-black">
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button variant="outline" size="icon" aria-label="Home">
-								<Triangle className="size-5 fill-foreground" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent side="right" sideOffset={5}>
-							<p>CodeHub</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			</div>
-			<div className="grid gap-1 p-2">
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="rounded-lg bg-muted bg-black text-white"
-								aria-label="Playground"
-							>
-								<SquareTerminal className="size-5" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent side="right" sideOffset={5}>
-							<p>Explore</p>
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="rounded-lg bg-black text-white"
-								aria-label="Models"
-							>
-								<Bot className="size-5" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent side="right" sideOffset={5}>
-							Playground
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="rounded-lg bg-black text-white"
-								aria-label="API"
-							>
-								<Code2 className="size-5" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent side="right" sideOffset={5}>
-							Problem
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="rounded-lg bg-black text-white"
-								aria-label="Documentation"
-							>
-								<Book className="size-5" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent side="right" sideOffset={5}>
-							Courses
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="rounded-lg bg-black text-white"
-								aria-label="Settings"
-							>
-								<Settings2 className="size-5" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent side="right" sideOffset={5}>
-							Settings
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			</div>
-			<div className="mt-auto grid gap-1 p-2">
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="mt-auto rounded-lg bg-black text-white"
-								aria-label="Help"
-							>
-								<LifeBuoy className="size-5" />
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent side="right" sideOffset={5}>
-							Help
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			</div>
-		</aside>
+		<Sidebar />
 		{/* Mainbar */}
 		<main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
 			<Card x-chunk="dashboard-01-chunk-0">
