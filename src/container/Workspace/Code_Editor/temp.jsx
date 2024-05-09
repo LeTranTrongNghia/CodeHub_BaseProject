@@ -117,3 +117,127 @@ useEffect(() => {
 						</div>
 					</form>
 				</div> */}
+
+
+<div className='bg-dark-layer-1'>
+    {/* TAB */}
+    <div className='flex h-11 w-full items-center pt-2 bg-dark-layer-2 text-white overflow-x-hidden ml-5'>
+        <div className={"flex-1 mr-2 text-xl text-white font-medium"}>
+            Description
+        </div>
+    </div>
+
+    <div className='flex px-0 py-4 h-[calc(100vh-94px)] overflow-y-auto'>
+        <div className='px-5'>
+            {/* Problem heading */}
+            <div className='w-full'>
+                <div className='flex space-x-4'>
+                    <div className='flex-1 mr-2 text-3xl text-white font-medium'>{problem?.title}</div>
+                </div>
+
+                <div className='flex items-center mt-3'>
+                    <div
+                        className='inline-block rounded-[21px] bg-opacity-[.15] px-2.5 py-1 text-x font-medium capitalize text-green-400 bg-green-100'
+                    >
+                        {problem.difficulty}
+                    </div>
+                    <div className='rounded p-[3px] ml-4 text-lg transition-colors duration-200 text-green-s text-dark-green-s'>
+                        <BsCheck2Circle />
+                    </div>
+                    <div
+                        className='flex items-center cursor-pointer hover:bg-dark-fill-3 space-x-1 rounded p-[3px]  ml-4 text-lg transition-colors duration-200 text-dark-gray-6'
+                    >
+                        <AiFillLike className='text-dark-blue-s' />
+                        <span className='text-lg'>{problem.likes}</span>
+                    </div>
+                    <div
+                        className='flex items-center cursor-pointer hover:bg-dark-fill-3 space-x-1 rounded p-[3px]  ml-4 text-lg transition-colors duration-200 text-dark-gray-6'
+                    >
+                        <AiFillDislike className='text-dark-blue-s' />
+                        <span className='text-lg'>{problem.dislikes}</span>
+                    </div>
+                    <div
+                        className='cursor-pointer hover:bg-dark-fill-3  rounded p-[3px]  ml-4 text-xl transition-colors duration-200 text-green-s text-dark-gray-6 '
+                    >
+                        <AiFillStar className='text-dark-yellow' />
+                    </div>
+                </div>
+
+                {/* Problem Statement */}
+                <div className='text-white text-lg mt-4'>
+                    <div dangerouslySetInnerHTML={{ __html: problem.problemStatement }} />
+                </div>
+
+                {/* Examples */}
+                <div className='mt-4'>
+                    {problem.examples.map((example, index) => (
+                        <div key={example.id}>
+                            <p className='font-medium text-white text-lg'>Example {index + 1}: </p>
+                            {example.img && <img src={example.img} alt='' className='mt-3' />}
+                            <div className='example-card'>
+                                <pre className='text-wrap'>
+                                    <strong className='text-white'>Input: </strong> {example.inputText}
+                                    <br />
+                                    <strong className='text-white'>Output: </strong>
+                                    {example.outputText} <br />
+                                    {example.explanation && (
+                                        <>
+                                            <strong className='text-white'>Explanation:</strong> {example.explanation}<br /> {/* Added <br/> tag */}
+                                        </>
+                                    )}
+                                </pre>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Constraints */}
+                <div className='my-8 pb-4'>
+                    <div className='text-white text-sm font-medium text-xl'>Constraints:</div>
+                    <ul className='text-white ml-5 list-disc text-lg'>
+                        <div dangerouslySetInnerHTML={{ __html: problem.constraints }} />
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+return (
+    <>
+        <form onSubmit={generateAnswer} className='text-center'>
+            <h1 class='text-3xl text-center mb-4 mt-4'>Gemini AI</h1>
+            <div className="h-200 overflow-auto mb-4">  <ReactMarkdown className="p-3 prose max-w-prose mx-auto">
+                {answer}
+            </ReactMarkdown>
+            </div>
+            <textarea
+                required
+                className='border rounded w-full min-h-fit p-3 bg-gray-800 text-gray-300'
+                value={question}
+                onChange={e => setQuestion(e.target.value)}
+                placeholder='Enter a promt here'
+                style={{ height: '200px' }}
+            ></textarea>
+            <div className='flex justify-center mt-2'>
+                <button
+                    type='submit'
+                    className='bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white'
+                    disabled={generatingAnswer}
+                >
+                    Analyze Promt
+                </button>
+                <button
+                    type='button'
+                    onClick={guideCode}
+                    className='bg-blue-300 p-3 rounded-md hover:bg-green-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-2'
+                    disabled={generatingAnswer}
+                >
+                    Guide Code
+                </button>
+            </div>
+        </form>
+    </>
+);
