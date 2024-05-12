@@ -2,8 +2,23 @@ import { Alert, Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 
-function Login() {
+import { useState } from 'react';
+import { useAuth } from '@/context/authContext';
+import { doSignInWithEmailAndPassword } from '@/firebase/auth';
+
+const Login = () => {
 	const navigate = useNavigate();
+	const [isSigningIn, setIsSigningIn] = useState(false);
+	const onFinish = async values => {
+		const { email, password } = values;
+		if (!isSigningIn) {
+			setIsSigningIn(true);
+			await doSignInWithEmailAndPassword(email, password);
+			navigate('/');
+			// doSendEmailVerification()
+			console.log('logged');
+		}
+	};
 	return (
 		<>
 			<div
@@ -30,7 +45,7 @@ function Login() {
 
 					<div className='mt-6 sm:mx-auto sm:w-full sm:max-w-md'>
 						<div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-							<Form>
+							<Form onFinish={onFinish}>
 								<div>
 									<label
 										htmlFor='email'
@@ -213,6 +228,6 @@ function Login() {
 			</div>
 		</>
 	);
-}
+};
 
 export default Login;
