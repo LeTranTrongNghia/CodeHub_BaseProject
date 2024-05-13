@@ -4,9 +4,8 @@ import { unstable_HistoryRouter as HistoryBrowserRouter } from 'react-router-dom
 import App from './App.jsx';
 import { createBrowserHistory } from 'history';
 import './index.css';
-import ProblemsPage from './container/Home/pages/MainHome/ProblemsPage.jsx';
-import CoursesPage from './container/Home/pages/MainHome/CoursesPage.jsx';
-import LecturesPage from './container/Home/pages/MainHome/LecturesPage.jsx';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const history = createBrowserHistory();
 
@@ -15,6 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
 		<HistoryBrowserRouter history={history}>
 			<App />
+			<ToastContainer />
 		</HistoryBrowserRouter>
 	</React.StrictMode>,
 );
