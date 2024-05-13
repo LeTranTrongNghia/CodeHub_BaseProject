@@ -1,22 +1,20 @@
 import { Alert, Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
-
-import { useState } from 'react';
-import { useAuth } from '@/context/authContext';
-import { doSignInWithEmailAndPassword } from '@/firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
+import { auth } from '@/firebase/firebase';
 
 const Login = () => {
 	const navigate = useNavigate();
-	const [isSigningIn, setIsSigningIn] = useState(false);
 	const onFinish = async values => {
 		const { email, password } = values;
-		if (!isSigningIn) {
-			setIsSigningIn(true);
-			await doSignInWithEmailAndPassword(email, password);
+		try {
+			await signInWithEmailAndPassword(auth, email, password);
+			toast.success('User logged in Successfully');
 			navigate('/');
-			// doSendEmailVerification()
-			console.log('logged');
+		} catch (error) {
+			toast.error(error.message);
 		}
 	};
 	return (
