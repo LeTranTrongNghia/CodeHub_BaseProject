@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import { useNavigate } from 'react-router-dom';
 import { Bot } from "lucide-react";
 import {
 	Tooltip,
@@ -11,12 +10,12 @@ import {
 } from "@/components/ui/tooltip";
 
 function AI_chat() {
-	const navigate = useNavigate();
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
 	const [generatingAnswer, setGeneratingAnswer] = useState(false);
 	const problemText = `Write a function that takes a string as input and returns a new string with the characters reversed. 
   For example, if the input is "hello", the output should be "olleh".`;
+	const userCode = 'console.log("olleh");';
 
 	async function generateAnswer(e) {
 		setGeneratingAnswer(true);
@@ -60,9 +59,9 @@ function AI_chat() {
 							parts: [
 								{
 									text:
-										'Imagine you are a professor majoring in Information Technology. Teach me how to write functions' +
-										problemText +
-										"Show me ideas and step-by-step instructions to help me find a way to solve a code problem. Don't write out hint code or example code, let me write it myself.",
+									'I will ask question, and you will only answer true of false only. ' +
+									problemText + 'This is the code I wrote to solve the problem: \n' + userCode +
+									"Is this code the code used to solve the above problem? only answer true or false.",	
 								},
 							],
 						},
