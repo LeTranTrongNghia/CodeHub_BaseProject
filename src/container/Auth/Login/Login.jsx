@@ -1,9 +1,22 @@
 import { Alert, Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
+import { auth } from '@/firebase/firebase';
 
-function Login() {
+const Login = () => {
 	const navigate = useNavigate();
+	const onFinish = async values => {
+		const { email, password } = values;
+		try {
+			await signInWithEmailAndPassword(auth, email, password);
+			toast.success('Logged in Successfully');
+			navigate('/');
+		} catch (error) {
+			toast.error(error.message);
+		}
+	};
 	return (
 		<>
 			<div
@@ -30,7 +43,7 @@ function Login() {
 
 					<div className='mt-6 sm:mx-auto sm:w-full sm:max-w-md'>
 						<div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-							<Form>
+							<Form onFinish={onFinish}>
 								<div>
 									<label
 										htmlFor='email'
@@ -213,6 +226,6 @@ function Login() {
 			</div>
 		</>
 	);
-}
+};
 
 export default Login;
