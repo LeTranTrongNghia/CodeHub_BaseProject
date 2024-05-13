@@ -22,9 +22,10 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import React from 'react';
-import DateButton from "@/components/MainHome/DateButton";
 import Sidebar from "@/components/MainHome/Sidebar";
 import Topbar from "@/components/MainHome/Topbar";
+import DateButton from "@/components/MainHome/DateButton";
+import Spline from '@splinetool/react-spline';
 
 const MainHome = () => {
 
@@ -37,18 +38,24 @@ const MainHome = () => {
 		<main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
 			<Card x-chunk="dashboard-01-chunk-0">
 				<CardHeader className="flex flex-row items-center justify-between text-white">
-					<CardTitle className="text-sm font-medium">
-						<p className="text-2xl font-bold">Welcome back, Ivel!</p>
-					</CardTitle>
 				</CardHeader>
-				<CardContent className="flex flex-row items-center justify-between text-white">
-					<div className="text-xl">Track your progress, manage your courses activity and conversion</div>
-					<div className="flex items-center">
-						<DateButton />
-						<button className="flex items-center bg-black border border-white rounded-md text-white text-sm p-3 ml-2 hover:bg-blue-400">
-							<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12H20M12 4V20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-							<p className="ml-2">Add course</p>
-						</button>
+				<CardContent className="flex flex-1 flex-col text-white">
+					<div className="container relative w-full h-[200px]">
+						<Spline scene="https://prod.spline.design/8rK8Mhnerno7UApB/scene.splinecode"/>
+						<div className="text-layer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full justify-between">
+							<p className="text-4xl font-bold font-medium mb-6">Welcome back, Ivel!</p>
+							<div className="flex flex-row items-center justify-between text-white">
+								<div className="text-xl">Track your progress, manage your courses activity and conversion</div>
+
+								<div className="flex items-center">
+									<DateButton />
+									<button className="flex items-center bg-black border border-white rounded-md text-white text-sm p-3 ml-2 hover:bg-blue-400">
+										<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12H20M12 4V20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+										<p className="ml-2">Add course</p>
+									</button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</CardContent>
 			</Card>
