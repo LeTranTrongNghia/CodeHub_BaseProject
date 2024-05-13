@@ -10,7 +10,6 @@ import { hashPwd } from '@/helpers/helper';
 
 const Register = () => {
 	const navigate = useNavigate();
-	const [isRegistering, setIsRegistering] = useState(false);
 	const handleSubmitForm = async values => {
 		try {
 			const { email, password, confirm_password } = values;
@@ -25,7 +24,7 @@ const Register = () => {
 			toast.success('Registered successfully');
 			navigate('/login');
 		} catch (error) {
-			console.log(error);
+			toast.error(error.message);
 		}
 	};
 
