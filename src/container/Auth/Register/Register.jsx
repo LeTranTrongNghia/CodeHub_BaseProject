@@ -1,9 +1,33 @@
 import { Alert, Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
+import { useState } from 'react';
+import { auth, firestore } from '@/firebase/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+import { hashPwd } from '@/helpers/helper';
 
 const Register = () => {
 	const navigate = useNavigate();
+	const handleSubmitForm = async values => {
+		try {
+			const { email, password, confirm_password } = values;
+			await createUserWithEmailAndPassword(auth, email, password);
+			const user = auth.currentUser;
+			if (user) {
+				await setDoc(doc(firestore, 'Users', user.uid), {
+					email: user.email,
+					password: hashPwd(password),
+				});
+			}
+			toast.success('Registered successfully');
+			navigate('/login');
+		} catch (error) {
+			toast.error(error.message);
+		}
+	};
+
 	return (
 		<>
 			<div
@@ -30,7 +54,7 @@ const Register = () => {
 
 					<div className='mt-6 sm:mx-auto sm:w-full sm:max-w-md'>
 						<div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
-							<Form>
+							<Form onFinish={handleSubmitForm}>
 								<div>
 									<label
 										htmlFor='email'
