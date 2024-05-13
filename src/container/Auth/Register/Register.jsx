@@ -1,12 +1,12 @@
-import { Alert, Button, Form, Input } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import './style.css';
-import { useState } from 'react';
 import { auth, firestore } from '@/firebase/firebase';
+import { hashPwd } from '@/helpers/helper';
+import { Alert, Button, Form, Input } from 'antd';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { hashPwd } from '@/helpers/helper';
+import './style.css';
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -27,6 +27,11 @@ const Register = () => {
 			toast.error(error.message);
 		}
 	};
+
+	const [inputs, setInputs] = useState({email:'', displayName:'', password:'', dayOfBirth:''})=>{
+		setInputs((prev)=>({ ...prev, [e.target.name]:e.target.value}));
+	}
+
 
 	return (
 		<>
@@ -91,6 +96,7 @@ const Register = () => {
 										]}
 									>
 										<Input
+											onChange={handleChangeInput}
 											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
