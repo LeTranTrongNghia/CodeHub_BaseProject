@@ -28,11 +28,6 @@ const Register = () => {
 		}
 	};
 
-	const [inputs, setInputs] = useState({email:'', displayName:'', password:'', dayOfBirth:''})=>{
-		setInputs((prev)=>({ ...prev, [e.target.name]:e.target.value}));
-	}
-
-
 	return (
 		<>
 			<div
