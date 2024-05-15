@@ -123,4 +123,51 @@
 			</Card>
 		</TabsContent>
 	</Tabs>
+	<div class="container flex max-w-5xl flex-col items-center gap-5 text-center">
+			<Button asChild size="sm">
+				<a href="">
+					<span class="mr-3">🎉</span> Introducing on{" "}
+					<Github className="ml-3 h-5 w-5" />
+				</a>
+			</Button>
+			<h1
+				class="text-balance text-white font-heading text-4xl sm:text-5xl md:text-6xl lg:text-[66px]"
+			>
+				Kick off with a bang with{" "}
+				{/* <span class="text-purple font-extrabold">
+
+				</span> */}
+				<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-700 font-extrabold">
+					SaaS Starter
+				</span>
+			</h1>
+
+			<p
+				class="max-w-2xl text-white-800 text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+			>
+				Build your next project using Next.js 14, Prisma, Planetscale, Auth.js v5,
+				Resend, React Email, Shadcn/ui, Stripe.
+			</p>
+			<div class="flex justify-center space-x-2 md:space-x-4">
+				<div class="relative inline-flex group">
+					<div
+						class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg filter group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200">
+					</div>
+					<a href="" class="relative inline-flex items-center justify-center px-5 py-2 text-base font-bold text-white transition-all duration-200 bg-black border-2 border-transparent rounded">
+						Learn more 
+					</a>
+				</div>
+				<div class="relative inline-flex group">
+					<div
+						class="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg filter group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200">
+					</div>
+					<Button asChild size="sm">
+						<a href="" class="relative inline-flex items-center justify-center px-5 py-2 text-base font-bold text-white transition-all duration-200 bg-black border-2 border-transparent rounded">
+							<Github className="h-5 w-5 mr-3" />Star on Github
+						</a>
+					</Button>
+				</div>
+			</div>
+		</div>
 </main>
+
