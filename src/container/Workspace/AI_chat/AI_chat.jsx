@@ -58,10 +58,14 @@ function AI_chat() {
 						{
 							parts: [
 								{
+									// text:
+									// 'I will ask question, and you will only answer true of false only. ' +
+									// problemText + 'This is the code I wrote to solve the problem: \n' + userCode +
+									// "Is this code the code used to solve the above problem? only answer true or false.",
 									text:
-									'I will ask question, and you will only answer true of false only. ' +
-									problemText + 'This is the code I wrote to solve the problem: \n' + userCode +
-									"Is this code the code used to solve the above problem? only answer true or false.",	
+										'Imagine you are a professor majoring in Information Technology. Teach me how to write functions' +
+										problemText +
+										"Show me ideas and step-by-step instructions to help me find a way to solve a code problem. Don't write out hint code or example code, let me write it myself.",
 								},
 							],
 						},
