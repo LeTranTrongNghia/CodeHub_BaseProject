@@ -40,6 +40,7 @@ import Output from "/src/components/Code_Editor/Output";
 import ProblemDescription from "@/components/Code_Editor/ProblemDescription";
 import AI_chat from "/src/container/Workspace/AI_chat/AI_chat";
 import Sidebar from "@/components/MainHome/Sidebar";
+import Abc from "./Abc"
 
 const CodeEditorWrapper = () => {
 	const navigate = useNavigate();
@@ -47,6 +48,7 @@ const CodeEditorWrapper = () => {
 	const [language, setLanguage] = useState('');
 	const [option, setOption] = useState('1');
 	const editorRef = useRef();
+	const userCode = value;
 
 	const onSelect = language => {
 		setLanguage(language);
@@ -172,7 +174,10 @@ const CodeEditorWrapper = () => {
 					Editor
 				</Badge>
 				<div className="bg-black w-full h-full">
-					<LanguageSelector language={language} onSelect={onSelect} />
+					<div class="flex h-20 items-center bg-black justify-between">
+						<LanguageSelector language={language} onSelect={onSelect} />
+						<div className="mt-5"><Abc userCode={userCode} /></div>
+					</div>
 					<Editor
 						height='50vh'
 						defaultLanguage={language}
