@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Bot } from "lucide-react";
 import {
 	Tooltip,
@@ -10,12 +11,12 @@ import {
 } from "@/components/ui/tooltip";
 
 function AI_chat() {
+	const navigate = useNavigate();
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
 	const [generatingAnswer, setGeneratingAnswer] = useState(false);
 	const problemText = `Write a function that takes a string as input and returns a new string with the characters reversed. 
   For example, if the input is "hello", the output should be "olleh".`;
-	const userCode = 'console.log("olleh");';
 
 	async function generateAnswer(e) {
 		setGeneratingAnswer(true);
@@ -58,10 +59,6 @@ function AI_chat() {
 						{
 							parts: [
 								{
-									// text:
-									// 'I will ask question, and you will only answer true of false only. ' +
-									// problemText + 'This is the code I wrote to solve the problem: \n' + userCode +
-									// "Is this code the code used to solve the above problem? only answer true or false.",
 									text:
 										'Imagine you are a professor majoring in Information Technology. Teach me how to write functions' +
 										problemText +
@@ -84,63 +81,60 @@ function AI_chat() {
 		setGeneratingAnswer(false);
 	}
 
-	return <div
-		className="relative hidden flex-col items-start gap-8 md:flex ml-14 text-white" x-chunk="dashboard-03-chunk-0"
-	>
-		<form className="grid w-full items-start gap-6">
-			<fieldset className="grid gap-6 rounded-lg border p-4">
-				<legend className="-ml-1 px-1 text-lg font-medium">
-					AI Assistant
-				</legend>
-				<div class="flex justify-center">
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<button className='flex justify-center items-center w-[80px] h-[80px] bg-white rounded-md'>
-									<Bot className="size-16 text-black" />
-								</button>
-							</TooltipTrigger>
-							<TooltipContent side="bottom" sideOffset={5}>
-								<p className='font-medium'>Hello, I'm CodeHub - your personal AI assistant!</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</div>
-				<form onSubmit={generateAnswer} className='text-center max-h-[470px] overflow-auto'>
-					<div className="overflow-auto max-w-[450px] text-left">
-						<ReactMarkdown className="mx-auto">
+	return (
+		<>
+			<div
+				className="relative hidden flex-col items-start gap-8 md:flex ml-16 text-white" x-chunk="dashboard-03-chunk-0"
+			>
+				<form onSubmit={generateAnswer} className='text-center overflow-auto'>
+					
+					<div class="flex justify-center">
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<button className='flex justify-center items-center w-[80px] h-[80px] bg-white rounded-md'>
+										<Bot className="size-16 text-black" />
+									</button>
+								</TooltipTrigger>
+								<TooltipContent side="bottom" sideOffset={5}>
+									<p className='font-medium'>Hello, I'm CodeHub - your personal AI assistant!</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+					</div>
+					<div className="overflow-auto w-[460px] h-[450px] text-left border border-white rounded-xl mt-10">
+						<ReactMarkdown className="mx-auto p-2 prose">
 							{answer}
 						</ReactMarkdown>
 					</div>
-					{/* <textarea
+					<textarea
 						required
-						className='border rounded w-full min-h-fit p-3 bg-gray-800 text-gray-300'
+						className="h-fit w-full text-black mt-3 overflow-y-auto p-3 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
 						value={question}
 						onChange={e => setQuestion(e.target.value)}
-						placeholder='Enter a promt here'
-						style={{ height: '200px' }}
-					></textarea> */}
+						placeholder="Enter a prompt here"
+					></textarea>
+					<div className='flex justify-center mr-2'>
+						<button
+							type='submit'
+							className='bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white'
+							disabled={generatingAnswer}
+						>
+							Analyze Promt
+						</button>
+						<button
+							type='button'
+							onClick={guideCode}
+							className='bg-blue-300 p-3 rounded-md hover:bg-green-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-2'
+							disabled={generatingAnswer}
+						>
+							Guide Code
+						</button>
+					</div>
 				</form>
-				<div className='flex justify-center mr-2'>
-					{/* <button
-						type='submit'
-						className='bg-blue-300 p-3 rounded-md hover:bg-blue-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white'
-						disabled={generatingAnswer}
-					>
-						Analyze Promt
-					</button> */}
-					<button
-						type='button'
-						onClick={guideCode}
-						className='bg-blue-300 p-3 rounded-md hover:bg-green-400 transition-all duration-300 mx-2text-left px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 bg-gray-900 text-white ml-2'
-						disabled={generatingAnswer}
-					>
-						Guide Code
-					</button>
-				</div>
-			</fieldset>
-		</form>
-	</div>
+			</div>
+		</>
+	);
 }
 
 export default AI_chat;
