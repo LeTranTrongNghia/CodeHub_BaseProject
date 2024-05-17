@@ -28,11 +28,10 @@ const Output = ({ editorRef, language }) => {
      You can assume the input source code only contains alphanumeric characters.`,
 	};
 
-	// State variables
 	const [output, setOutput] = useState(null);
 	const [isError, setIsError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-	const [errorMessage, setErrorMessage] = useState(null); // State for error message
+	const [errorMessage, setErrorMessage] = useState(null);
 	const [passedTests, setPassedTests] = useState(0);
 
 	const runCode = async () => {
@@ -59,13 +58,22 @@ const Output = ({ editorRef, language }) => {
 	const checkTestcase = (userOutput) => {
 		const sourceCode = editorRef.current.getValue();
 		let passed = 0;
-		
-		const isOnlyConsoleLog = sourceCode.trim().split('\n').every(line =>
-			line.trim().startsWith('console.log(') || line.trim() === ''
-		);
+		const printKeywords = [
+			"console.log(",
+			"print(",
+			"System.out.println(",
+			"System.out.print(",
+			"Console.WriteLine(",
+			"Console.Write(",
+		];
 
-		if (isOnlyConsoleLog) {
-			alert("Failed! (source code only contains console.log)");
+		const isOnlyprint = sourceCode.trim().split('\n').every(line => {
+			const trimmedLine = line.trim();
+			return printKeywords.some(keyword => trimmedLine.startsWith(keyword)) || trimmedLine === '';
+		  });		  
+
+		if (isOnlyprint) {
+			alert("Failed! Source code only contains print function.");
 			setPassedTests(0);
 		} else {
 			problem.examples.forEach((example) => {
@@ -75,22 +83,6 @@ const Output = ({ editorRef, language }) => {
 			});
 			setPassedTests(passed);
 		}
-
-		// Validate code
-
-		// if (!sourceCode || sourceCode.split('\n').length < 5) {
-		// 	alert(ayo);
-		// 	setPassedTests(0);
-		// }
-		// else {
-		// 	let passed = 0;
-		// 	problem.examples.forEach((example) => {
-		// 		if (userOutput.includes(example.outputText)) {
-		// 			passed++;
-		// 		}
-		// 	});
-		// 	setPassedTests(passed);
-		// }
 	};
 
 	return (
