@@ -1,6 +1,9 @@
+import Sidebar from '@/components/MainHome/Sidebar';
+import React from 'react';
 import {
     ListFilter,
     Shuffle,
+    PlusCircle,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -32,16 +35,20 @@ import {
     Tabs,
     TabsContent,
 } from "@/components/ui/tabs"
-import React from 'react';
-import Sidebar from "@/components/MainHome/Sidebar";
-import Topbar from "@/components/MainHome/Topbar";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
-const ProblemsPage = () => {
-
+const Admin = () => {
     return <div className="flex min-h-screen w-full flex-col bg-black">
-        {/* Topbar */}
-        <Topbar />
-        {/* Sidebar */}
         <Sidebar />
         {/* Mainbar */}
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
@@ -71,6 +78,70 @@ const ProblemsPage = () => {
                                 Random one
                             </span>
                         </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button size="sm" className="h-8 gap-1">
+                                    <PlusCircle className="h-3.5 w-3.5" />
+                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                        Add
+                                    </span>
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>
+                                        <h1 className='text-center'>
+                                            Add new Problems
+                                        </h1>
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <div className="grid gap-4 py-4">
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="name" className="text-right">
+                                            Title
+                                        </Label>
+                                        <Input
+                                            id="title"
+                                            defaultValue="New Title"
+                                            className="col-span-3"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="username" className="text-right">
+                                            Difficulty
+                                        </Label>
+                                        <Input
+                                            id="username"
+                                            defaultValue="Easy"
+                                            className="col-span-3"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="username" className="text-right">
+                                            Problem Statement
+                                        </Label>
+                                        <Input
+                                            id="Statements"
+                                            defaultValue="Easy"
+                                            className="col-span-3"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="username" className="text-right">
+                                            Problem Statement
+                                        </Label>
+                                        <Input
+                                            id="Statements"
+                                            defaultValue="Easy"
+                                            className="col-span-3"
+                                        />
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit">Save changes</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
                 <TabsContent value="all">
@@ -166,6 +237,6 @@ const ProblemsPage = () => {
             </Tabs>
         </main>
     </div>
-}
+};
 
-export default ProblemsPage;
+export default Admin;

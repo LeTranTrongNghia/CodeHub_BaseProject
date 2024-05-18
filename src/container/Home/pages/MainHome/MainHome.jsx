@@ -1,10 +1,5 @@
-import {
-	Activity,
-	ArrowUpRight,
-	CreditCard,
-	Code2,
-	BookMarked,
-} from 'lucide-react';
+import DateButton from '@/components/MainHome/DateButton';
+import Sidebar from '@/components/MainHome/Sidebar';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -21,11 +16,15 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import React, { useEffect } from 'react';
-import Sidebar from '@/components/MainHome/Sidebar';
-import Topbar from '@/components/MainHome/Topbar';
-import DateButton from '@/components/MainHome/DateButton';
 import Spline from '@splinetool/react-spline';
+import {
+	Activity,
+	ArrowUpRight,
+	BookMarked,
+	Code2,
+	CreditCard,
+} from 'lucide-react';
+import { useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
 
@@ -41,7 +40,7 @@ const MainHome = () => {
 	return (
 		<div className='flex min-h-screen w-full flex-col bg-black'>
 			{/* Topbar */}
-			<Topbar />
+			{/* <Topbar /> */}
 			{/* Sidebar */}
 			<Sidebar />
 			{/* Mainbar */}
