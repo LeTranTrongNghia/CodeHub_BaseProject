@@ -13,16 +13,14 @@ import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import React from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/firebase/firebase';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Topbar = () => {
-	const navigate = useNavigate();
 	const handleLogout = () => {
 		try {
 			signOut(auth);
 			toast.success('Logout successfully');
-			navigate('/login');
+			window.location.href('/login');
 		} catch (error) {
 			console.log(error);
 		}
