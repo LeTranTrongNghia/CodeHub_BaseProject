@@ -6,7 +6,7 @@ const ChangePassword = () => {
 			<div
 				className='min-h-screen bg-cover bg-center'
 				style={{
-					backgroundImage: `url(https://images.pexels.com/photos/7134986/pexels-photo-7134986.jpeg)`,
+					backgroundImage: `url(https://images.p exels.com/photos/7134986/pexels-photo-7134986.jpeg)`,
 				}}
 			>
 				<div className='min-h-screen  flex flex-col justify-center py-12 sm:px-6 lg:px-8'>

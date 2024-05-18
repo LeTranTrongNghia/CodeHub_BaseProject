@@ -26,6 +26,8 @@ import Sidebar from '@/components/MainHome/Sidebar';
 import Topbar from '@/components/MainHome/Topbar';
 import DateButton from '@/components/MainHome/DateButton';
 import Spline from '@splinetool/react-spline';
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '@/firebase/firebase';
 
 const MainHome = () => {
 	useEffect(() => {
@@ -69,20 +71,20 @@ const MainHome = () => {
 												fill='none'
 												xmlns='http://www.w3.org/2000/svg'
 											>
-												<g id='SVGRepo_bgCarrier' stroke-width='0'></g>
+												<g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
 												<g
 													id='SVGRepo_tracerCarrier'
-													stroke-linecap='round'
-													stroke-linejoin='round'
+													strokeLinecap='round'
+													strokeLinejoin='round'
 												></g>
 												<g id='SVGRepo_iconCarrier'>
 													{' '}
 													<path
 														d='M4 12H20M12 4V20'
 														stroke='#ffffff'
-														stroke-width='2'
-														stroke-linecap='round'
-														stroke-linejoin='round'
+														strokeWidth='2'
+														strokeLinecap='round'
+														strokeLinejoin='round'
 													></path>{' '}
 												</g>
 											</svg>
@@ -241,20 +243,20 @@ const MainHome = () => {
 									fill='none'
 									xmlns='http://www.w3.org/2000/svg'
 								>
-									<g id='SVGRepo_bgCarrier' stroke-width='0'></g>
+									<g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
 									<g
 										id='SVGRepo_tracerCarrier'
-										stroke-linecap='round'
-										stroke-linejoin='round'
+										strokeLinecap='round'
+										strokeLinejoin='round'
 									></g>
 									<g id='SVGRepo_iconCarrier'>
 										{' '}
 										<path
 											d='M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16'
 											stroke='#ffffff'
-											stroke-width='2'
-											stroke-linecap='round'
-											stroke-linejoin='round'
+											strokeWidth='2'
+											strokeLinecap='round'
+											strokeLinejoin='round'
 										></path>{' '}
 									</g>
 								</svg>
