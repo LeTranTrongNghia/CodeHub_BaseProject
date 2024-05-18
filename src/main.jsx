@@ -12,10 +12,10 @@ import Admin from './container/Admin/Admin.jsx';
 export const history = createBrowserHistory();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-	<Admin />
-	// <React.StrictMode>
-	// 	<HistoryBrowserRouter history={history}>
-	// 		<App />
-	// 	</HistoryBrowserRouter>
-	// </React.StrictMode>,
+	// <Admin />
+	<React.StrictMode>
+		<HistoryBrowserRouter history={history}>
+			<App />
+		</HistoryBrowserRouter>
+	</React.StrictMode>,
 );

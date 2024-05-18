@@ -24,16 +24,17 @@ import {
 	Code2,
 	CreditCard,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
 
 const MainHome = () => {
+	const [problemList, setProblemList] = useState([]);
 	useEffect(() => {
 		(async () => {
 			const data = await getDocs(collection(firestore, 'Problems'));
-			const problemList = data.docs.map(doc => doc.data());
-			console.log('🚀 ~ problemList:', problemList);
+			const problemLists = data.docs.map(doc => doc.data());
+			setProblemList(problemLists);
 		})();
 	});
 
@@ -172,50 +173,22 @@ const MainHome = () => {
 									</TableRow>
 								</TableHeader>
 								<TableBody>
-									<TableRow>
-										<TableCell>
-											<div
-												className='font-medium'
-												onClick={() => (window.location.href = '/coding')}
-											>
-												Reverse a String
-											</div>
-										</TableCell>
-										<TableCell>String</TableCell>
-										<TableCell className='text-right'>Easy</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>
-											<div className='font-medium'>
-												Longest Substring Without Repeating Characters
-											</div>
-										</TableCell>
-										<TableCell>String</TableCell>
-										<TableCell className='text-right'>Medium</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>
-											<div className='font-medium'>Integer to Roman</div>
-										</TableCell>
-										<TableCell>Hash Table</TableCell>
-										<TableCell className='text-right'>Medium</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>
-											<div className='font-medium'>
-												Regular Expression Matching
-											</div>
-										</TableCell>
-										<TableCell>Dynamic Programming</TableCell>
-										<TableCell className='text-right'>Hard</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>
-											<div className='font-medium'>Multiply Strings</div>
-										</TableCell>
-										<TableCell>Math</TableCell>
-										<TableCell className='text-right'>Medium</TableCell>
-									</TableRow>
+									{problemList.map((item, index) => (
+										<TableRow key={index}>
+											<TableCell>
+												<div
+													className='font-medium'
+													onClick={() => (window.location.href = '/coding')}
+												>
+													{item.title}
+												</div>
+											</TableCell>
+											<TableCell>String</TableCell>
+											<TableCell className='text-right'>
+												{item.difficulty}
+											</TableCell>
+										</TableRow>
+									))}
 								</TableBody>
 							</Table>
 						</CardContent>
@@ -249,14 +222,13 @@ const MainHome = () => {
 										strokeLinejoin='round'
 									></g>
 									<g id='SVGRepo_iconCarrier'>
-										{' '}
 										<path
 											d='M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16'
 											stroke='#ffffff'
 											strokeWidth='2'
 											strokeLinecap='round'
 											strokeLinejoin='round'
-										></path>{' '}
+										></path>
 									</g>
 								</svg>
 							</div>
