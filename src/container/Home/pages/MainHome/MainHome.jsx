@@ -24,6 +24,7 @@ import {
 	Code2,
 	CreditCard,
 } from 'lucide-react';
+import { useEffect } from 'react';
 
 const MainHome = () => {
 	useEffect(() => {

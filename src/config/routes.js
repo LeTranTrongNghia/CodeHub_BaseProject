@@ -1,5 +1,5 @@
 const routes = {
-	home: '/',
+	home: '/main-home',
 	profile: '/profile',
 	login: '/login',
 	register: '/register',
@@ -9,6 +9,7 @@ const routes = {
 	notFound: '*',
 	coding: '/coding',
 	AIassistant: '/ai-assistant',
+	indexHome: '/',
 };
 
 export default routes;

@@ -23,6 +23,10 @@ const ForgotPasswordPage = React.lazy(() =>
 	import('../container/Auth/ForgotPassword'),
 );
 
+const IndexHomePage = React.lazy(() =>
+	import('../container/Home/pages/IndexHome/IndexHome.jsx'),
+);
+
 const publicRoute = [
 	{
 		path: config.routes.login,
@@ -59,6 +63,10 @@ const publicRoute = [
 	{
 		path: config.routes.forgotPassword,
 		component: ForgotPasswordPage,
+	},
+	{
+		path: config.routes.indexHome,
+		component: IndexHomePage,
 	},
 ];
 
