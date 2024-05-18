@@ -1,26 +1,6 @@
-<<<<<<< HEAD
 import React from 'react';
 import Sidebar from "@/components/MainHome/Sidebar";
 import Topbar from "@/components/MainHome/Topbar";
-=======
-import { Button } from '@/components/ui/button';
-import React from 'react';
-import Sidebar from '@/components/MainHome/Sidebar';
-import Topbar from '@/components/MainHome/Topbar';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
->>>>>>> 4e21b4d0cc7de3f336eb7b3b5ad51fed787a8ede
 
 const LecturesPage = () => {
 	return (
