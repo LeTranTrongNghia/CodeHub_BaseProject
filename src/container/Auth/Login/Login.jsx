@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import './style.css';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { toast } from 'react-toastify';
-import { auth } from '@/firebase/firebase';
+import { auth, firestore } from '@/firebase/firebase';
+import { useEffect } from 'react';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -152,7 +154,7 @@ const Login = () => {
 
 									<div className='text-sm'>
 										<a
-											onClick={() => navigate('/reset-password')}
+											onClick={() => navigate('/forgot-password')}
 											className='font-medium text-blue-600 hover:text-blue-500'
 										>
 											Forgot your password?
