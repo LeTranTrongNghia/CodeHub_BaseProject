@@ -1,20 +1,6 @@
-import { Button } from '@/components/ui/button';
 import React from 'react';
-import Sidebar from '@/components/MainHome/Sidebar';
-import Topbar from '@/components/MainHome/Topbar';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
+import Sidebar from "@/components/MainHome/Sidebar";
+import Topbar from "@/components/MainHome/Topbar";
 
 const LecturesPage = () => {
 	return (
