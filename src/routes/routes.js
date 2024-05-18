@@ -13,8 +13,15 @@ const MainHomePage = React.lazy(() =>
 	import('../container/Home/pages/MainHome'),
 );
 const ProfilePage = React.lazy(() => import('../container/Profile/Profile'));
-const CodingPage = React.lazy(() => import('../container/Workspace/Code_Editor/code_editor.jsx'));
-const AIPage = React.lazy(() => import('../container/Workspace/AI_chat/AI_chat.jsx'));
+const CodingPage = React.lazy(() =>
+	import('../container/Workspace/Code_Editor/code_editor.jsx'),
+);
+const AIPage = React.lazy(() =>
+	import('../container/Workspace/AI_chat/AI_chat.jsx'),
+);
+const ForgotPasswordPage = React.lazy(() =>
+	import('../container/Auth/ForgotPassword'),
+);
 
 const publicRoute = [
 	{
@@ -48,6 +55,10 @@ const publicRoute = [
 	{
 		path: config.routes.AIassistant,
 		component: AIPage,
+	},
+	{
+		path: config.routes.forgotPassword,
+		component: ForgotPasswordPage,
 	},
 ];
 
