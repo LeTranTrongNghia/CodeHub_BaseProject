@@ -124,7 +124,6 @@ const Abc = ({userCode}) => {
 				</div>
 			</DrawerContent>
 		</Drawer>
-		{/* <h1 className='text-white'>fklasjdflkjalsfd</h1> */}
 	</section>;
 };
 
