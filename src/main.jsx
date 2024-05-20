@@ -12,10 +12,10 @@ import AddProblemForm from './container/Admin/Admin.jsx';
 export const history = createBrowserHistory();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-	// <AddProblemForm />
-	<React.StrictMode>
-		<HistoryBrowserRouter history={history}>
-			<App />
-		</HistoryBrowserRouter>
-	</React.StrictMode>,
+	<AddProblemForm />,
+	// <React.StrictMode>
+	// 	<HistoryBrowserRouter history={history}>
+	// 		<App />
+	// 	</HistoryBrowserRouter>
+	// </React.StrictMode>,
 );
