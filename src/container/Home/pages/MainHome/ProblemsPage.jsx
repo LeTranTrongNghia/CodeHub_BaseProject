@@ -3,6 +3,8 @@ import {
     Shuffle,
 } from "lucide-react"
 
+import Sidebar from "@/components/MainHome/Sidebar"
+import Topbar from "@/components/MainHome/Topbar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -32,13 +34,19 @@ import {
     Tabs,
     TabsContent,
 } from "@/components/ui/tabs"
-import React from 'react';
-import Sidebar from "@/components/MainHome/Sidebar";
-import Topbar from "@/components/MainHome/Topbar";
 
 const ProblemsPage = () => {
+    const [problemList, setProblemList] = useState([]);
+	useEffect(() => {
+		(async () => {
+			const data = await getDocs(collection(firestore, 'Problems'));
+			const problemLists = data.docs.map(doc => doc.data());
+			setProblemList(problemLists);
+		})();
+	});
 
     return <div className="flex min-h-screen w-full flex-col bg-black">
+
         {/* Topbar */}
         <Topbar />
         {/* Sidebar */}
@@ -96,7 +104,25 @@ const ProblemsPage = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    <TableRow>
+                                    {problemList.map ((item, index) =>(
+                                        <TableRow key={index}>
+                                            <TableCell>
+                                                <div
+													className='font-medium'
+													onClick={() => (window.location.href = '/coding')}
+												>
+													{item.title}
+												</div>
+                                            </TableCell>
+                                            <TableCell className='font-medium'>
+                                                {item.type}
+                                            </TableCell>
+                                            <TableCell className='text-right'>
+                                                {item.difficulty}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                    {/* <TableRow>
                                         <TableCell className="hidden sm:table-cell">
                                             <div className="w-[64px] h-[64px] bg-[url('https://t4.ftcdn.net/jpg/02/67/40/21/360_F_267402109_jZvsqRQUvSxohAOmcUt549jlapqoRHM0.jpg')] bg-cover rounded"></div>
                                         </TableCell>
@@ -109,7 +135,7 @@ const ProblemsPage = () => {
                                         <TableCell className="hidden md:table-cell text-white">
                                             String
                                         </TableCell>
-                                    </TableRow>
+                                    </TableRow> */}
                                     <TableRow>
                                         <TableCell className="hidden sm:table-cell">
                                             <div className="w-[64px] h-[64px] bg-[url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MDQtbnVubnktMDE2XzIuanBn.jpg')] bg-cover rounded"></div>
