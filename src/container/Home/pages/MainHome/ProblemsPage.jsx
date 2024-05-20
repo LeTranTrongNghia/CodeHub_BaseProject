@@ -1,5 +1,6 @@
 import Sidebar from "@/components/MainHome/Sidebar";
 import Topbar from "@/components/MainHome/Topbar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -35,6 +36,8 @@ import {
     Shuffle,
 } from "lucide-react";
 import { useEffect, useState } from 'react';
+
+
 const ProblemsPage = () => {
     const [problemList, setProblemList] = useState([]);
 	useEffect(() => {
@@ -119,11 +122,12 @@ const ProblemsPage = () => {
 												</div>
                                             </TableCell>
                                             <TableCell className="font-medium text-white">
-                                            {/* <Badge variant="outline" className={"text-yellow-300"}>{item.type}</Badge> */}
-                                            {item.type}
+                                            <Badge variant="outline" className={"text-yellow-300"}>{item.type}</Badge>
+                                            {/* {item.difficulty} */}
+                                            
                                             </TableCell>
                                             <TableCell className="hidden md:table-cell text-white">
-                                                {item.difficulty}
+                                            {item.type}
                                             </TableCell>
                                         </TableRow>
                                     ))}
