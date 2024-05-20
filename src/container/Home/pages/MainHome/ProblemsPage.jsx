@@ -122,7 +122,7 @@ const ProblemsPage = () => {
 												</div>
                                             </TableCell>
                                             <TableCell className="font-medium text-white">
-                                            <Badge variant="outline" className={"text-yellow-300"}>{item.type}</Badge>
+                                            <Badge variant="outline" className={"text-yellow-300"}>{item.difficulty}</Badge>
                                             {/* {item.difficulty} */}
                                             
                                             </TableCell>
