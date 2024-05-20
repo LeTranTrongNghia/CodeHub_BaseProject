@@ -1,19 +1,13 @@
-import {
-    ListFilter,
-    Shuffle,
-} from "lucide-react"
-
-import Sidebar from "@/components/MainHome/Sidebar"
-import Topbar from "@/components/MainHome/Topbar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import Sidebar from "@/components/MainHome/Sidebar";
+import Topbar from "@/components/MainHome/Topbar";
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -21,7 +15,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
     Table,
     TableBody,
@@ -29,12 +23,18 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
     Tabs,
     TabsContent,
-} from "@/components/ui/tabs"
-
+} from "@/components/ui/tabs";
+import { firestore } from '@/firebase/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+import {
+    ListFilter,
+    Shuffle,
+} from "lucide-react";
+import { useEffect, useState } from 'react';
 const ProblemsPage = () => {
     const [problemList, setProblemList] = useState([]);
 	useEffect(() => {
@@ -99,85 +99,35 @@ const ProblemsPage = () => {
                                         <TableHead>Title</TableHead>
                                         <TableHead>Difficulty</TableHead>
                                         <TableHead className="hidden md:table-cell">
-                                            type
+                                            Type
                                         </TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {problemList.map ((item, index) =>(
                                         <TableRow key={index}>
-                                            <TableCell>
+                                            <TableCell className="hidden sm:table-cell">
+                                                <div className="w-[64px] h-[64px] bg-[url('https://t4.ftcdn.net/jpg/02/67/40/21/360_F_267402109_jZvsqRQUvSxohAOmcUt549jlapqoRHM0.jpg')] bg-cover rounded"></div>
+                                            </TableCell>
+
+                                            <TableCell className="hidden sm:table-cell">
                                                 <div
-													className='font-medium'
+													 className="font-medium text-white"
 													onClick={() => (window.location.href = '/coding')}
 												>
 													{item.title}
 												</div>
                                             </TableCell>
-                                            <TableCell className='font-medium'>
-                                                {item.type}
+                                            <TableCell className="font-medium text-white">
+                                            {/* <Badge variant="outline" className={"text-yellow-300"}>{item.type}</Badge> */}
+                                            {item.type}
                                             </TableCell>
-                                            <TableCell className='text-right'>
+                                            <TableCell className="hidden md:table-cell text-white">
                                                 {item.difficulty}
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                    {/* <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://t4.ftcdn.net/jpg/02/67/40/21/360_F_267402109_jZvsqRQUvSxohAOmcUt549jlapqoRHM0.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Longest Substring Without Repeating Characters
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-yellow-300"}>Medium</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            String
-                                        </TableCell>
-                                    </TableRow> */}
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MDQtbnVubnktMDE2XzIuanBn.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Integer to Roman
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-green-300"}>Easy</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Hash Table
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTs1bECSkSfLAxMYgNaC-g7hyNdtomiFDIQ4PXPRysQ8FR94PIeor__iSCocIVtcNDgGUE&usqp=CAU')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Regular Expression Matching
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-red-300"}>Hard</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Dynamic Programming
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MDQtbnVubnktMDE2XzIuanBn.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Permutation Sequence
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-red-300"}>Hard</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Math
-                                        </TableCell>
-                                    </TableRow>
+                                    
                                 </TableBody>
                             </Table>
                         </CardContent>
