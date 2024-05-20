@@ -82,6 +82,9 @@ const Output = ({ editorRef, language }) => {
 				}
 			});
 			setPassedTests(passed);
+			if (passed = problem.examples.length) {
+				alert("Congratulation! All test cases are passed 🎉🎉🎉");
+			}
 		}
 	};
 

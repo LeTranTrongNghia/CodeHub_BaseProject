@@ -1,242 +1,181 @@
-import Sidebar from '@/components/MainHome/Sidebar';
-import React from 'react';
-import {
-    ListFilter,
-    Shuffle,
-    PlusCircle,
-} from "lucide-react"
+import React, { useState } from 'react';
+import { firestore } from '@/firebase/firebase';
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-} from "@/components/ui/card"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import {
-    Tabs,
-    TabsContent,
-} from "@/components/ui/tabs"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+function AddProblemForm() {
+    const [title, setTitle] = useState('');
+    const [statement, setStatement] = useState('');
+    const [difficulty, setDifficulty] = useState('');
+    const [constraints, setConstraints] = useState('');
+    const [testCases, setTestCases] = useState([]); // Array to store test cases
 
-const Admin = () => {
-    return <div className="flex min-h-screen w-full flex-col bg-black">
-        <Sidebar />
-        {/* Mainbar */}
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
-            <Tabs defaultValue="all">
-                <div className="flex items-center">
-                    <div className="ml-auto flex items-center gap-2">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm" className="h-8 gap-1">
-                                    <ListFilter className="h-3.5 w-3.5" />
-                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                        Filter
-                                    </span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuCheckboxItem checked>Title</DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem>Difficulty</DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem>Type</DropdownMenuCheckboxItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <Button size="sm" className="h-8 gap-1">
-                            <Shuffle className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Random one
-                            </span>
-                        </Button>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button size="sm" className="h-8 gap-1">
-                                    <PlusCircle className="h-3.5 w-3.5" />
-                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                        Add
-                                    </span>
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
-                                <DialogHeader>
-                                    <DialogTitle>
-                                        <h1 className='text-center'>
-                                            Add new Problems
-                                        </h1>
-                                    </DialogTitle>
-                                </DialogHeader>
-                                <div className="grid gap-4 py-4">
-                                    <div className="grid grid-cols-4 items-center gap-4">
-                                        <Label htmlFor="name" className="text-right">
-                                            Title
-                                        </Label>
-                                        <Input
-                                            id="title"
-                                            defaultValue="New Title"
-                                            className="col-span-3"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-4 items-center gap-4">
-                                        <Label htmlFor="username" className="text-right">
-                                            Difficulty
-                                        </Label>
-                                        <Input
-                                            id="username"
-                                            defaultValue="Easy"
-                                            className="col-span-3"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-4 items-center gap-4">
-                                        <Label htmlFor="username" className="text-right">
-                                            Problem Statement
-                                        </Label>
-                                        <Input
-                                            id="Statements"
-                                            defaultValue="Easy"
-                                            className="col-span-3"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-4 items-center gap-4">
-                                        <Label htmlFor="username" className="text-right">
-                                            Problem Statement
-                                        </Label>
-                                        <Input
-                                            id="Statements"
-                                            defaultValue="Easy"
-                                            className="col-span-3"
-                                        />
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button type="submit">Save changes</Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+    const handleAddTestCase = () => {
+        setTestCases([...testCases, { explanation: '', inputText: '', outputText: '' }]);
+    };
+
+    const handleRemoveTestCase = (index) => {
+        const updatedTestCases = [...testCases];
+        updatedTestCases.splice(index, 1);
+        setTestCases(updatedTestCases);
+    };
+
+    const handleTestCaseChange = (e, index, field) => {
+        const updatedTestCases = [...testCases];
+        updatedTestCases[index][field] = e.target.value;
+        setTestCases(updatedTestCases);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const testCaseIds = [];
+        const testCaseRefs = []; // To store references to added test cases
+
+        // Add test cases to a separate collection (TestCases) and get references
+        for (const testCase of testCases) {
+            const testCaseRef = await firestore.collection('TestCases').add(testCase);
+            testCaseIds.push(testCaseRef.id);
+            testCaseRefs.push(testCaseRef);
+        }
+
+        const newProblem = {
+            title,
+            statement,
+            difficulty,
+            constraints,
+            likes: 0,
+            dislikes: 0,
+            starred: false,
+            testCaseId: testCaseIds, // Array of test case IDs
+        };
+
+        try {
+            await firestore.collection('Problems').add(newProblem);
+            alert('Problem added successfully!'); 
+
+            // After adding the problem, update references in test cases
+            for (let i = 0; i < testCaseRefs.length; i++) {
+                await testCaseRefs[i].update({ problemId: firestore.collection('Problems').doc(newProblem.id) });
+            }
+
+            setTitle('');
+            setStatement('');
+            setDifficulty('');
+            setConstraints('');
+            setTestCases([]);
+        } catch (error) {
+            console.error('Error adding document: ', error);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+            <div className="flex flex-col">
+                <label htmlFor="title" className="text-sm font-medium">
+                    Title
+                </label>
+                <input
+                    id="title"
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+            </div>
+            <div className="flex flex-col">
+                <label htmlFor="statement" className="text-sm font-medium">
+                    Problem Statement
+                </label>
+                <textarea
+                    id="statement"
+                    value={statement}
+                    onChange={(e) => setStatement(e.target.value)}
+                    className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+            </div>
+            <div className="flex flex-col">
+                <label htmlFor="difficulty" className="text-sm font-medium">
+                    Difficulty
+                </label>
+                <select
+                    id="difficulty"
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value)}
+                    className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                >
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+            <div className="flex flex-col">
+                <label htmlFor="constraints" className="text-sm font-medium">
+                    Constraints (Optional)
+                </label>
+                <textarea
+                    id="constraints"
+                    value={constraints}
+                    onChange={(e) => setConstraints(e.target.value)}
+                    className="rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+            </div>
+
+            {/* Test Cases Section */}
+            <div className="flex flex-col space-y-2">
+                <h3 className="text-lg font-bold">Test Cases</h3>
+                <button type="button" onClick={handleAddTestCase} className="inline-flex items-center px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Add Test Case
+                </button>
+                {testCases.map((testCase, index) => (
+                    <div key={index} className="flex flex-col space-y-2 border border-gray-300 rounded-md p-2">
+                        <label htmlFor={`explanation-${index}`} className="text-sm font-medium">
+                            Explanation
+                        </label>
+                        <textarea
+                            id={`explanation-${index}`}
+                            value={testCase.explanation}
+                            onChange={(e) => handleTestCaseChange(e, index, 'explanation')}
+                            className="rounded-md border-none focus:outline-none"
+                        />
+                        <label htmlFor={`inputText-${index}`} className="text-sm font-medium">
+                            Input Text
+                        </label>
+                        <input
+                            id={`inputText-${index}`}
+                            type="text"
+                            value={testCase.inputText}
+                            onChange={(e) => handleTestCaseChange(e, index, 'inputText')}
+                            className="rounded-md border-none focus:outline-none"
+                        />
+                        <label htmlFor={`outputText-${index}`} className="text-sm font-medium">
+                            Output Text
+                        </label>
+                        <input
+                            id={`outputText-${index}`}
+                            type="text"
+                            value={testCase.outputText}
+                            onChange={(e) => handleTestCaseChange(e, index, 'outputText')}
+                            className="rounded-md border-none focus:outline-none"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => handleRemoveTestCase(index)}
+                            className="inline-flex items-center px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        >
+                            Remove Test Case
+                        </button>
                     </div>
-                </div>
-                <TabsContent value="all">
-                    <Card x-chunk="dashboard-06-chunk-0">
-                        <CardHeader>
-                            <h1 className="text-white text-3xl font-medium">Problems</h1>
-                            <CardDescription>
-                                Level up your coding abilities! Explore problems designed for all skill sets, from beginner to advanced.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="hidden w-[100px] sm:table-cell">
-                                            <span className="sr-only">Image</span>
-                                        </TableHead>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Difficulty</TableHead>
-                                        <TableHead className="hidden md:table-cell">
-                                            type
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://t4.ftcdn.net/jpg/02/67/40/21/360_F_267402109_jZvsqRQUvSxohAOmcUt549jlapqoRHM0.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Longest Substring Without Repeating Characters
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-yellow-300"}>Medium</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            String
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MDQtbnVubnktMDE2XzIuanBn.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Integer to Roman
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-green-300"}>Easy</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Hash Table
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTs1bECSkSfLAxMYgNaC-g7hyNdtomiFDIQ4PXPRysQ8FR94PIeor__iSCocIVtcNDgGUE&usqp=CAU')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Regular Expression Matching
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-red-300"}>Hard</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Dynamic Programming
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MDQtbnVubnktMDE2XzIuanBn.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Permutation Sequence
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-red-300"}>Hard</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Math
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                        <CardFooter>
-                            <div className="text-xs text-muted-foreground">
-                                Showing <strong>1-4</strong> of <strong>321</strong>{" "}
-                                Problems
-                            </div>
-                        </CardFooter>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-        </main>
-    </div>
-};
+                ))}
+            </div>
 
-export default Admin;
+            <button
+                type="submit"
+                className="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Add Problem
+            </button>
+        </form>
+    );
+}
+
+export default AddProblemForm;
+
