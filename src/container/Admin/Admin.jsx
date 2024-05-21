@@ -4,7 +4,6 @@ import {
 	Shuffle,
 	PlusCircle,
 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
 	Card,
@@ -61,6 +60,7 @@ const Admin = () => {
 
 	// Add Problem & testcases
 	const [title, setTitle] = useState('');
+	const [type, setType] = useState('');
 	const [statement, setStatement] = useState('');
 	const [difficulty, setDifficulty] = useState('');
 	const [constraints, setConstraints] = useState('');
@@ -99,6 +99,7 @@ const Admin = () => {
 			title,
 			statement,
 			difficulty,
+			type,
 			constraints,
 			likes: 0,
 			dislikes: 0,
@@ -120,6 +121,7 @@ const Admin = () => {
 		setTitle('');
 		setStatement('');
 		setDifficulty('');
+		setType('');
 		setConstraints('');
 		setTestCases([]);
 	};
@@ -206,6 +208,17 @@ const Admin = () => {
 											</select>
 										</div>
 										<div className="grid grid-cols-4 items-center gap-4">
+											<Label htmlFor='type' className="text-right">
+												Type
+											</Label>
+											<Input
+												id='type'
+												value={type}
+												onChange={e => setType(e.target.value)}
+												className="col-span-3"
+											/>
+										</div>
+										<div className="grid grid-cols-4 items-center gap-4">
 											<Label htmlFor='constraints' className="text-right">
 												Constraints
 											</Label>
@@ -279,20 +292,24 @@ const Admin = () => {
 											))}
 										</div>
 									</div>
+									<Button type='submit'>
+										Add Problem
+									</Button>
 								</form>
-								<DialogFooter>
-									<Button type="submit">Add Problem</Button>
-								</DialogFooter>
 							</DialogContent >
 						</Dialog >
 					</div >
 				</div >
+
+				//Table
 				<TabsContent value="all">
 					<Card x-chunk="dashboard-06-chunk-0">
 						<CardHeader>
 							<h1 className="text-white text-3xl font-medium">Problems</h1>
 							<CardDescription>
-								Level up your coding abilities! Explore problems designed for all skill sets, from beginner to advanced.
+								<h1 className="text-white text-sm font-medium">
+									Level up your coding abilities! Explore problems designed for all skill sets, from beginner to advanced.
+								</h1>
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -302,7 +319,8 @@ const Admin = () => {
 										<TableRow>
 											<TableHead>Title</TableHead>
 											<TableHead>Type</TableHead>
-											<TableHead className='text-right'>Difficulty</TableHead>
+											<TableHead>Difficulty</TableHead>
+											<TableHead>Statement</TableHead>
 										</TableRow>
 									</TableHeader>
 									<TableBody>
@@ -316,9 +334,29 @@ const Admin = () => {
 														{item.title}
 													</div>
 												</TableCell>
-												<TableCell>String</TableCell>
-												<TableCell className='text-right'>
-													{item.difficulty}
+												<TableCell>
+													<div
+														className='font-medium'
+														onClick={() => ('')}
+													>
+														{item.type}
+													</div>
+												</TableCell>
+												<TableCell>
+													<div
+														className='font-medium'
+														onClick={() => ('')}
+													>
+														{item.difficulty}
+													</div>
+												</TableCell>
+												<TableCell>
+													<div
+														className='font-medium'
+														onClick={() => ('')}
+													>
+														{item.statement}
+													</div>
 												</TableCell>
 											</TableRow>
 										))}
@@ -328,8 +366,8 @@ const Admin = () => {
 						</CardContent>
 						<CardFooter>
 							<div className="text-xs text-muted-foreground">
-								Showing <strong>1-4</strong> of <strong>321</strong>{" "}
-								Problems
+								Showing <strong>{problemList.length}</strong> of <strong>{problemList.length}</strong>{" "}
+								Total Problems
 							</div>
 						</CardFooter>
 					</Card>
