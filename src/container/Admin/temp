@@ -199,3 +199,129 @@ function AddProblemForm() {
 export default AddProblemForm;
 
 
+<form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
+									<div className="grid gap-4 py-4">
+										<div className="grid grid-cols-4 items-center gap-4">
+											<Label htmlFor='title' className="text-right">
+												Title
+											</Label>
+											<Input
+												id='title'
+												type='text'
+												value={title}
+												onChange={e => setTitle(e.target.value)}
+												className="col-span-3"
+											/>
+										</div>
+										<div className="grid grid-cols-4 items-center gap-4">
+											<Label htmlFor='statement' className="text-right">
+												Problem Statement
+											</Label>
+											<Input
+												id='statement'
+												value={statement}
+												onChange={e => setStatement(e.target.value)}
+												className="col-span-3"
+											/>
+										</div>
+										<div className="grid grid-cols-4 items-center gap-4">
+											<Label htmlFor="difficulty" className="text-right">
+												Difficulty
+											</Label>
+											<select
+												id='difficulty'
+												value={difficulty}
+												onChange={e => setDifficulty(e.target.value)}
+												className='w-[100px] rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500'
+											>
+												<option value='Easy'>Easy</option>
+												<option value='Medium'>Medium</option>
+												<option value='Hard'>Hard</option>
+											</select>
+										</div>
+										<div className="grid grid-cols-4 items-center gap-4">
+											<Label htmlFor='constraints' className="text-right">
+												Constraints
+											</Label>
+											<Input
+												id='constraints'
+												value={constraints}
+												onChange={e => setConstraints(e.target.value)}
+												className="col-span-3"
+											/>
+										</div>
+										{/* Test Cases Section */}
+										<div className='flex flex-col space-y-2 overflow-y-auto max-h-[340px]'>
+											<Button
+												type='button'
+												onClick={handleAddTestCase}
+											>
+												Add Test Case
+											</Button>
+											{testCases.map((testCase, index) => (
+												<div
+													key={index}
+													className='flex flex-col space-y-2 p-2'
+												>
+													<label
+														htmlFor={`explanation-${index}`}
+														className='text-sm font-medium'
+													>
+														Explanation
+													</label>
+													<Input
+														id={`explanation-${index}`}
+														value={testCase.explanation}
+														onChange={e => handleTestCaseChange(e, index, 'explanation')}
+														defaultValue="New Title"
+														className="col-span-3"
+													/>
+													<label
+														htmlFor={`inputText-${index}`}
+														className='text-sm font-medium'
+													>
+														Input Text
+													</label>
+													<Input
+														id={`inputText-${index}`}
+														type='text'
+														value={testCase.inputText}
+														onChange={e => handleTestCaseChange(e, index, 'inputText')}
+														className='col-span-3'
+													/>
+													<label
+														htmlFor={`outputText-${index}`}
+														className='text-sm font-medium'
+													>
+														Output Text
+													</label>
+													<Input
+														id={`outputText-${index}`}
+														type='text'
+														value={testCase.outputText}
+														onChange={e => handleTestCaseChange(e, index, 'outputText')}
+														className='col-span-3'
+													/>
+													<button
+														type='button'
+														onClick={() => handleRemoveTestCase(index)}
+														className='inline-flex items-center px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+													>
+														Remove Test Case
+													</button>
+												</div>
+											))}
+										</div>
+									</div>
+								</form>
+
+
+
+
+
+{/* <button
+										type='submit'
+										className='inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+									>
+										Add Problem
+									</button> */}

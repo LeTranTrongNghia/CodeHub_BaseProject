@@ -164,33 +164,35 @@ const MainHome = () => {
 							</Button>
 						</CardHeader>
 						<CardContent>
-							<Table>
-								<TableHeader>
-									<TableRow>
-										<TableHead>Title</TableHead>
-										<TableHead>Type</TableHead>
-										<TableHead className='text-right'>Difficulty</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{problemList.map((item, index) => (
-										<TableRow key={index}>
-											<TableCell>
-												<div
-													className='font-medium'
-													onClick={() => (window.location.href = '/coding')}
-												>
-													{item.title}
-												</div>
-											</TableCell>
-											<TableCell>String</TableCell>
-											<TableCell className='text-right'>
-												{item.difficulty}
-											</TableCell>
+							<div className='flex flex-col space-y-2 overflow-y-auto max-h-[320px]'>
+								<Table>
+									<TableHeader>
+										<TableRow>
+											<TableHead>Title</TableHead>
+											<TableHead>Type</TableHead>
+											<TableHead className='text-right'>Difficulty</TableHead>
 										</TableRow>
-									))}
-								</TableBody>
-							</Table>
+									</TableHeader>
+									<TableBody>
+										{problemList.map((item, index) => (
+											<TableRow key={index}>
+												<TableCell>
+													<div
+														className='font-medium'
+														onClick={() => (window.location.href = '/coding')}
+													>
+														{item.title}
+													</div>
+												</TableCell>
+												<TableCell>{item.type}</TableCell>
+												<TableCell className='text-right'>
+													{item.difficulty}
+												</TableCell>
+											</TableRow>
+										))}
+									</TableBody>
+								</Table>
+							</div>
 						</CardContent>
 					</Card>
 					<Card
