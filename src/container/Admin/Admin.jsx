@@ -1,7 +1,6 @@
 import Sidebar from '@/components/MainHome/Sidebar';
 import {
 	ListFilter,
-	Shuffle,
 	PlusCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -35,8 +34,6 @@ import {
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
-	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
@@ -44,7 +41,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, addDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
 
 const Admin = () => {
@@ -126,11 +123,67 @@ const Admin = () => {
 		setTestCases([]);
 	};
 
+	// Delete Problem
+	const [isDeleted, setIsDeleted] = useState(false);
+
+	const deleteDocument = async (title) => {
+		try {
+			const colRef = collection(firestore, 'Problems');  // Replace with your collection name
+			const q = query(colRef, where('title', '==', title));
+
+			const querySnapshot = await getDocs(q);
+			querySnapshot.forEach(async (doc) => {
+				await deleteDoc(doc.ref);
+			});
+			setIsDeleted(true);
+			alert("Delete successed! 🎉") // Set state for success message
+		} catch (error) {
+			console.error('Error deleting document:', error);
+			// Handle errors gracefully, e.g., display an error message to the user
+		}
+	};
+
+	// Update Problem state
+	const [selectedProblem, setSelectedProblem] = useState(null);
+
+	// Update Problem form fields
+	const [updateTitle, setUpdateTitle] = useState('');
+	const [updateType, setUpdateType] = useState('');
+	const [updateStatement, setUpdateStatement] = useState('');
+	const [updateDifficulty, setUpdateDifficulty] = useState('');
+	const [updateConstraints, setUpdateConstraints] = useState('');
+	const [updateTestCases, setUpdateTestCases] = useState([]);
+
+	// Function to fetch a problem for editing by title
+	const handleEditProblem = async (problemTitle) => {
+		const colRef = collection(firestore, 'Problems');
+		const q = query(colRef, where('title', '==', problemTitle));
+
+		const querySnapshot = await getDocs(q);
+		let fetchedProblem = null;
+		querySnapshot.forEach((doc) => {
+			fetchedProblem = doc.data();
+		});
+
+		if (fetchedProblem) {
+			setSelectedProblem(fetchedProblem);
+			setUpdateTitle(fetchedProblem.title);
+			setUpdateType(fetchedProblem.type);
+			setUpdateStatement(fetchedProblem.statement);
+			setUpdateDifficulty(fetchedProblem.difficulty);
+			setUpdateConstraints(fetchedProblem.constraints);
+			setUpdateTestCases(fetchedProblem.testCaseId); // Update test case IDs
+		} else {
+			console.error('Problem not found');
+		}
+	};
+
 	return <div className="flex min-h-screen w-full flex-col bg-black">
 		<Sidebar />
 		{/* Mainbar */}
 		<main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
 			<Tabs defaultValue="all">
+				// Add Button
 				<div className="flex items-center">
 					<div className="ml-auto flex items-center gap-2">
 						<DropdownMenu>
@@ -202,6 +255,7 @@ const Admin = () => {
 												onChange={e => setDifficulty(e.target.value)}
 												className='w-[100px] rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-1 focus:ring-indigo-500'
 											>
+												<option value=''></option>
 												<option value='Easy'>Easy</option>
 												<option value='Medium'>Medium</option>
 												<option value='Hard'>Hard</option>
@@ -301,7 +355,7 @@ const Admin = () => {
 					</div >
 				</div >
 
-				//Table
+				// Table
 				<TabsContent value="all">
 					<Card x-chunk="dashboard-06-chunk-0">
 						<CardHeader>
@@ -321,42 +375,31 @@ const Admin = () => {
 											<TableHead>Type</TableHead>
 											<TableHead>Difficulty</TableHead>
 											<TableHead>Statement</TableHead>
+											<TableHead>Action</TableHead>
 										</TableRow>
 									</TableHeader>
 									<TableBody>
 										{problemList.map((item, index) => (
 											<TableRow key={index}>
 												<TableCell>
-													<div
-														className='font-medium'
-														onClick={() => ('')}
-													>
-														{item.title}
-													</div>
+													<div className="font-medium">{item.title}</div>
 												</TableCell>
 												<TableCell>
-													<div
-														className='font-medium'
-														onClick={() => ('')}
-													>
-														{item.type}
-													</div>
+													<div className="font-medium">{item.type}</div>
 												</TableCell>
 												<TableCell>
-													<div
-														className='font-medium'
-														onClick={() => ('')}
-													>
-														{item.difficulty}
-													</div>
+													<div className="font-medium">{item.difficulty}</div>
 												</TableCell>
 												<TableCell>
-													<div
-														className='font-medium'
-														onClick={() => ('')}
+													<div className="font-medium">{item.statement}</div>
+												</TableCell>
+												<TableCell>
+													<button
+														className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+														onClick={() => deleteDocument(item.title)}
 													>
-														{item.statement}
-													</div>
+														Delete
+													</button>
 												</TableCell>
 											</TableRow>
 										))}
