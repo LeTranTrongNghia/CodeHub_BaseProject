@@ -24,20 +24,25 @@ import {
 	Code2,
 	CreditCard,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { setProblems } from '@/redux/problemReducer/problemReducer';
 
 const MainHome = () => {
-	const [problemList, setProblemList] = useState([]);
+	const dispatch = useDispatch();
+	// const [problemList, setProblemList] = useState([]);
 	useEffect(() => {
 		(async () => {
 			const data = await getDocs(collection(firestore, 'Problems'));
 			const problemLists = data.docs.map(doc => doc.data());
-			setProblemList(problemLists);
+			setProblems(problemLists);
+			dispatch(setProblems(problemLists));
 		})();
-	});
-
+	}, []);
+	const problemList = useSelector(state => state.problem.problemList);
+	console.log('🚀 ~ MainHome ~ problemList:', problemList);
 	return (
 		<div className='flex min-h-screen w-full flex-col bg-black'>
 			{/* Topbar */}
