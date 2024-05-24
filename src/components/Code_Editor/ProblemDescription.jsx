@@ -70,7 +70,7 @@ const ProblemDescription = () => {
 						<div className='text-white text-lg'>
 							<div
 								dangerouslySetInnerHTML={{
-									__html: renderProblem.problemStatement,
+									__html: renderProblem.statement,
 								}}
 							/>
 						</div>
