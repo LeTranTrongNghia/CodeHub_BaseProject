@@ -28,11 +28,15 @@ import { useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { setProblems } from '@/redux/problemReducer/problemReducer';
+import {
+	setProblems,
+	setSelectedProblem,
+} from '@/redux/problemReducer/problemReducer';
+import { useNavigate } from 'react-router-dom';
 
 const MainHome = () => {
 	const dispatch = useDispatch();
-	// const [problemList, setProblemList] = useState([]);
+	const navigate = useNavigate();
 	useEffect(() => {
 		(async () => {
 			const data = await getDocs(collection(firestore, 'Problems'));
@@ -42,7 +46,12 @@ const MainHome = () => {
 		})();
 	}, []);
 	const problemList = useSelector(state => state.problem.problemList);
-	console.log('🚀 ~ MainHome ~ problemList:', problemList);
+
+	const handleRowClick = problem => {
+		dispatch(setSelectedProblem(problem));
+		navigate('/coding');
+	};
+
 	return (
 		<div className='flex min-h-screen w-full flex-col bg-black'>
 			{/* Topbar */}
@@ -57,9 +66,7 @@ const MainHome = () => {
 						<div className='container relative w-full h-[200px]'>
 							<Spline scene='https://prod.spline.design/8rK8Mhnerno7UApB/scene.splinecode' />
 							<div className='text-layer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full justify-between'>
-								<p className='text-4xl font-bold font-medium mb-6'>
-									Welcome back, Ivel!
-								</p>
+								<p className='text-4xl font-bold mb-6'>Welcome back, Ivel!</p>
 								<div className='flex flex-row items-center justify-between text-white'>
 									<div className='text-xl'>
 										Track your progress, manage your courses activity and
@@ -184,7 +191,7 @@ const MainHome = () => {
 												<TableCell>
 													<div
 														className='font-medium'
-														onClick={() => (window.location.href = '/coding')}
+														onClick={() => handleRowClick(item)}
 													>
 														{item.title}
 													</div>

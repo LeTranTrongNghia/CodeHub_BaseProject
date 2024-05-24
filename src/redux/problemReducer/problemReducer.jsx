@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
 	problemList: [],
+	selectedProblem: null,
 };
 
 const problemReducer = createSlice({
@@ -12,9 +13,12 @@ const problemReducer = createSlice({
 		setProblems: (state, action) => {
 			state.problemList = action.payload;
 		},
+		setSelectedProblem: (state, action) => {
+			state.selectedProblem = action.payload;
+		},
 	},
 });
 
-export const { setProblems } = problemReducer.actions;
+export const { setProblems, setSelectedProblem } = problemReducer.actions;
 
 export default problemReducer.reducer;
