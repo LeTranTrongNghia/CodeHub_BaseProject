@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsCheck2Circle } from 'react-icons/bs';
 import { AiFillLike, AiFillDislike, AiFillStar } from 'react-icons/ai';
 import { useSelector } from 'react-redux';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestore } from '@/firebase/firebase';
 
 const ProblemDescription = () => {
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
@@ -31,6 +33,44 @@ const ProblemDescription = () => {
 		constraints: `The function should work for strings of any length. 
         You can assume the input string only contains alphanumeric characters.`,
 	};
+
+	const [testcase1, setTestcase1] = useState({});
+	const [testcase2, setTestcase2] = useState({});
+
+	const getDocumentById = async docId => {
+		// Tạo tham chiếu đến document với ID được cung cấp
+		const docRef = doc(firestore, 'TestCases', docId);
+
+		try {
+			// Lấy document
+			const docSnap = await getDoc(docRef);
+
+			if (docSnap.exists()) {
+				// Document tồn tại, in ra dữ liệu của nó
+				return docSnap.data();
+			} else {
+				// Document không tồn tại
+				console.log('No such document!');
+			}
+		} catch (error) {
+			// Xử lý lỗi nếu có
+			console.error('Error getting document:', error);
+		}
+	};
+	const fetchAndLogDocument = async () => {
+		try {
+			const testCase1 = await getDocumentById(renderProblem.testCaseId[0]);
+			setTestcase1(testCase1);
+			const testCase2 = await getDocumentById(renderProblem.testCaseId[1]);
+			setTestcase2(testCase2);
+		} catch (error) {
+			console.error('Error fetching document:', error);
+		}
+	};
+
+	useEffect(() => {
+		fetchAndLogDocument();
+	}, []);
 
 	return (
 		<div
@@ -75,33 +115,46 @@ const ProblemDescription = () => {
 							/>
 						</div>
 						{/* Examples */}
-						<div className='hidden'>
-							{problem.examples.map((example, index) => (
+						<div className=''>
+							{/* {problem.examples.map((example, index) => (
 								<div key={example.id}>
-									<p className='font-medium text-white text-lg'>
-										Example {index + 1}:{' '}
-									</p>
-									{example.img && (
-										<img src={example.img} alt='' className='mt-3' />
+									<p className='font-medium text-white text-lg'>Example:</p> */}
+
+							<div className='example-card'>
+								<pre className='text-wrap'>
+									<strong className='text-white'>Input: </strong>{' '}
+									{testcase1?.inputText}
+									<br />
+									<strong className='text-white'>Output: </strong>
+									{testcase1?.outputText} <br />
+									{testcase1?.explanation && (
+										<>
+											<strong className='text-white'>Explanation:</strong>{' '}
+											{testcase1?.explanation}
+											<br /> {/* Added <br/> tag */}
+										</>
 									)}
-									<div className='example-card'>
-										<pre className='text-wrap'>
-											<strong className='text-white'>Input: </strong>{' '}
-											{example.inputText}
-											<br />
-											<strong className='text-white'>Output: </strong>
-											{example.outputText} <br />
-											{example.explanation && (
-												<>
-													<strong className='text-white'>Explanation:</strong>{' '}
-													{example.explanation}
-													<br /> {/* Added <br/> tag */}
-												</>
-											)}
-										</pre>
-									</div>
-								</div>
-							))}
+								</pre>
+							</div>
+
+							<div className='example-card'>
+								<pre className='text-wrap'>
+									<strong className='text-white'>Input: </strong>{' '}
+									{testcase2?.inputText}
+									<br />
+									<strong className='text-white'>Output: </strong>
+									{testcase2?.outputText} <br />
+									{testcase2?.explanation && (
+										<>
+											<strong className='text-white'>Explanation:</strong>{' '}
+											{testcase2?.explanation}
+											<br /> {/* Added <br/> tag */}
+										</>
+									)}
+								</pre>
+							</div>
+							{/* </div>
+							))} */}
 						</div>
 						{/* Constraints */}
 						<div>
