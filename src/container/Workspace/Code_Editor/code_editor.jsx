@@ -3,14 +3,8 @@ import {
 	ChevronLeft,
 	Menu,
 	Search,
-	Book,
 	BookMarked,
 	Bot,
-	Code2,
-	LifeBuoy,
-	Settings2,
-	SquareTerminal,
-	Triangle,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,7 +26,6 @@ import {
 } from '@/components/ui/tooltip';
 import React, { useState, useRef, useEffect } from 'react';
 import { CODE_SNIPPETS } from './constant/constants';
-import { useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor'; // Import monaco-editor
 import LanguageSelector from '/src/components/Code_Editor/LanguageSelector';
@@ -41,15 +34,55 @@ import ProblemDescription from '@/components/Code_Editor/ProblemDescription';
 import AI_chat from '/src/container/Workspace/AI_chat/AI_chat';
 import Sidebar from '@/components/MainHome/Sidebar';
 import Abc from './Abc';
+import { useSelector } from 'react-redux';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestore } from '@/firebase/firebase';
 
 const CodeEditorWrapper = () => {
 	const [value, setValue] = useState('');
 	const [language, setLanguage] = useState('');
 	const [option, setOption] = useState('1');
-	const editorRef = useRef();
+	const editorRef = useRef(null);
 	const userCode = value;
+	const renderProblem = useSelector(state => state.problem.selectedProblem); // Assuming useSelector is from a state management library
 
-	const onSelect = language => {
+	const getDocumentById = async docId => {
+		// Tạo tham chiếu đến document với ID được cung cấp
+		const docRef = doc(firestore, 'TestCases', docId);
+
+		try {
+			// Lấy document
+			const docSnap = await getDoc(docRef);
+
+			if (docSnap.exists()) {
+				// Document tồn tại, in ra dữ liệu của nó
+				return docSnap.data();
+			} else {
+				// Document không tồn tại
+				console.log('No such document!');
+			}
+		} catch (error) {
+			// Xử lý lỗi nếu có
+			console.error('Error getting document:', error);
+		}
+	};
+
+	const fetchAndLogDocument = async () => {
+		try {
+			const testCase1 = await getDocumentById(renderProblem.testCaseId[0]);
+			setTestcase1(testCase1);
+			const testCase2 = await getDocumentById(renderProblem.testCaseId[1]);
+			setTestcase2(testCase2);
+		} catch (error) {
+			console.error('Error fetching document:', error);
+		}
+	};
+
+	useEffect(() => {
+		fetchAndLogDocument();
+	}, []);
+
+	const onSelect = (language) => {
 		setLanguage(language);
 		setValue(CODE_SNIPPETS[language]);
 	};
@@ -91,9 +124,8 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='submit'
-									className={`option ${
-										option === '1' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[120px]`}
+									className={`option ${option === '1' ? 'selected' : ''
+										} flex bg-white p-3 rounded-md text-left w-[120px]`}
 									onClick={e => setOption('1')}
 								>
 									<BookMarked className='size-5 mr-4' />
@@ -110,9 +142,8 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='submit'
-									className={`option ${
-										option === '2' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[150px]`}
+									className={`option ${option === '2' ? 'selected' : ''
+										} flex bg-white p-3 rounded-md text-left w-[150px]`}
 									onClick={e => setOption('2')}
 								>
 									<Bot className='size-5 mr-4' />
@@ -180,7 +211,7 @@ const CodeEditorWrapper = () => {
 					)}
 					{option === '2' && (
 						<div>
-							<AI_chat />
+							<AI_chat problemText={renderProblem.title}/>
 						</div>
 					)}
 				</div>
@@ -193,10 +224,10 @@ const CodeEditorWrapper = () => {
 						Editor
 					</Badge>
 					<div className='bg-black w-full h-full'>
-						<div class='flex h-20 items-center bg-black justify-between'>
+						<div className='flex h-20 items-center bg-black justify-between'>
 							<LanguageSelector language={language} onSelect={onSelect} />
 							<div className='mt-5'>
-								<Abc userCode={userCode} />
+								<Abc userCode={userCode} problemText={renderProblem.title} />
 							</div>
 						</div>
 						<Editor
@@ -219,3 +250,4 @@ const CodeEditorWrapper = () => {
 };
 
 export default CodeEditorWrapper;
+
