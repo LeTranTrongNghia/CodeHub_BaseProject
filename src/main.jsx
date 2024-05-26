@@ -6,7 +6,6 @@ import { createBrowserHistory } from 'history';
 import './index.css';
 import IndexHome from './container/Home/pages/IndexHome/IndexHome.jsx';
 import CoursesPage from './container/Home/pages/MainHome/CoursesPage.jsx';
-import Abc from './container/Workspace/Code_Editor/Abc.jsx';
 import Admin from './container/Admin/Admin.jsx';
 import { store, persistor } from './redux/config.jsx';
 import { Provider } from 'react-redux';

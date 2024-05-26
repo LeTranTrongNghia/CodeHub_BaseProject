@@ -14,12 +14,10 @@ import {
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 
-const Abc = ({userCode}) => {
+const Abc = ({userCode, problemText}) => {
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
 	const [generatingAnswer, setGeneratingAnswer] = useState(false);
-	const problemText = `Write a function that takes a string as input and returns a new string with the characters reversed. 
-  For example, if the input is "hello", the output should be "olleh".`;
 
 	async function generateAnswer(e) {
 		setGeneratingAnswer(true);

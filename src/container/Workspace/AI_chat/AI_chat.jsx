@@ -10,13 +10,11 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-function AI_chat() {
+function AI_chat({problemText}) {
 	const navigate = useNavigate();
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
 	const [generatingAnswer, setGeneratingAnswer] = useState(false);
-	const problemText = `Write a function that takes a string as input and returns a new string with the characters reversed. 
-  For example, if the input is "hello", the output should be "olleh".`;
 
 	async function generateAnswer(e) {
 		setGeneratingAnswer(true);
@@ -29,7 +27,7 @@ function AI_chat() {
 					}`,
 				method: 'post',
 				data: {
-					contents: [{ parts: [{ text: question }] }],
+					contents: [{ parts: [{ text: 'Imagine you are a AI coding assistant named CodeHub, answer the question: ' + question }] }],
 				},
 			});
 
@@ -60,7 +58,7 @@ function AI_chat() {
 							parts: [
 								{
 									text:
-										'Imagine you are a professor majoring in Information Technology. Teach me how to write functions' +
+										'Imagine you are a professor majoring in Information Technology. Teach me how to solve this problem: ' +
 										problemText +
 										"Show me ideas and step-by-step instructions to help me find a way to solve a code problem. Don't write out hint code or example code, let me write it myself.",
 								},

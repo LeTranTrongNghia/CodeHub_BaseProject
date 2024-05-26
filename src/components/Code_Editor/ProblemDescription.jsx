@@ -7,32 +7,6 @@ import { firestore } from '@/firebase/firebase';
 
 const ProblemDescription = () => {
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
-	const problem = {
-		title: 'Reverse a String',
-		difficulty: 'Easy', // Replace with "Medium" or "Hard" for different difficulties
-		likes: 123,
-		dislikes: 5,
-		starred: false, // Change to true if the problem is starred by the user
-		problemStatement: `Write a function that takes a string as input and returns a new string with the characters reversed. 
-        For example, if the input is "hello", the output should be "olleh".`,
-		examples: [
-			{
-				id: 1,
-				inputText: 'hello',
-				outputText: 'olleh',
-				explanation:
-					'We iterate through the string in reverse order and build the new string character by character.',
-			},
-			{
-				id: 2,
-				inputText: 'world',
-				outputText: 'dlrow',
-				explanation: 'The same logic applies to any string.',
-			},
-		],
-		constraints: `The function should work for strings of any length. 
-        You can assume the input string only contains alphanumeric characters.`,
-	};
 
 	const [testcase1, setTestcase1] = useState({});
 	const [testcase2, setTestcase2] = useState({});
@@ -122,6 +96,7 @@ const ProblemDescription = () => {
 
 							<div className='example-card'>
 								<pre className='text-wrap'>
+									<p className='font-medium text-white text-lg'>Example 1:</p>
 									<strong className='text-white'>Input: </strong>{' '}
 									{testcase1?.inputText}
 									<br />
@@ -139,6 +114,7 @@ const ProblemDescription = () => {
 
 							<div className='example-card'>
 								<pre className='text-wrap'>
+									<p className='font-medium text-white text-lg'>Example 2:</p>
 									<strong className='text-white'>Input: </strong>{' '}
 									{testcase2?.inputText}
 									<br />
