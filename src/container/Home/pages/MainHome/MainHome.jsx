@@ -1,5 +1,6 @@
 import DateButton from '@/components/MainHome/DateButton';
 import Sidebar from '@/components/MainHome/Sidebar';
+import Topbar from '@/components/MainHome/Topbar';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -55,7 +56,7 @@ const MainHome = () => {
 	return (
 		<div className='flex min-h-screen w-full flex-col bg-black'>
 			{/* Topbar */}
-			{/* <Topbar /> */}
+			<Topbar />
 			{/* Sidebar */}
 			<Sidebar />
 			{/* Mainbar */}
@@ -75,7 +76,7 @@ const MainHome = () => {
 
 									<div className='flex items-center'>
 										<DateButton />
-										<button className='flex items-center bg-black border border-white rounded-md text-white text-sm p-3 ml-2 hover:bg-blue-400'>
+										<button className='flex items-center bg-black border border-white rounded-md text-white text-sm p-3 ml-2'>
 											<svg
 												width='24px'
 												height='24px'
@@ -100,7 +101,7 @@ const MainHome = () => {
 													></path>{' '}
 												</g>
 											</svg>
-											<p className='ml-2'>Add course</p>
+											<p className='ml-2'>Learn new skills</p>
 										</button>
 									</div>
 								</div>
@@ -212,11 +213,10 @@ const MainHome = () => {
 						x-chunk='dashboard-07-chunk-4'
 					>
 						<CardHeader>
-							<CardTitle>Grand Coding Contest</CardTitle>
+							<CardTitle>Learn Essential Coding Skills</CardTitle>
 							<CardDescription>
 								<p className='mt-2'>
-									Biggest Coding Contest | Prizes Worth 1 Million $ | Grand
-									Coding Contest World Wide
+									The Coding courses listed cover a spectrum from beginner to advanced. learners can elevate their proficiency in software engineering, data science, AI technologies, and website construction.
 								</p>
 							</CardDescription>
 						</CardHeader>

@@ -28,7 +28,7 @@ const Topbar = () => {
 	return (
 		<header className='flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6'>
 			<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
-				<h1 className='ml-16 text-xl font-semibold text-white'>Explore</h1>
+				<h1 className='ml-16 text-xl font-semibold text-white hidden'>Explore</h1>
 			</nav>
 			<Sheet>
 				<SheetTrigger asChild>
@@ -40,7 +40,7 @@ const Topbar = () => {
 			</Sheet>
 			<div className='flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4'>
 				<form className='ml-auto flex-1 sm:flex-initial'>
-					<div className='relative'>
+					<div className='relative hidden'>
 						<Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
 						<Input
 							type='search'

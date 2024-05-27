@@ -42,9 +42,8 @@ const CoursesPage = () => {
                     <CardHeader>
                         <CardTitle>
                             <div className="flex justify-between">
-                                <a href={item.video_link}>
-                                    <p className="text-white">{item.title}</p>
-                                </a>
+
+                                <p className="text-white">{item.title}</p>
                                 <div className="ml-2">
                                     <TooltipProvider>
                                         <Tooltip>
@@ -64,8 +63,10 @@ const CoursesPage = () => {
                     <CardContent>
                         <form>
                             <div className="grid w-full items-center gap-4">
-                                <div className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat" style={{ backgroundImage: `url(${item.image_cover})` }}>
-                                </div>
+                                <a href={item.video_link}>
+                                    <div className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat" style={{ backgroundImage: `url(${item.image_cover})` }}>
+                                    </div>
+                                </a>
                             </div>
                         </form>
                     </CardContent>

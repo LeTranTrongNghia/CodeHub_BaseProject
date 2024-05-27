@@ -1,4 +1,4 @@
-import Sidebar from '@/components/MainHome/Sidebar';
+import Sidebar from "@/components/Admin/Sidebar";
 import {
 	ListFilter,
 	PlusCircle,
@@ -136,7 +136,7 @@ const Admin = () => {
 				await deleteDoc(doc.ref);
 			});
 			setIsDeleted(true);
-			alert("Delete successed! 🎉") // Set state for success message
+			alert("Delete problem successed! 🎉") // Set state for success message
 		} catch (error) {
 			console.error('Error deleting document:', error);
 			// Handle errors gracefully, e.g., display an error message to the user
@@ -186,23 +186,25 @@ const Admin = () => {
 				// Add Button
 				<div className="flex items-center">
 					<div className="ml-auto flex items-center gap-2">
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="outline" size="sm" className="h-8 gap-1">
-									<ListFilter className="h-3.5 w-3.5" />
-									<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-										Filter
-									</span>
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuLabel>Filter by</DropdownMenuLabel>
-								<DropdownMenuSeparator />
-								<DropdownMenuCheckboxItem checked>Title</DropdownMenuCheckboxItem>
-								<DropdownMenuCheckboxItem>Difficulty</DropdownMenuCheckboxItem>
-								<DropdownMenuCheckboxItem>Type</DropdownMenuCheckboxItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
+						<div className='hidden'>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="outline" size="sm" className="h-8 gap-1">
+										<ListFilter className="h-3.5 w-3.5" />
+										<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+											Filter
+										</span>
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuLabel>Filter by</DropdownMenuLabel>
+									<DropdownMenuSeparator />
+									<DropdownMenuCheckboxItem checked>Title</DropdownMenuCheckboxItem>
+									<DropdownMenuCheckboxItem>Difficulty</DropdownMenuCheckboxItem>
+									<DropdownMenuCheckboxItem>Type</DropdownMenuCheckboxItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</div>
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button size="xl" className="h-8 gap-1">
