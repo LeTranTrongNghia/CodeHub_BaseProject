@@ -1,11 +1,8 @@
 import {
     Book,
-    Bot,
     Code2,
-    LifeBuoy,
-    Settings2,
-    SquareTerminal,
     Triangle,
+    LogOut 
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,46 +24,12 @@ const Sidebar = () => {
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
-                        <p>CodeHub</p>
+                        <p>CodeHub Admin</p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
         </div>
         <div className="grid gap-1 p-2">
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="rounded-lg bg-muted bg-black text-white"
-                            aria-label="Playground"
-                        >
-                            <SquareTerminal className="size-5" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={5}>
-                        <p>Explore</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-            {/* <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="rounded-lg bg-black text-white"
-                            aria-label="Models"
-                        >
-                            <Bot className="size-5" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={5}>
-                        Playground
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider> */}
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -101,23 +64,6 @@ const Sidebar = () => {
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
-            {/* <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="rounded-lg bg-black text-white"
-                            aria-label="Settings"
-                        >
-                            <Settings2 className="size-5" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={5}>
-                        Settings
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider> */}
         </div>
         <div className="mt-auto grid gap-1 p-2">
             <TooltipProvider>
@@ -129,11 +75,11 @@ const Sidebar = () => {
                             className="mt-auto rounded-lg bg-black text-white"
                             aria-label="Help"
                         >
-                            <LifeBuoy className="size-5" />
+                            <LogOut  className="size-5" />
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
-                        Support
+                        Log out
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>

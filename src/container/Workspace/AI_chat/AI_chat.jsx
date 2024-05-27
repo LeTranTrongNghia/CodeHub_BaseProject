@@ -27,7 +27,7 @@ function AI_chat({problemText}) {
 					}`,
 				method: 'post',
 				data: {
-					contents: [{ parts: [{ text: 'Imagine you are a AI coding assistant named CodeHub, answer the question: ' + question }] }],
+					contents: [{ parts: [{ text: 'Imagine you are a AI coding assistant named CodeHub, This is the coding problem Im doing right now' + problemText + '. Answer the question: ' + question }] }],
 				},
 			});
 
