@@ -2,8 +2,6 @@ import {
     ListFilter,
     Shuffle,
 } from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -32,11 +30,22 @@ import {
     Tabs,
     TabsContent,
 } from "@/components/ui/tabs"
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '@/firebase/firebase';
 import Sidebar from "@/components/MainHome/Sidebar";
 import Topbar from "@/components/MainHome/Topbar";
 
 const ProblemsPage = () => {
+    // Problems List
+    const [problemList, setProblemList] = useState([]);
+    useEffect(() => {
+        (async () => {
+            const data = await getDocs(collection(firestore, 'Problems'));
+            const problemLists = data.docs.map(doc => doc.data());
+            setProblemList(problemLists);
+        })();
+    });
 
     return <div className="flex min-h-screen w-full flex-col bg-black">
         {/* Topbar */}
@@ -46,7 +55,7 @@ const ProblemsPage = () => {
         {/* Mainbar */}
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
             <Tabs defaultValue="all">
-                <div className="flex items-center">
+                <div className="flex items-center hidden">
                     <div className="ml-auto flex items-center gap-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -78,87 +87,43 @@ const ProblemsPage = () => {
                         <CardHeader>
                             <h1 className="text-white text-3xl font-medium">Problems</h1>
                             <CardDescription>
-                                Level up your coding abilities! Explore problems designed for all skill sets, from beginner to advanced.
+                                <h1 className="text-white text-sm font-medium">
+                                    Level up your coding abilities! Explore problems designed for all skill sets, from beginner to advanced.
+                                </h1>
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="hidden w-[100px] sm:table-cell">
-                                            <span className="sr-only">Image</span>
-                                        </TableHead>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Difficulty</TableHead>
-                                        <TableHead className="hidden md:table-cell">
-                                            type
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://t4.ftcdn.net/jpg/02/67/40/21/360_F_267402109_jZvsqRQUvSxohAOmcUt549jlapqoRHM0.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Longest Substring Without Repeating Characters
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-yellow-300"}>Medium</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            String
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MDQtbnVubnktMDE2XzIuanBn.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Integer to Roman
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-green-300"}>Easy</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Hash Table
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTs1bECSkSfLAxMYgNaC-g7hyNdtomiFDIQ4PXPRysQ8FR94PIeor__iSCocIVtcNDgGUE&usqp=CAU')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Regular Expression Matching
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-red-300"}>Hard</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Dynamic Programming
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <div className="w-[64px] h-[64px] bg-[url('https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3Y5MDQtbnVubnktMDE2XzIuanBn.jpg')] bg-cover rounded"></div>
-                                        </TableCell>
-                                        <TableCell className="font-medium text-white">
-                                            Permutation Sequence
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={"text-red-300"}>Hard</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell text-white">
-                                            Math
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
+                            <div className='text-white'>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Title</TableHead>
+                                            <TableHead>Type</TableHead>
+                                            <TableHead>Difficulty</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {problemList.map((item, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>
+                                                    <div className="font-medium">{item.title}</div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="font-medium">{item.type}</div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="font-medium">{item.difficulty}</div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
                         </CardContent>
                         <CardFooter>
                             <div className="text-xs text-muted-foreground">
-                                Showing <strong>1-4</strong> of <strong>321</strong>{" "}
-                                Problems
+                                Showing <strong>{problemList.length}</strong> of <strong>{problemList.length}</strong>{" "}
+                                Total Problems
                             </div>
                         </CardFooter>
                     </Card>
