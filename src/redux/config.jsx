@@ -11,9 +11,11 @@ import {
 	REGISTER,
 } from 'redux-persist';
 import problemReducer from './problemReducer/problemReducer';
+import userReducer from './userReducer/userReducer';
 
 const reducers = combineReducers({
 	problem: problemReducer,
+	user: userReducer,
 });
 
 const persistConfig = {
