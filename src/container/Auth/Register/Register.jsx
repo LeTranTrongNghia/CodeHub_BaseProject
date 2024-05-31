@@ -22,9 +22,7 @@ const Register = () => {
 			if (user) {
 				const newUser = new User(user.uid, email, hashPwd(password));
 				const userObject = newUser.toPlainObject();
-				await setDoc(doc(firestore, 'Users', user.uid), {
-					userObject,
-				});
+				await setDoc(doc(firestore, 'Users', user.uid), userObject);
 			}
 			toast.success('Registered successfully');
 			navigate('/login');
