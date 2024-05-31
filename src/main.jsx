@@ -7,6 +7,8 @@ import './index.css';
 import { store, persistor } from './redux/config.jsx';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const history = createBrowserHistory();
 
@@ -15,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 		<PersistGate persistor={persistor} loading={null}>
 			<HistoryBrowserRouter history={history}>
 				<App />
+				<ToastContainer />
 			</HistoryBrowserRouter>
 		</PersistGate>
 	</Provider>,
