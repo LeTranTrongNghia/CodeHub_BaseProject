@@ -3,23 +3,26 @@ import { hashPwd } from '@/helpers/helper';
 import { Alert, Button, Form, Input } from 'antd';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './style.css';
+import User from '@/model/User';
 
 const Register = () => {
 	const navigate = useNavigate();
 	const handleSubmitForm = async values => {
 		try {
-			const { email, password, confirm_password } = values;
-			await createUserWithEmailAndPassword(auth, email, password);
-			const user = auth.currentUser;
+			const { email, password } = values;
+			const result = await createUserWithEmailAndPassword(
+				auth,
+				email,
+				password,
+			);
+			const user = result.user;
 			if (user) {
-				await setDoc(doc(firestore, 'Users', user.uid), {
-					email: user.email,
-					password: hashPwd(password),
-				});
+				const newUser = new User(user.uid, email, hashPwd(password));
+				const userObject = newUser.toPlainObject();
+				await setDoc(doc(firestore, 'Users', user.uid), userObject);
 			}
 			toast.success('Registered successfully');
 			navigate('/login');
@@ -91,7 +94,7 @@ const Register = () => {
 										]}
 									>
 										<Input
-											onChange={handleChangeInput}
+											// onChange={handleChangeInput}
 											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
