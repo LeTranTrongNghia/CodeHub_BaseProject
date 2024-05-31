@@ -24,10 +24,10 @@ const Login = () => {
 			const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
 			const userData = userDoc.data();
 			const role = userData.role;
+			dispatch(setAdminStatus(false));
 			if (role === UserRole.ADMIN) {
 				dispatch(setAdminStatus(true));
 			}
-			dispatch(setAdminStatus(false));
 			toast.success('Logged in Successfully');
 			navigate('/main-home');
 		} catch (error) {
