@@ -10,6 +10,10 @@ const routes = {
 	coding: '/coding',
 	AIassistant: '/ai-assistant',
 	indexHome: '/',
+	admin: {
+		dashboard: '/admin',
+		lecture: 'admin/lecture',
+	},
 };
 
 export default routes;

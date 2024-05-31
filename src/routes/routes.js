@@ -27,6 +27,11 @@ const IndexHomePage = React.lazy(() =>
 	import('../container/Home/pages/IndexHome/IndexHome.jsx'),
 );
 
+const AdminDashboard = React.lazy(() => import('../container/Admin/Admin.jsx'));
+const AdminLecture = React.lazy(() =>
+	import('../container/Admin/Admin_Lectures.jsx'),
+);
+
 const publicRoute = [
 	{
 		path: config.routes.login,
@@ -70,4 +75,15 @@ const publicRoute = [
 	},
 ];
 
-export { publicRoute };
+const adminRoute = [
+	{
+		path: config.routes.admin.dashboard,
+		component: AdminDashboard,
+	},
+	{
+		path: config.routes.admin.lecture,
+		component: AdminLecture,
+	},
+];
+
+export { publicRoute, adminRoute };
