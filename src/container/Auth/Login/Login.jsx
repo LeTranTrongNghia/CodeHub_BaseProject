@@ -27,7 +27,7 @@ const Login = () => {
 			if (role === UserRole.ADMIN) {
 				dispatch(setAdminStatus(true));
 			}
-
+			dispatch(setAdminStatus(falses));
 			toast.success('Logged in Successfully');
 			navigate('/main-home');
 		} catch (error) {
