@@ -4,17 +4,32 @@ import './style.css';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { toast } from 'react-toastify';
 import { auth, firestore } from '@/firebase/firebase';
-import { useEffect } from 'react';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
+import { UserRole } from '@/helpers/constant';
+import { useDispatch } from 'react-redux';
+import { setAdminStatus } from '@/redux/userReducer/userReducer';
 
 const Login = () => {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const onFinish = async values => {
 		const { email, password } = values;
 		try {
-			await signInWithEmailAndPassword(auth, email, password);
+			const existingUser = await signInWithEmailAndPassword(
+				auth,
+				email,
+				password,
+			);
+			const user = existingUser.user;
+			const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
+			const userData = userDoc.data();
+			const role = userData.role;
+			if (role === UserRole.ADMIN) {
+				dispatch(setAdminStatus(true));
+			}
+
 			toast.success('Logged in Successfully');
-			navigate('/');
+			navigate('/main-home');
 		} catch (error) {
 			toast.error(error.message);
 		}
