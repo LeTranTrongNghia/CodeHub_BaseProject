@@ -43,6 +43,7 @@ import { Label } from "@/components/ui/label"
 import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs, addDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
+import { toast } from "react-toastify";
 
 const Admin_Lectures = () => {
     // Lectures List
@@ -107,7 +108,7 @@ const Admin_Lectures = () => {
                 await deleteDoc(doc.ref);
             });
             setIsDeleted(true);
-            alert("Delete lecture successed! 🎉") // Set state for success message
+            toast("Delete lecture successed! 🎉") // Set state for success message
         } catch (error) {
             console.error('Error deleting document:', error);
             // Handle errors gracefully, e.g., display an error message to the user

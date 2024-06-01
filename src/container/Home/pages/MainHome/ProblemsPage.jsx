@@ -30,22 +30,35 @@ import {
     Tabs,
     TabsContent,
 } from "@/components/ui/tabs"
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { firestore } from '@/firebase/firebase';
 import Sidebar from "@/components/MainHome/Sidebar";
 import Topbar from "@/components/MainHome/Topbar";
+import { useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { firestore } from '@/firebase/firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    setProblems,
+    setSelectedProblem,
+} from '@/redux/problemReducer/problemReducer';
+import { useNavigate } from 'react-router-dom';
 
 const ProblemsPage = () => {
-    // Problems List
-    const [problemList, setProblemList] = useState([]);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     useEffect(() => {
         (async () => {
             const data = await getDocs(collection(firestore, 'Problems'));
             const problemLists = data.docs.map(doc => doc.data());
-            setProblemList(problemLists);
+            setProblems(problemLists);
+            dispatch(setProblems(problemLists));
         })();
-    });
+    }, []);
+    const problemList = useSelector(state => state.problem.problemList);
+
+    const handleRowClick = problem => {
+        dispatch(setSelectedProblem(problem));
+        navigate('/coding');
+    };
 
     return <div className="flex min-h-screen w-full flex-col bg-black">
         {/* Topbar */}
@@ -106,13 +119,16 @@ const ProblemsPage = () => {
                                         {problemList.map((item, index) => (
                                             <TableRow key={index}>
                                                 <TableCell>
-                                                    <div className="font-medium">{item.title}</div>
+                                                    <div
+                                                        className='font-medium'
+                                                        onClick={() => handleRowClick(item)}
+                                                    >
+                                                        {item.title}
+                                                    </div>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <div className="font-medium">{item.type}</div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="font-medium">{item.difficulty}</div>
+                                                <TableCell>{item.type}</TableCell>
+                                                <TableCell className='text-right'>
+                                                    {item.difficulty}
                                                 </TableCell>
                                             </TableRow>
                                         ))}
