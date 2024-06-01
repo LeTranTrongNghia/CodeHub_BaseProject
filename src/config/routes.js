@@ -8,12 +8,15 @@ const routes = {
 	forgotPassword: '/forgot-password',
 	notFound: '*',
 	coding: '/coding',
-	AIassistant: '/ai-assistant',
 	indexHome: '/',
 	admin: {
 		dashboard: '/admin',
 		lecture: 'admin/lecture',
 	},
+	problemPage: '/problems',
+	coursePage: '/courses',
+	problemPageAdmin: '/problemsAdmin',
+	coursePageAdmin: '/coursesAdmin',
 };
 
 export default routes;

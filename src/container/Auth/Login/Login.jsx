@@ -141,8 +141,8 @@ const Login = () => {
 											},
 										]}
 									>
-										<Input
-											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+										<Input.Password
+											className='flex appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
 											}}
@@ -169,7 +169,7 @@ const Login = () => {
 
 									<div className='text-sm'>
 										<a
-											onClick={() => navigate('/forgot-password')}
+											onClick={() => navigate('/reset-password')}
 											className='font-medium text-blue-600 hover:text-blue-500'
 										>
 											Forgot your password?
@@ -186,7 +186,7 @@ const Login = () => {
 									</Button>
 								</Form.Item>
 							</Form>
-							<div className='mt-6'>
+							<div className='mt-6 hidden'>
 								<div className='relative'>
 									<div className='absolute inset-0 flex items-center'>
 										<div className='w-full border-t border-gray-300'></div>

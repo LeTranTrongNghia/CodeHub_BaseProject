@@ -42,7 +42,6 @@ const CoursesPage = () => {
                     <CardHeader>
                         <CardTitle>
                             <div className="flex justify-between">
-
                                 <p className="text-white">{item.title}</p>
                                 <div className="ml-2">
                                     <TooltipProvider>

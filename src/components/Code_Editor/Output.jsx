@@ -3,6 +3,7 @@ import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 import { useSelector } from 'react-redux';
 import { doc, getDoc } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
+import { toast } from 'react-toastify';
 
 const Output = ({ editorRef, language }) => {
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
@@ -84,7 +85,7 @@ const Output = ({ editorRef, language }) => {
 		});
 
 		if (isOnlyprint) {
-			alert("Failed! Source code only contains print function.");
+			toast.error("Failed! Source code only contains print function.");
 			setPassedTests(0);
 		} else {
 			const expectedOutputs = Object.values(testcases); // Get array of expected outputs
@@ -94,7 +95,7 @@ const Output = ({ editorRef, language }) => {
 				}
 			});
 			setPassedTests(passed);
-			alert(`Your code passed ${passed} out of ${expectedOutputs.length} test cases.`); // Alert after checking test cases
+			toast(`Your code passed ${passed} out of ${expectedOutputs.length} test cases.`);
 		}
 	};
 
@@ -112,9 +113,9 @@ const Output = ({ editorRef, language }) => {
 					disabled={!output}
 					onClick={() => {
 						if (passedTests === Object.keys(testcases).length) {
-							alert("Congratulations! All test cases are passed! 🎉🎉🎉");
+							toast("Congratulations! All test cases are passed! 🎉🎉🎉");
 						} else {
-							alert(`You passed ${passedTests} out of ${Object.keys(testcases).length} test cases.`);
+							toast.error(`You passed ${passedTests} out of ${Object.keys(testcases).length} test cases.`);
 						}
 					}}
 				>

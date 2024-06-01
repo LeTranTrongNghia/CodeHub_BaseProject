@@ -2,7 +2,7 @@ import {
     Book,
     Code2,
     Triangle,
-    LogOut 
+    LogOut
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,9 +11,24 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import React, {  } from 'react';
+import React from 'react';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/firebase/firebase';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
+    const navigate = useNavigate()
+    const handleLogout = () => {
+        try {
+            signOut(auth);
+            toast.success('Logout successfully');
+            navigate('/login');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return < aside className="inset-y fixed bg-black left-0 z-20 flex h-full flex-col border-r" >
         <div className="p-2 mt-1 bg-black">
             <TooltipProvider>
@@ -39,7 +54,9 @@ const Sidebar = () => {
                             className="rounded-lg bg-black text-white"
                             aria-label="API"
                         >
-                            <Code2 className="size-5" />
+                            <a href="/problemsAdmin">
+                                <Code2 className="size-5" />
+                            </a>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
@@ -56,7 +73,9 @@ const Sidebar = () => {
                             className="rounded-lg bg-black text-white"
                             aria-label="Documentation"
                         >
-                            <Book className="size-5" />
+                            <a href="/coursesAdmin">
+                                <Book className="size-5" />
+                            </a>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
@@ -75,7 +94,7 @@ const Sidebar = () => {
                             className="mt-auto rounded-lg bg-black text-white"
                             aria-label="Help"
                         >
-                            <LogOut  className="size-5" />
+                            <LogOut className="size-5" onClick={handleLogout} />
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
