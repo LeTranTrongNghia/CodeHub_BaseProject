@@ -67,7 +67,7 @@ const MainHome = () => {
 						<div className='container relative w-full h-[200px]'>
 							<Spline scene='https://prod.spline.design/8rK8Mhnerno7UApB/scene.splinecode' />
 							<div className='text-layer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full justify-between'>
-								<p className='text-4xl font-bold mb-6'>Welcome back, Ivel!</p>
+								<p className='text-4xl font-bold mb-6'>Welcome back!</p>
 								<div className='flex flex-row items-center justify-between text-white'>
 									<div className='text-xl'>
 										Track your progress, manage your courses activity and
@@ -101,7 +101,7 @@ const MainHome = () => {
 													></path>{' '}
 												</g>
 											</svg>
-											<p className='ml-2'>Learn new skills</p>
+											<a href="/courses" className='ml-2'>Learn new skills</a>
 										</button>
 									</div>
 								</div>
@@ -170,10 +170,10 @@ const MainHome = () => {
 								<CardDescription>Most recent problems.</CardDescription>
 							</div>
 							<Button asChild size='sm' className='ml-auto gap-1'>
-								<div href='#'>
+								<a href='/problems'>
 									View All
 									<ArrowUpRight className='h-4 w-4' />
-								</div>
+								</a>
 							</Button>
 						</CardHeader>
 						<CardContent>
@@ -221,31 +221,33 @@ const MainHome = () => {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<div className="grid gap-2 w-full h-[280px] place-items-center bg-[url('https://media.istockphoto.com/id/1406263653/nl/vector/dark-blue-abstract-with-colorful-light-for-background.jpg?s=612x612&w=0&k=20&c=q_hOjh_XpzA4ZxaApExc7CBbAtW3Se2hw7ZxlvDfujw=')] bg-cover rounded">
-								<svg
-									width='300px'
-									height='300px'
-									viewBox='0 0 24 24'
-									fill='none'
-									xmlns='http://www.w3.org/2000/svg'
-								>
-									<g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
-									<g
-										id='SVGRepo_tracerCarrier'
-										strokeLinecap='round'
-										strokeLinejoin='round'
-									></g>
-									<g id='SVGRepo_iconCarrier'>
-										<path
-											d='M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16'
-											stroke='#ffffff'
-											strokeWidth='2'
+							<a href="/courses">
+								<div className="grid gap-2 w-full h-[280px] place-items-center bg-[url('https://media.istockphoto.com/id/1406263653/nl/vector/dark-blue-abstract-with-colorful-light-for-background.jpg?s=612x612&w=0&k=20&c=q_hOjh_XpzA4ZxaApExc7CBbAtW3Se2hw7ZxlvDfujw=')] bg-cover rounded">
+									<svg
+										width='300px'
+										height='300px'
+										viewBox='0 0 24 24'
+										fill='none'
+										xmlns='http://www.w3.org/2000/svg'
+									>
+										<g id='SVGRepo_bgCarrier' strokeWidth='0'></g>
+										<g
+											id='SVGRepo_tracerCarrier'
 											strokeLinecap='round'
 											strokeLinejoin='round'
-										></path>
-									</g>
-								</svg>
-							</div>
+										></g>
+										<g id='SVGRepo_iconCarrier'>
+											<path
+												d='M9 8L5 11.6923L9 16M15 8L19 11.6923L15 16'
+												stroke='#ffffff'
+												strokeWidth='2'
+												strokeLinecap='round'
+												strokeLinejoin='round'
+											></path>
+										</g>
+									</svg>
+								</div>
+							</a>
 						</CardContent>
 					</Card>
 				</div>

@@ -14,7 +14,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import React, {  } from 'react';
+import React from 'react';
 
 const Sidebar = () => {
     return < aside className="inset-y fixed bg-black left-0 z-20 flex h-full flex-col border-r" >
@@ -42,7 +42,9 @@ const Sidebar = () => {
                             className="rounded-lg bg-muted bg-black text-white"
                             aria-label="Playground"
                         >
-                            <SquareTerminal className="size-5" />
+                            <a href='/main-home'>
+                                <SquareTerminal className="size-5" />
+                            </a>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
@@ -76,7 +78,9 @@ const Sidebar = () => {
                             className="rounded-lg bg-black text-white"
                             aria-label="API"
                         >
-                            <Code2 className="size-5" />
+                            <a href='/problems'>
+                                <Code2 className="size-5" />
+                            </a>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
@@ -93,7 +97,9 @@ const Sidebar = () => {
                             className="rounded-lg bg-black text-white"
                             aria-label="Documentation"
                         >
-                            <Book className="size-5" />
+                            <a href='/courses'>
+                                <Book className="size-5" />
+                            </a>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
@@ -129,7 +135,9 @@ const Sidebar = () => {
                             className="mt-auto rounded-lg bg-black text-white"
                             aria-label="Help"
                         >
-                            <LifeBuoy className="size-5" />
+                            <a href="https://github.com/tsdevtool/CodeHub_BaseProject.git">
+                                <LifeBuoy className="size-5" />
+                            </a>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>

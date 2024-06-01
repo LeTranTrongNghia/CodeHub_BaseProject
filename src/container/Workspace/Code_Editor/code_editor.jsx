@@ -36,7 +36,10 @@ import Sidebar from '@/components/MainHome/Sidebar';
 import Abc from './Abc';
 import { useSelector } from 'react-redux';
 import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '@/firebase/firebase';
+import { firestore, auth } from '@/firebase/firebase';
+import { signOut } from 'firebase/auth';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const CodeEditorWrapper = () => {
 	const [value, setValue] = useState('');
@@ -96,6 +99,17 @@ const CodeEditorWrapper = () => {
 		}
 	}, [editorRef]);
 
+	const navigate = useNavigate()
+	const handleLogout = () => {
+		try {
+			signOut(auth);
+			toast.success('Logout successfully');
+			navigate('/login');
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	return (
 		<div className='flex min-h-screen w-full flex-col bg-black'>
 			{/* Topbar */}
@@ -108,9 +122,10 @@ const CodeEditorWrapper = () => {
 									<Button
 										variant='outline'
 										size='icon'
-										onClick={() => (window.location.href = '/')}
 									>
-										<ChevronLeft className='h-4 w-4' />
+										<a href="/main-home">
+											<ChevronLeft className='h-4 w-4' />
+										</a>
 									</Button>
 								</TooltipTrigger>
 								<TooltipContent side='bottom' sideOffset={5}>
@@ -170,7 +185,7 @@ const CodeEditorWrapper = () => {
 				</Sheet>
 				<div className='flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4'>
 					<form className='ml-auto flex-1 sm:flex-initial'>
-						<div className='relative'>
+						<div className='relative hidden'>
 							<Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
 							<Input
 								type='search'
@@ -189,10 +204,10 @@ const CodeEditorWrapper = () => {
 						<DropdownMenuContent align='end'>
 							<DropdownMenuLabel>My Account</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem>Settings</DropdownMenuItem>
-							<DropdownMenuItem>Support</DropdownMenuItem>
+							{/* <DropdownMenuItem>Settings</DropdownMenuItem>
+							<DropdownMenuItem>Support</DropdownMenuItem> */}
 							<DropdownMenuSeparator />
-							<DropdownMenuItem>Logout</DropdownMenuItem>
+							<DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
@@ -211,7 +226,7 @@ const CodeEditorWrapper = () => {
 					)}
 					{option === '2' && (
 						<div>
-							<AI_chat problemText={renderProblem.title}/>
+							<AI_chat problemText={renderProblem.title} />
 						</div>
 					)}
 				</div>
