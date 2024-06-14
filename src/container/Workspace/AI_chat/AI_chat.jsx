@@ -2,15 +2,15 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
-import { Bot } from "lucide-react";
+import { Bot } from 'lucide-react';
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip';
 
-function AI_chat({problemText}) {
+function AI_chat({ problemText }) {
 	const navigate = useNavigate();
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
@@ -23,11 +23,24 @@ function AI_chat({problemText}) {
 		setAnswer('Gemini is thinking... \n It might take upto 10 seconds.');
 		try {
 			const response = await axios({
-				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
-					}`,
+				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${
+					import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
+				}`,
 				method: 'post',
 				data: {
-					contents: [{ parts: [{ text: 'Imagine you are a AI coding assistant named CodeHub, This is the coding problem Im doing right now' + problemText + '. Answer the question: ' + question }] }],
+					contents: [
+						{
+							parts: [
+								{
+									text:
+										'Imagine you are a AI coding assistant named CodeHub, This is the coding problem Im doing right now' +
+										problemText +
+										'. Answer the question: ' +
+										question,
+								},
+							],
+						},
+					],
 				},
 			});
 
@@ -49,8 +62,9 @@ function AI_chat({problemText}) {
 
 		try {
 			const response = await axios({
-				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
-					}`,
+				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${
+					import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
+				}`,
 				method: 'post',
 				data: {
 					contents: [
@@ -82,35 +96,37 @@ function AI_chat({problemText}) {
 	return (
 		<>
 			<div
-				className="relative hidden flex-col items-start gap-8 md:flex ml-16 text-white" x-chunk="dashboard-03-chunk-0"
+				className='relative flex-col items-start gap-8 md:flex ml-16 text-white'
+				x-chunk='dashboard-03-chunk-0'
 			>
 				<form onSubmit={generateAnswer} className='text-center overflow-auto'>
-					
-					<div class="flex justify-center">
+					<div class='flex justify-center'>
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<button className='flex justify-center items-center w-[80px] h-[80px] bg-white rounded-md'>
-										<Bot className="size-16 text-black" />
+										<Bot className='size-16 text-black' />
 									</button>
 								</TooltipTrigger>
-								<TooltipContent side="bottom" sideOffset={5}>
-									<p className='font-medium'>Hello, I'm CodeHub - your personal AI assistant!</p>
+								<TooltipContent side='bottom' sideOffset={5}>
+									<p className='font-medium'>
+										Hello, I'm CodeHub - your personal AI assistant!
+									</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
 					</div>
-					<div className="overflow-auto w-[460px] h-[450px] text-left border border-white rounded-xl mt-10">
-						<ReactMarkdown className="mx-auto p-2 prose">
+					<div className='overflow-auto w-[460px] h-[450px] text-left border border-white rounded-xl mt-10'>
+						<ReactMarkdown className='mx-auto p-2 prose'>
 							{answer}
 						</ReactMarkdown>
 					</div>
 					<textarea
 						required
-						className="h-fit w-full text-black mt-3 overflow-y-auto p-3 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500"
+						className='h-fit w-full text-black mt-3 overflow-y-auto p-3 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500'
 						value={question}
 						onChange={e => setQuestion(e.target.value)}
-						placeholder="Enter a prompt here"
+						placeholder='Enter a prompt here'
 					></textarea>
 					<div className='flex justify-center mr-2'>
 						<button

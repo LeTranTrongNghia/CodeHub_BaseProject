@@ -1,11 +1,5 @@
-import {
-	CircleUser,
-	ChevronLeft,
-	Menu,
-	Search,
-	BookMarked,
-	Bot,
-} from 'lucide-react';
+import ProblemDescription from '@/components/Code_Editor/ProblemDescription';
+import Sidebar from '@/components/MainHome/Sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,22 +18,28 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
-import React, { useState, useRef, useEffect } from 'react';
-import { CODE_SNIPPETS } from './constant/constants';
+import { auth, firestore } from '@/firebase/firebase';
 import Editor from '@monaco-editor/react';
+import { signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import {
+	BookMarked,
+	Bot,
+	ChevronLeft,
+	CircleUser,
+	Menu,
+	Search,
+} from 'lucide-react';
 import * as monaco from 'monaco-editor'; // Import monaco-editor
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Abc from './Abc';
+import { CODE_SNIPPETS } from './constant/constants';
 import LanguageSelector from '/src/components/Code_Editor/LanguageSelector';
 import Output from '/src/components/Code_Editor/Output';
-import ProblemDescription from '@/components/Code_Editor/ProblemDescription';
 import AI_chat from '/src/container/Workspace/AI_chat/AI_chat';
-import Sidebar from '@/components/MainHome/Sidebar';
-import Abc from './Abc';
-import { useSelector } from 'react-redux';
-import { doc, getDoc } from 'firebase/firestore';
-import { firestore, auth } from '@/firebase/firebase';
-import { signOut } from 'firebase/auth';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
 const CodeEditorWrapper = () => {
 	const [value, setValue] = useState('');
@@ -85,7 +85,7 @@ const CodeEditorWrapper = () => {
 		fetchAndLogDocument();
 	}, []);
 
-	const onSelect = (language) => {
+	const onSelect = language => {
 		setLanguage(language);
 		setValue(CODE_SNIPPETS[language]);
 	};
@@ -99,7 +99,7 @@ const CodeEditorWrapper = () => {
 		}
 	}, [editorRef]);
 
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 	const handleLogout = () => {
 		try {
 			signOut(auth);
@@ -114,16 +114,13 @@ const CodeEditorWrapper = () => {
 		<div className='flex min-h-screen w-full flex-col bg-black'>
 			{/* Topbar */}
 			<header className='flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6'>
-				<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
+				<nav className=' flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
 					<div className='flex ml-14'>
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<Button
-										variant='outline'
-										size='icon'
-									>
-										<a href="/main-home">
+									<Button variant='outline' size='icon'>
+										<a href='/main-home'>
 											<ChevronLeft className='h-4 w-4' />
 										</a>
 									</Button>
@@ -139,8 +136,9 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='submit'
-									className={`option ${option === '1' ? 'selected' : ''
-										} flex bg-white p-3 rounded-md text-left w-[120px]`}
+									className={`option ${
+										option === '1' ? 'selected' : ''
+									} flex bg-white p-3 rounded-md text-left w-[120px]`}
 									onClick={e => setOption('1')}
 								>
 									<BookMarked className='size-5 mr-4' />
@@ -157,8 +155,9 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='submit'
-									className={`option ${option === '2' ? 'selected' : ''
-										} flex bg-white p-3 rounded-md text-left w-[150px]`}
+									className={`option ${
+										option === '2' ? 'selected' : ''
+									} flex bg-white p-3 rounded-md text-left w-[150px]`}
 									onClick={e => setOption('2')}
 								>
 									<Bot className='size-5 mr-4' />
@@ -265,4 +264,3 @@ const CodeEditorWrapper = () => {
 };
 
 export default CodeEditorWrapper;
-
