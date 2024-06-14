@@ -48,7 +48,7 @@ const ProblemDescription = () => {
 
 	return (
 		<div
-			className='relative flex-col items-start gap-8 md:flex ml-14 text-white'
+			className='relative flex-col items-start gap-8 md:flex ml-14'
 			x-chunk='dashboard-03-chunk-0'
 		>
 			<form className='grid w-full items-start gap-6'>
@@ -56,7 +56,7 @@ const ProblemDescription = () => {
 					<legend className='-ml-1 px-1 text-lg font-medium'>Problem</legend>
 					<div className='grid gap-3 w-full'>
 						{/* Problem Title */}
-						<div className='mr-2 text-2xl text-white font-medium'>
+						<div className='mr-2 text-2xl   font-medium'>
 							{renderProblem.title}
 						</div>
 
@@ -81,7 +81,7 @@ const ProblemDescription = () => {
 							</div>
 						</div>
 						{/* Problem Statement */}
-						<div className='text-white text-lg'>
+						<div className='  text-lg'>
 							<div
 								dangerouslySetInnerHTML={{
 									__html: renderProblem.statement,
@@ -92,19 +92,19 @@ const ProblemDescription = () => {
 						<div className=''>
 							{/* {problem.examples.map((example, index) => (
 								<div key={example.id}>
-									<p className='font-medium text-white text-lg'>Example:</p> */}
+									<p className='font-medium   text-lg'>Example:</p> */}
 
 							<div className='example-card'>
 								<pre className='text-wrap'>
-									<p className='font-medium text-white text-lg'>Example 1:</p>
-									<strong className='text-white'>Input: </strong>{' '}
+									<p className='font-medium   text-lg'>Example 1:</p>
+									<strong className=' '>Input: </strong>{' '}
 									{testcase1?.inputText}
 									<br />
-									<strong className='text-white'>Output: </strong>
+									<strong className=' '>Output: </strong>
 									{testcase1?.outputText} <br />
 									{testcase1?.explanation && (
 										<>
-											<strong className='text-white'>Explanation:</strong>{' '}
+											<strong className=' '>Explanation:</strong>{' '}
 											{testcase1?.explanation}
 											<br /> {/* Added <br/> tag */}
 										</>
@@ -114,15 +114,15 @@ const ProblemDescription = () => {
 
 							<div className='example-card'>
 								<pre className='text-wrap'>
-									<p className='font-medium text-white text-lg'>Example 2:</p>
-									<strong className='text-white'>Input: </strong>{' '}
+									<p className='font-medium   text-lg'>Example 2:</p>
+									<strong className=' '>Input: </strong>{' '}
 									{testcase2?.inputText}
 									<br />
-									<strong className='text-white'>Output: </strong>
+									<strong className=' '>Output: </strong>
 									{testcase2?.outputText} <br />
 									{testcase2?.explanation && (
 										<>
-											<strong className='text-white'>Explanation:</strong>{' '}
+											<strong className=' '>Explanation:</strong>{' '}
 											{testcase2?.explanation}
 											<br /> {/* Added <br/> tag */}
 										</>
@@ -134,8 +134,8 @@ const ProblemDescription = () => {
 						</div>
 						{/* Constraints */}
 						<div>
-							<div className='text-white text-lg font-medium'>Constraints:</div>
-							<ul className='text-white list-disc text-lg'>
+							<div className='  text-lg font-medium'>Constraints:</div>
+							<ul className='  list-disc text-lg'>
 								<div
 									dangerouslySetInnerHTML={{
 										__html: renderProblem.constraints,

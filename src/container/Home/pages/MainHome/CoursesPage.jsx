@@ -30,7 +30,7 @@ const CoursesPage = () => {
     });
 
 
-    return <div className="flex min-h-screen w-full flex-col bg-black">
+    return <div className="flex min-h-screen w-full flex-col">
         {/* Topbar */}
         <Topbar />
         {/* Sidebar */}
@@ -42,7 +42,21 @@ const CoursesPage = () => {
                     <CardHeader>
                         <CardTitle>
                             <div className="flex justify-between">
-                                <p className="text-white">{item.title}</p>
+                                <div>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <p class="line-clamp-2 overflow-hidden text-overflow-ellipsis whitespace-normal">
+                                                    {item.title}
+                                                </p>
+                                            </TooltipTrigger>
+                                            <TooltipContent side="bottom" sideOffset={5}>
+                                                <p>{item.title}</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
+
                                 <div className="ml-2">
                                     <TooltipProvider>
                                         <Tooltip>
@@ -57,7 +71,7 @@ const CoursesPage = () => {
                                 </div>
                             </div>
                         </CardTitle>
-                        <CardDescription><p className="text-white">{item.author} • {item.video_num} Videos</p></CardDescription>
+                        <CardDescription><p>{item.author} • {item.video_num} Videos</p></CardDescription>
                     </CardHeader>
                     <CardContent>
                         <form>
