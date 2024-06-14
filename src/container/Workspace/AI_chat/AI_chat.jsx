@@ -96,19 +96,11 @@ function AI_chat({ problemText }) {
 	return (
 		<>
 			<div
-<<<<<<< HEAD
-				className='relative flex-col items-start gap-8 md:flex ml-16 text-white'
+				className='relative hidden flex-col items-start gap-8 md:flex ml-16'
 				x-chunk='dashboard-03-chunk-0'
 			>
 				<form onSubmit={generateAnswer} className='text-center overflow-auto'>
 					<div class='flex justify-center'>
-=======
-				className="relative hidden flex-col items-start gap-8 md:flex ml-16" x-chunk="dashboard-03-chunk-0"
-			>
-				<form onSubmit={generateAnswer} className='text-center overflow-auto'>
-
-					<div class="flex justify-center">
->>>>>>> 698c5e88dd32356186420d56ae1bd3b9a3d05bfc
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
@@ -124,13 +116,8 @@ function AI_chat({ problemText }) {
 							</Tooltip>
 						</TooltipProvider>
 					</div>
-<<<<<<< HEAD
-					<div className='overflow-auto w-[460px] h-[450px] text-left border border-white rounded-xl mt-10'>
+					<div className='overflow-auto w-[460px] h-[450px] text-left border border-gray rounded-xl mt-10'>
 						<ReactMarkdown className='mx-auto p-2 prose'>
-=======
-					<div className="overflow-auto w-[460px] h-[450px] text-left border border-gray rounded-xl mt-10">
-						<ReactMarkdown className="mx-auto p-2 prose">
->>>>>>> 698c5e88dd32356186420d56ae1bd3b9a3d05bfc
 							{answer}
 						</ReactMarkdown>
 					</div>
