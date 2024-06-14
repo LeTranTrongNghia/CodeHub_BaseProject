@@ -8,6 +8,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { UserRole } from '@/helpers/constant';
 import { useDispatch } from 'react-redux';
 import { setAdminStatus } from '@/redux/userReducer/userReducer';
+import SignInwithGoogle from './SignInwithGoogle';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const Login = () => {
 							Or
 							<a
 								onClick={() => navigate('/register')}
-								className='font-medium text-indigo-700 hover:text-blue-500 pl-2'
+								className='font-medium text-indigo-700 hover:text-blue-500 pl-2 cursor-pointer'
 							>
 								create an account
 							</a>
@@ -142,7 +143,7 @@ const Login = () => {
 										]}
 									>
 										<Input.Password
-											className='flex appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+											className='flex appearance-none rounded-md relative  w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
 											}}
@@ -186,7 +187,7 @@ const Login = () => {
 									</Button>
 								</Form.Item>
 							</Form>
-							<div className='mt-6 hidden'>
+							<div className='mt-6 '>
 								<div className='relative'>
 									<div className='absolute inset-0 flex items-center'>
 										<div className='w-full border-t border-gray-300'></div>
@@ -223,18 +224,7 @@ const Login = () => {
 											/>
 										</a>
 									</div>
-									<div>
-										<a
-											href='#'
-											className='w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50'
-										>
-											<img
-												className='h-5 w-5'
-												src='https://www.svgrepo.com/show/506498/google.svg'
-												alt=''
-											/>
-										</a>
-									</div>
+									<SignInwithGoogle />
 								</div>
 							</div>
 						</div>
