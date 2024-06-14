@@ -54,7 +54,7 @@ const MainHome = () => {
 	};
 
 	return (
-		<div className='flex min-h-screen w-full flex-col bg-black'>
+		<div className='flex min-h-screen w-full flex-col'>
 			{/* Topbar */}
 			<Topbar />
 			{/* Sidebar */}
@@ -62,8 +62,8 @@ const MainHome = () => {
 			{/* Mainbar */}
 			<main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16'>
 				<Card x-chunk='dashboard-01-chunk-0'>
-					<CardHeader className='flex flex-row items-center justify-between text-white'></CardHeader>
-					<CardContent className='flex flex-1 flex-col text-white'>
+					<CardHeader className='flex flex-row items-center justify-between text-white bg-black'></CardHeader>
+					<CardContent className='flex flex-1 flex-col text-white bg-black'>
 						<div className='container relative w-full h-[200px]'>
 							<Spline scene='https://prod.spline.design/8rK8Mhnerno7UApB/scene.splinecode' />
 							<div className='text-layer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full justify-between'>
@@ -111,57 +111,57 @@ const MainHome = () => {
 				</Card>
 				<div className='grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4'>
 					<Card x-chunk='dashboard-01-chunk-0'>
-						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2 text-white'>
+						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2  '>
 							<CardTitle className='text-sm font-medium'>
 								Total Problems solved
 							</CardTitle>
-							<Code2 className='h-4 w-4 text-white' />
+							<Code2 className='h-4 w-4  ' />
 						</CardHeader>
 						<CardContent>
-							<div className='text-2xl font-bold text-white'>132</div>
-							<p className='text-2xs text-white mt-2'>+20.1% from last month</p>
+							<div className='text-2xl font-bold  '>132</div>
+							<p className='text-2xs   mt-2'>+20.1% from last month</p>
 						</CardContent>
 					</Card>
 					<Card x-chunk='dashboard-01-chunk-1'>
-						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2 text-white'>
+						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2  '>
 							<CardTitle className='text-sm font-medium'>
 								Lessons completed
 							</CardTitle>
-							<BookMarked className='h-4 w-4 text-white mt-2' />
+							<BookMarked className='h-4 w-4   mt-2' />
 						</CardHeader>
 						<CardContent>
-							<div className='text-2xl font-bold text-white'>12</div>
-							<p className='text-2xs text-white'>+180.1% from last month</p>
+							<div className='text-2xl font-bold  '>12</div>
+							<p className='text-2xs  '>+180.1% from last month</p>
 						</CardContent>
 					</Card>
 					<Card x-chunk='dashboard-01-chunk-2'>
 						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-							<CardTitle className='text-sm font-medium text-white'>
+							<CardTitle className='text-sm font-medium  '>
 								Average learning time
 							</CardTitle>
-							<CreditCard className='h-4 w-4 text-white' />
+							<CreditCard className='h-4 w-4  ' />
 						</CardHeader>
 						<CardContent>
-							<div className='text-2xl font-bold text-white'>3.2 hours</div>
-							<p className='text-2xs text-white mt-2'>+19% from last month</p>
+							<div className='text-2xl font-bold  '>3.2 hours</div>
+							<p className='text-2xs   mt-2'>+19% from last month</p>
 						</CardContent>
 					</Card>
 					<Card x-chunk='dashboard-01-chunk-3'>
 						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-							<CardTitle className='text-sm font-medium text-white'>
+							<CardTitle className='text-sm font-medium  '>
 								Longest streak
 							</CardTitle>
-							<Activity className='h-4 w-4 text-white' />
+							<Activity className='h-4 w-4  ' />
 						</CardHeader>
 						<CardContent>
-							<div className='text-2xl font-bold text-white'>29 days</div>
-							<p className='text-2xs text-white mt-2'>Best since last month</p>
+							<div className='text-2xl font-bold  '>29 days</div>
+							<p className='text-2xs   mt-2'>Best since last month</p>
 						</CardContent>
 					</Card>
 				</div>
 				<div className='grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3'>
 					<Card
-						className='xl:col-span-2 text-white'
+						className='xl:col-span-2  '
 						x-chunk='dashboard-01-chunk-4'
 					>
 						<CardHeader className='flex flex-row items-center'>
@@ -209,7 +209,7 @@ const MainHome = () => {
 						</CardContent>
 					</Card>
 					<Card
-						className='overflow-hidden text-white'
+						className='overflow-hidden  '
 						x-chunk='dashboard-07-chunk-4'
 					>
 						<CardHeader>

@@ -111,10 +111,15 @@ const CodeEditorWrapper = () => {
 	};
 
 	return (
-		<div className='flex min-h-screen w-full flex-col bg-black'>
+		<div className='flex min-h-screen w-full flex-col'>
 			{/* Topbar */}
+<<<<<<< HEAD
 			<header className='flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6'>
 				<nav className=' flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
+=======
+			<header className='flex h-16 items-center gap-4 border-b  px-4 md:px-6'>
+				<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
+>>>>>>> 698c5e88dd32356186420d56ae1bd3b9a3d05bfc
 					<div className='flex ml-14'>
 						<TooltipProvider>
 							<Tooltip>
@@ -189,7 +194,7 @@ const CodeEditorWrapper = () => {
 							<Input
 								type='search'
 								placeholder='Search problems...'
-								className='pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-black text-white'
+								className='pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]'
 							/>
 						</div>
 					</form>
@@ -217,7 +222,7 @@ const CodeEditorWrapper = () => {
 			{/* Main */}
 			<main className='grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3'>
 				{/* ProblemDescription & AI_Chat */}
-				<div className='text-white'>
+				<div className=' '>
 					{option === '1' && (
 						<div>
 							<ProblemDescription />
@@ -230,15 +235,15 @@ const CodeEditorWrapper = () => {
 					)}
 				</div>
 				{/* Editor */}
-				<div className='relative flex h-full mt-3 flex-col rounded-xl bg-black text-white border border-white p-4 lg:col-span-2'>
+				<div className='relative flex h-full mt-3 flex-col rounded-xl   border border-white p-4 lg:col-span-2'>
 					<Badge
 						variant='outline'
-						className='absolute right-3 top-3 text-white'
+						className='absolute right-3 top-3'
 					>
 						Editor
 					</Badge>
-					<div className='bg-black w-full h-full'>
-						<div className='flex h-20 items-center bg-black justify-between'>
+					<div className='w-full h-full'>
+						<div className='flex h-20 items-center justify-between'>
 							<LanguageSelector language={language} onSelect={onSelect} />
 							<div className='mt-5'>
 								<Abc userCode={userCode} problemText={renderProblem.title} />
