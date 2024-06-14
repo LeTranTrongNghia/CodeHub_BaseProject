@@ -17,8 +17,8 @@ import {
 import React from 'react';
 
 const Sidebar = () => {
-    return < aside className="inset-y fixed bg-black left-0 z-20 flex h-full flex-col border-r" >
-        <div className="p-2 mt-1 bg-black">
+    return < aside className="inset-y fixed left-0 z-20 flex h-full flex-col border-r" >
+        <div className="p-2 mt-1">
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -39,7 +39,7 @@ const Sidebar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="rounded-lg bg-muted bg-black text-white"
+                            className="rounded-lg bg-muted"
                             aria-label="Playground"
                         >
                             <a href='/main-home'>
@@ -75,7 +75,7 @@ const Sidebar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="rounded-lg bg-black text-white"
+                            className="rounded-lg"
                             aria-label="API"
                         >
                             <a href='/problems'>
@@ -94,7 +94,7 @@ const Sidebar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="rounded-lg bg-black text-white"
+                            className="rounded-lg"
                             aria-label="Documentation"
                         >
                             <a href='/courses'>
@@ -132,7 +132,7 @@ const Sidebar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="mt-auto rounded-lg bg-black text-white"
+                            className="mt-auto rounded-lg"
                             aria-label="Help"
                         >
                             <a href="https://github.com/tsdevtool/CodeHub_BaseProject.git">

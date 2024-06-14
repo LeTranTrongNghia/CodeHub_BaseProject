@@ -4,7 +4,7 @@ import TopBar from './components/TopBar.jsx';
 
 const IndexHome = () => {
 	return (
-		<section className='flex min-h-screen w-full flex-col bg-black'>
+		<section className='flex min-h-screen w-full flex-col '>
 			<TopBar />
 			<Header />
 			<PreviewLanding />
