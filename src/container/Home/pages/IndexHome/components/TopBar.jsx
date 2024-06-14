@@ -13,7 +13,7 @@ import {
 
 
 const TopBar = () => {
-    return <header className="flex h-20 items-center gap-4 bg-black border-b border-gray-800 px-4 md:px-6 justify-between">
+    return <header className="flex h-20 items-center gap-4 border-b border-gray-800 px-4 md:px-6 justify-between">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
             <div className="ml-12">
                 <TooltipProvider>
@@ -29,7 +29,7 @@ const TopBar = () => {
                     </Tooltip>
                 </TooltipProvider>
             </div>
-            <h1 className="ml-2 text-xl font-semibold text-white">CodeHub</h1>
+            <h1 className="ml-2 text-xl font-semibold">CodeHub</h1>
         </nav>
         <div className="mr-12">
             <a href="https://github.com/tsdevtool/CodeHub_BaseProject.git">

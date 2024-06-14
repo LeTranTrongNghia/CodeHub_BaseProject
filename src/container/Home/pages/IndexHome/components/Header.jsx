@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 const Header = () => {
 	return (
-		<section className='space-y-6 py-12 sm:py-20 lg:py-20 text-white'>
+		<section className='space-y-6 py-12 sm:py-20 lg:py-20'>
 			<div className='container flex max-w-5xl flex-col items-center gap-5 text-center'>
 				<Button asChild size='sm' className=''>
 					<div href='#'>

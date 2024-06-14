@@ -10,7 +10,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-function AI_chat({problemText}) {
+function AI_chat({ problemText }) {
 	const navigate = useNavigate();
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
@@ -82,10 +82,10 @@ function AI_chat({problemText}) {
 	return (
 		<>
 			<div
-				className="relative hidden flex-col items-start gap-8 md:flex ml-16 text-white" x-chunk="dashboard-03-chunk-0"
+				className="relative hidden flex-col items-start gap-8 md:flex ml-16" x-chunk="dashboard-03-chunk-0"
 			>
 				<form onSubmit={generateAnswer} className='text-center overflow-auto'>
-					
+
 					<div class="flex justify-center">
 						<TooltipProvider>
 							<Tooltip>
@@ -100,7 +100,7 @@ function AI_chat({problemText}) {
 							</Tooltip>
 						</TooltipProvider>
 					</div>
-					<div className="overflow-auto w-[460px] h-[450px] text-left border border-white rounded-xl mt-10">
+					<div className="overflow-auto w-[460px] h-[450px] text-left border border-gray rounded-xl mt-10">
 						<ReactMarkdown className="mx-auto p-2 prose">
 							{answer}
 						</ReactMarkdown>

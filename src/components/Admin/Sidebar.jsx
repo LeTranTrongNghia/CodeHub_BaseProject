@@ -29,8 +29,8 @@ const Sidebar = () => {
         }
     };
 
-    return < aside className="inset-y fixed bg-black left-0 z-20 flex h-full flex-col border-r" >
-        <div className="p-2 mt-1 bg-black">
+    return < aside className="inset-y fixed left-0 z-20 flex h-full flex-col border-r" >
+        <div className="p-2 mt-1">
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -51,7 +51,7 @@ const Sidebar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="rounded-lg bg-black text-white"
+                            className="rounded-lg "
                             aria-label="API"
                         >
                             <a href="/problemsAdmin">
@@ -70,7 +70,7 @@ const Sidebar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="rounded-lg bg-black text-white"
+                            className="rounded-lg "
                             aria-label="Documentation"
                         >
                             <a href="/coursesAdmin">
@@ -91,7 +91,7 @@ const Sidebar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="mt-auto rounded-lg bg-black text-white"
+                            className="mt-auto rounded-lg "
                             aria-label="Help"
                         >
                             <LogOut className="size-5" onClick={handleLogout} />

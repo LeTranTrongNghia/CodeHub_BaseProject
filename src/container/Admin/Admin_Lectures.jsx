@@ -115,12 +115,12 @@ const Admin_Lectures = () => {
         }
     };
 
-    return <div className="flex min-h-screen w-full flex-col bg-black">
+    return <div className="flex min-h-screen w-full flex-col ">
         <Sidebar />
         {/* Mainbar */}
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
+        <main className="flex flex-1 items-center flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
+            <h1 className="mb-4 text-4xl font-semibold md:text-6xl">CODEHUB ADMIN PAGE</h1>
             <Tabs defaultValue="all">
-				// Add Button
                 <div className="flex items-center">
                     <div className="ml-auto flex items-center gap-2">
                         <div className="hidden">
@@ -144,7 +144,7 @@ const Admin_Lectures = () => {
                         </div>
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button size="xl" className="h-8 gap-1">
+                                <Button size="lg" className="h-8 gap-1">
                                     <PlusCircle className="h-3.5 w-3.5" />
                                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                                         Add
@@ -249,19 +249,18 @@ const Admin_Lectures = () => {
                     </div >
                 </div >
 
-				// Table
                 <TabsContent value="all">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <h1 className="text-white text-3xl font-medium">Lectures</h1>
+                            <h1 className=" text-3xl font-medium">Lectures</h1>
                             <CardDescription>
-                                <h1 className="text-white text-sm font-medium">
+                                <h1 className=" text-sm font-medium">
                                     Level up your coding abilities! Explore Lectures designed for all skill sets, from beginner to advanced.
                                 </h1>
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className='text-white'>
+                            <div className=''>
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
@@ -289,7 +288,7 @@ const Admin_Lectures = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                     <button
-                                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                                        className="bg-red-500 hover:bg-red-700  font-bold py-2 px-4 rounded"
                                                         onClick={() => deleteDocument(item.title)}
                                                     >
                                                         Delete
