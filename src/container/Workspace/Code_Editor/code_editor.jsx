@@ -113,13 +113,8 @@ const CodeEditorWrapper = () => {
 	return (
 		<div className='flex min-h-screen w-full flex-col'>
 			{/* Topbar */}
-<<<<<<< HEAD
-			<header className='flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6'>
-				<nav className=' flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
-=======
 			<header className='flex h-16 items-center gap-4 border-b  px-4 md:px-6'>
 				<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
->>>>>>> 698c5e88dd32356186420d56ae1bd3b9a3d05bfc
 					<div className='flex ml-14'>
 						<TooltipProvider>
 							<Tooltip>
@@ -236,10 +231,7 @@ const CodeEditorWrapper = () => {
 				</div>
 				{/* Editor */}
 				<div className='relative flex h-full mt-3 flex-col rounded-xl   border border-white p-4 lg:col-span-2'>
-					<Badge
-						variant='outline'
-						className='absolute right-3 top-3'
-					>
+					<Badge variant='outline' className='absolute right-3 top-3'>
 						Editor
 					</Badge>
 					<div className='w-full h-full'>

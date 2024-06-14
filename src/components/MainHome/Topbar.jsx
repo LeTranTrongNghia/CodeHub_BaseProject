@@ -19,26 +19,7 @@ import { doc, getDoc } from 'firebase/firestore';
 
 const Topbar = () => {
 	const navigate = useNavigate();
-	const [username, setUsername] = useState('');
 
-	useEffect(() => {
-		const unsubscribe = auth.onAuthStateChanged(async user => {
-			if (user) {
-				const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
-				if (userDoc.exists()) {
-					const userData = userDoc.data();
-					setUsername(userData.display_name);
-				} else {
-					console.log('No such document!');
-				}
-			} else {
-				console.log('No user is signed in');
-			}
-		});
-
-		// Cleanup subscription on unmount
-		return () => unsubscribe();
-	}, []);
 	const handleLogout = () => {
 		try {
 			signOut(auth);
@@ -49,7 +30,7 @@ const Topbar = () => {
 		}
 	};
 	return (
-		<header className='flex h-16 items-center gap-4 border-b bg-black px-4 md:px-6'>
+		<header className='flex h-16 items-center gap-4 border-b px-4 md:px-6'>
 			<nav className=' flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
 				<h1 className='ml-16 text-xl font-semibold text-white hidden'>
 					Explore
@@ -74,25 +55,22 @@ const Topbar = () => {
 						/>
 					</div>
 				</form>
-				<div className='flex'>
-					<span className='text-white font-bold mr-1 mt-2 p-0'>{username}</span>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant='secondary' size='icon' className='rounded-full'>
-								<CircleUser className='h-5 w-5' />
-								<span className='sr-only'>Toggle user menu</span>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align='end'>
-							<DropdownMenuLabel>My Account</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							{/* <DropdownMenuItem>Settings</DropdownMenuItem>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant='secondary' size='icon' className='rounded-full'>
+							<CircleUser className='h-5 w-5' />
+							<span className='sr-only'>Toggle user menu</span>
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align='end'>
+						<DropdownMenuLabel>My Account</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						{/* <DropdownMenuItem>Settings</DropdownMenuItem>
 						<DropdownMenuItem>Support</DropdownMenuItem> */}
-							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 		</header>
 	);
