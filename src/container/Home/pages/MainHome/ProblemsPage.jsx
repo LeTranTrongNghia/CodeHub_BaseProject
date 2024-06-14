@@ -30,8 +30,8 @@ import {
     Tabs,
     TabsContent,
 } from "@/components/ui/tabs"
-import Sidebar from "@/components/MainHome/Sidebar";
-import Topbar from "@/components/MainHome/Topbar";
+import Sidebar from '@/components/MainHome/Sidebar';
+import Topbar from '@/components/MainHome/Topbar';
 import { useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
@@ -60,7 +60,7 @@ const ProblemsPage = () => {
         navigate('/coding');
     };
 
-    return <div className="flex min-h-screen w-full flex-col bg-black">
+    return <div className="flex min-h-screen w-full flex-col">
         {/* Topbar */}
         <Topbar />
         {/* Sidebar */}
@@ -98,15 +98,15 @@ const ProblemsPage = () => {
                 <TabsContent value="all">
                     <Card x-chunk="dashboard-06-chunk-0">
                         <CardHeader>
-                            <h1 className="text-white text-3xl font-medium">Problems</h1>
+                            <h1 className="  text-3xl font-medium">Problems</h1>
                             <CardDescription>
-                                <h1 className="text-white text-sm font-medium">
+                                <h1 className="  text-sm font-medium">
                                     Level up your coding abilities! Explore problems designed for all skill sets, from beginner to advanced.
                                 </h1>
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className='text-white'>
+                            <div>
                                 <Table>
                                     <TableHeader>
                                         <TableRow>

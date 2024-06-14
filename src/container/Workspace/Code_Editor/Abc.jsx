@@ -82,7 +82,7 @@ const Abc = ({userCode, problemText}) => {
 		setGeneratingAnswer(false);
 	}
 
-	return <section class="flex justify-center items-center bg-black p-3">
+	return <section class="flex justify-center items-center p-3">
 		<Drawer>
 			<DrawerTrigger asChild size="sm">
 				<Button asChild size="sm" className="">
@@ -110,7 +110,7 @@ const Abc = ({userCode, problemText}) => {
 						<button
 							type='button'
 							onClick={guideCode}
-							className='bg-gray-900 p-3 rounded-md hover:bg-gray-500 transition-all duration-300 text-white'
+							className='bg-gray-900 text-white p-3 rounded-md hover:bg-gray-500 transition-all duration-300'
 							disabled={generatingAnswer}
 						>
 							Review

@@ -6,7 +6,7 @@ const PreviewLanding = () => {
 					<div className='relative aspect-video overflow-hidden rounded-xl'>
 						<img
 							className='w-full h-full object-cover object-center'
-							src='/src/assets/Preview.png'
+							src='/src/assets/Main.png'
 							alt='preview landing'
 							loading='eager'
 						/>
