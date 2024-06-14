@@ -7,12 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './style.css';
 import User from '@/model/User';
+import SignInwithGoogle from '../Login/SignInwithGoogle';
 
 const Register = () => {
 	const navigate = useNavigate();
 	const handleSubmitForm = async values => {
 		try {
-			const { email, password } = values;
+			const { email, password, username } = values;
 			const result = await createUserWithEmailAndPassword(
 				auth,
 				email,
@@ -20,7 +21,7 @@ const Register = () => {
 			);
 			const user = result.user;
 			if (user) {
-				const newUser = new User(user.uid, email, hashPwd(password));
+				const newUser = new User(user.uid, email, hashPwd(password), username);
 				const userObject = newUser.toPlainObject();
 				await setDoc(doc(firestore, 'Users', user.uid), userObject);
 			}
@@ -106,6 +107,40 @@ const Register = () => {
 
 								<div>
 									<label
+										htmlFor='username'
+										className='block text-sm font-medium text-gray-700'
+									>
+										Username
+									</label>
+									<Form.Item
+										name='username'
+										className='mt-1'
+										rules={[
+											{
+												required: true,
+												message: (
+													<Alert
+														className='ml-2 bg-transparent text-sm text-red-700'
+														message='please enter email'
+														banner
+														type='error'
+													/>
+												),
+											},
+										]}
+									>
+										<Input
+											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+											classNames={{
+												input: 'text-md font-normal',
+											}}
+											placeholder='Enter your username'
+										/>
+									</Form.Item>
+								</div>
+
+								<div>
+									<label
 										htmlFor='password'
 										className='block text-sm font-medium text-gray-700'
 									>
@@ -139,8 +174,8 @@ const Register = () => {
 											},
 										]}
 									>
-										<Input
-											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+										<Input.Password
+											className='flex appearance-none rounded-md relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
 											}}
@@ -189,7 +224,7 @@ const Register = () => {
 										]}
 									>
 										<Input.Password
-											className='flex appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+											className='flex appearance-none rounded-md relative  w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
 											}}
@@ -244,18 +279,7 @@ const Register = () => {
 											/>
 										</a>
 									</div>
-									<div>
-										<a
-											href='#'
-											className='w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50'
-										>
-											<img
-												className='h-5 w-5'
-												src='https://www.svgrepo.com/show/506498/google.svg'
-												alt=''
-											/>
-										</a>
-									</div>
+									<SignInwithGoogle />
 								</div>
 							</div>
 						</div>
