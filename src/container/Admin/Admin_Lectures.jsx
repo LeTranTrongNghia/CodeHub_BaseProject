@@ -5,98 +5,94 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-} from "@/components/ui/card"
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+} from '@/components/ui/card';
 import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import {
-    Tabs,
-    TabsContent,
-} from "@/components/ui/tabs"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs, addDoc, doc, deleteDoc } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
 const Admin_Lectures = () => {
-    // Lectures List
-    const [lecturesList, setLecturesList] = useState([]);
-    useEffect(() => {
-        (async () => {
-            const data = await getDocs(collection(firestore, 'Lectures'));
-            const lecturesList = data.docs.map(doc => doc.data());
-            setLecturesList(lecturesList);
-        })();
-    });
+	// Lectures List
+	const [lecturesList, setLecturesList] = useState([]);
+	useEffect(() => {
+		(async () => {
+			const data = await getDocs(collection(firestore, 'Lectures'));
+			const lecturesList = data.docs.map(doc => doc.data());
+			setLecturesList(lecturesList);
+		})();
+	});
 
-    // Add Lectures
-    const [title, setTitle] = useState('');
-    const [language, setLanguage] = useState('');
-    const [language_short, setLanguage_short] = useState('');
-    const [author, setAuthor] = useState('');
-    const [video_num, setVideo_num] = useState('');
-    const [image_cover, setImage_cover] = useState('');
-    const [video_link, setVideo_link] = useState('');
+	// Add Lectures
+	const [title, setTitle] = useState('');
+	const [language, setLanguage] = useState('');
+	const [language_short, setLanguage_short] = useState('');
+	const [author, setAuthor] = useState('');
+	const [video_num, setVideo_num] = useState('');
+	const [image_cover, setImage_cover] = useState('');
+	const [video_link, setVideo_link] = useState('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+	const handleSubmit = async e => {
+		e.preventDefault();
 
-        const newLectures = {
-            title,
-            language,
-            language_short,
-            author,
-            video_num,
-            image_cover,
-            video_link,
-        };
+		const newLectures = {
+			title,
+			language,
+			language_short,
+			author,
+			video_num,
+			image_cover,
+			video_link,
+		};
 
-        try {
-            const lecturesRef = doc(collection(firestore, 'Lectures'));
-            await addDoc(collection(firestore, 'Lectures'), newLectures);
+		try {
+			const lecturesRef = doc(collection(firestore, 'Lectures'));
+			await addDoc(collection(firestore, 'Lectures'), newLectures);
+		} catch (error) {
+			console.error('Error adding document: ', error);
+		}
 
-        } catch (error) {
-            console.error('Error adding document: ', error);
-        }
+		setTitle('');
+		setLanguage('');
+		setLanguage_short('');
+		setAuthor('');
+		setVideo_num('');
+		setImage_cover('');
+		setVideo_link('');
+	};
 
-        setTitle('');
-        setLanguage('');
-        setLanguage_short('');
-        setAuthor('');
-        setVideo_num('');
-        setImage_cover('');
-        setVideo_link('');
-    };
-
-    // Delete Lectures
-    const [isDeleted, setIsDeleted] = useState(false);
+	// Delete Lectures
+	const [isDeleted, setIsDeleted] = useState(false);
 
     const deleteDocument = async (title) => {
         try {
@@ -310,5 +306,4 @@ const Admin_Lectures = () => {
         </main >
     </div >
 };
-
-export default Admin_Lectures; 
+export default Admin_Lectures;

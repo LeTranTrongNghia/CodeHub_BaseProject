@@ -87,7 +87,7 @@ const Admin = () => {
 		]);
 	};
 
-	const handleRemoveTestCase = (index) => {
+	const handleRemoveTestCase = index => {
 		const updatedTestCases = [...testCases];
 		updatedTestCases.splice(index, 1);
 		setTestCases(updatedTestCases);
@@ -99,11 +99,14 @@ const Admin = () => {
 		setTestCases(updatedTestCases);
 	};
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async e => {
 		e.preventDefault();
 
-		const testCasePromises = testCases.map(async (testCase) => {
-			const testCaseRef = await addDoc(collection(firestore, 'TestCases'), testCase);
+		const testCasePromises = testCases.map(async testCase => {
+			const testCaseRef = await addDoc(
+				collection(firestore, 'TestCases'),
+				testCase,
+			);
 			return testCaseRef.id;
 		});
 
@@ -435,5 +438,6 @@ const Admin = () => {
 		</div>
 	);
 };
+export default Admin;
 
 export default Admin;
