@@ -1,7 +1,7 @@
 import Sidebar from "@/components/Admin/Sidebar";
 import {
     ListFilter,
-    PlusCircle,
+    PlusCircle
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -41,7 +41,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import React, { useEffect, useState } from 'react';
-import { collection, query, where, getDocs, addDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, doc, deleteDoc } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
 import { toast } from "react-toastify";
 
@@ -100,7 +100,7 @@ const Admin_Lectures = () => {
 
     const deleteDocument = async (title) => {
         try {
-            const colRef = collection(firestore, 'Lectures');  // Replace with your collection name
+            const colRef = collection(firestore, 'Lectures');
             const q = query(colRef, where('title', '==', title));
 
             const querySnapshot = await getDocs(q);
@@ -108,10 +108,9 @@ const Admin_Lectures = () => {
                 await deleteDoc(doc.ref);
             });
             setIsDeleted(true);
-            toast("Delete lecture successed! 🎉") // Set state for success message
+            toast("Delete lecture successed! 🎉")
         } catch (error) {
-            console.error('Error deleting document:', error);
-            // Handle errors gracefully, e.g., display an error message to the user
+            toast('Error deleting document:', error);
         }
     };
 
@@ -119,7 +118,6 @@ const Admin_Lectures = () => {
         <Sidebar />
         {/* Mainbar */}
         <main className="flex flex-1 items-center flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16">
-            <h1 className="mb-4 text-4xl font-semibold md:text-6xl">CODEHUB ADMIN PAGE</h1>
             <Tabs defaultValue="all">
                 <div className="flex items-center">
                     <div className="ml-auto flex items-center gap-2">
@@ -288,7 +286,7 @@ const Admin_Lectures = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                     <button
-                                                        className="bg-red-500 hover:bg-red-700  font-bold py-2 px-4 rounded"
+                                                        className="bg-red-500 text-white hover:bg-red-700  font-bold py-2 px-4 rounded"
                                                         onClick={() => deleteDocument(item.title)}
                                                     >
                                                         Delete
