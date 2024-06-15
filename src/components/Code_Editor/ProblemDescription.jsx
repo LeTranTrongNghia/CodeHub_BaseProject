@@ -97,8 +97,7 @@ const ProblemDescription = () => {
 							<div className='example-card'>
 								<pre className='text-wrap'>
 									<p className='font-medium   text-lg'>Example 1:</p>
-									<strong className=' '>Input: </strong>{' '}
-									{testcase1?.inputText}
+									<strong className=' '>Input: </strong> {testcase1?.inputText}
 									<br />
 									<strong className=' '>Output: </strong>
 									{testcase1?.outputText} <br />
@@ -115,8 +114,7 @@ const ProblemDescription = () => {
 							<div className='example-card'>
 								<pre className='text-wrap'>
 									<p className='font-medium   text-lg'>Example 2:</p>
-									<strong className=' '>Input: </strong>{' '}
-									{testcase2?.inputText}
+									<strong className=' '>Input: </strong> {testcase2?.inputText}
 									<br />
 									<strong className=' '>Output: </strong>
 									{testcase2?.outputText} <br />
