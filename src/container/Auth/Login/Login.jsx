@@ -9,7 +9,6 @@ import { UserRole } from '@/helpers/constant';
 import { useDispatch } from 'react-redux';
 import { setAdminStatus } from '@/redux/userReducer/userReducer';
 import SignInwithGoogle from './SignInwithGoogle';
-import SignInwithFacebook from './SignInwithFacebook';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -200,20 +199,12 @@ const Login = () => {
 									</div>
 								</div>
 
-								<div className='mt-6 grid grid-cols-3 gap-3'>
+								{/* <div className='mt-6 grid grid-cols-3 gap-3'>
 									<SignInwithFacebook />
-									<div>
-										<a
-											href='#'
-											className='w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50'
-										>
-											<img
-												className='h-5 w-5'
-												src='https://www.svgrepo.com/show/512317/github-142.svg'
-												alt=''
-											/>
-										</a>
-									</div>
+									<SignInwithGithub />
+									
+								</div> */}
+								<div className='mt-6'>
 									<SignInwithGoogle />
 								</div>
 							</div>

@@ -58,13 +58,29 @@ const publicRoute = [
 		component: RegisterPage,
 	},
 	{
-		path: config.routes.changePassword,
-		component: ChangePasswordPage,
-	},
-	{
 		path: config.routes.resetPassword,
 		component: ResetPasswordPage,
 	},
+	{
+		path: config.routes.forgotPassword,
+		component: ForgotPasswordPage,
+	},
+	{
+		path: config.routes.indexHome,
+		component: IndexHomePage,
+	},
+];
+
+const protectedRoute = [
+	{
+		path: config.routes.problemPage,
+		component: ProblemPage,
+	},
+	{
+		path: config.routes.coursePage,
+		component: CoursePage,
+	},
+
 	{
 		path: config.routes.home,
 		component: MainHomePage,
@@ -82,28 +98,8 @@ const publicRoute = [
 		component: AIPage,
 	},
 	{
-		path: config.routes.forgotPassword,
-		component: ForgotPasswordPage,
-	},
-	{
-		path: config.routes.indexHome,
-		component: IndexHomePage,
-	},
-	{
-		path: config.routes.problemPage,
-		component: ProblemPage,
-	},
-	{
-		path: config.routes.coursePage,
-		component: CoursePage,
-	},
-	{
-		path: config.routes.problemPageAdmin,
-		component: ProblemPageAdmin,
-	},
-	{
-		path: config.routes.coursePageAdmin,
-		component: CoursePageAdmin,
+		path: config.routes.changePassword,
+		component: ChangePasswordPage,
 	},
 ];
 
@@ -116,6 +112,14 @@ const adminRoute = [
 		path: config.routes.admin.lecture,
 		component: AdminLecture,
 	},
+	{
+		path: config.routes.problemPageAdmin,
+		component: ProblemPageAdmin,
+	},
+	{
+		path: config.routes.coursePageAdmin,
+		component: CoursePageAdmin,
+	},
 ];
 
-export { publicRoute, adminRoute };
+export { publicRoute, adminRoute, protectedRoute };

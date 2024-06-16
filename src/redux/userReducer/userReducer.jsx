@@ -8,7 +8,6 @@ const userReducer = createSlice({
 	name: 'userReducer',
 	initialState,
 	reducers: {
-		// Action to handle user login
 		setAdminStatus: (state, action) => {
 			state.isAdmin = action.payload;
 		},
