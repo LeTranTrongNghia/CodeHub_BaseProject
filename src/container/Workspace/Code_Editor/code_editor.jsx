@@ -114,7 +114,7 @@ const CodeEditorWrapper = () => {
 		<div className='flex min-h-screen w-full flex-col'>
 			{/* Topbar */}
 			<header className='flex h-16 items-center gap-4 border-b  px-4 md:px-6'>
-				<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
+				<nav className=' flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
 					<div className='flex ml-14'>
 						<TooltipProvider>
 							<Tooltip>
@@ -138,7 +138,7 @@ const CodeEditorWrapper = () => {
 									type='submit'
 									className={`option ${
 										option === '1' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[120px]`}
+									} flex bg-white p-3 rounded-md text-left w-[120px] `}
 									onClick={e => setOption('1')}
 								>
 									<BookMarked className='size-5 mr-4' />
@@ -157,7 +157,7 @@ const CodeEditorWrapper = () => {
 									type='submit'
 									className={`option ${
 										option === '2' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[150px]`}
+									} flex bg-white p-3 rounded-md text-left w-[150px] `}
 									onClick={e => setOption('2')}
 								>
 									<Bot className='size-5 mr-4' />
