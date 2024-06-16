@@ -10,12 +10,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
-import React, { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
-import { auth, firestore } from '@/firebase/firebase';
+import { auth } from '@/firebase/firebase';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
 
 const Topbar = () => {
 	const navigate = useNavigate();

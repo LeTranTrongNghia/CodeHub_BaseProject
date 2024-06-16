@@ -1,0 +1,13 @@
+@keyframes follow-the-leader {
+	0% {
+		transform: rotate(0deg) translateY(-200%);
+	}
+	60%,
+	100% {
+		transform: rotate(360deg) translateY(-200%);
+	}
+}
+
+.follow-the-leader div {
+	animation: follow-the-leader 1.875s infinite backwards;
+}
