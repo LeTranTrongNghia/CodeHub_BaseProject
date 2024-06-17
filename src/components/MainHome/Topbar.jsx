@@ -63,8 +63,8 @@ const Topbar = () => {
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>My Account</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						{/* <DropdownMenuItem>Settings</DropdownMenuItem>
-						<DropdownMenuItem>Support</DropdownMenuItem> */}
+						<DropdownMenuItem><a href=''>Settings</a></DropdownMenuItem>
+						<DropdownMenuItem><a href="https://github.com/tsdevtool/CodeHub_BaseProject">Support</a></DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
 					</DropdownMenuContent>
