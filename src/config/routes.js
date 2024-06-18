@@ -17,6 +17,7 @@ const routes = {
 	coursePage: '/courses',
 	problemPageAdmin: '/problemsAdmin',
 	coursePageAdmin: '/coursesAdmin',
+	contactPage:'/contact',
 };
 
 export default routes;
