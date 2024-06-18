@@ -135,7 +135,7 @@ const Sidebar = () => {
                             className="mt-auto rounded-lg"
                             aria-label="Help"
                         >
-                            <a href="https://github.com/tsdevtool/CodeHub_BaseProject.git">
+                            <a href="/contact">
                                 <LifeBuoy className="size-5" />
                             </a>
                         </Button>

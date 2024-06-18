@@ -48,7 +48,15 @@ const CoursePageAdmin = React.lazy(() =>
 	import('../container/Admin/Admin_Lectures.jsx'),
 );
 
+const ContactPage = React.lazy(() =>
+	import('../container/Home/pages/MainHome/support.jsx'),
+);
+
 const publicRoute = [
+	{
+		path: config.routes.contactPage,
+		component: ContactPage,
+	},
 	{
 		path: config.routes.login,
 		component: LoginPage,

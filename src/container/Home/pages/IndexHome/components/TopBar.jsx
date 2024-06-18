@@ -1,4 +1,4 @@
-import { Triangle } from 'lucide-react';
+import { Triangle, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import React from 'react';
 import {
@@ -34,7 +34,7 @@ const TopBar = () => {
 						<Tooltip>
 							<TooltipTrigger asChild>
 								<Button variant='outline' size='icon' aria-label='Home'>
-									<Triangle className='size-5 fill-foreground' />
+									<Github className='size-5 fill-foreground' />
 								</Button>
 							</TooltipTrigger>
 							<TooltipContent side='bottom' sideOffset={5}>
