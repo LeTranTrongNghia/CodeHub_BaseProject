@@ -26,6 +26,15 @@ const Login = () => {
 				password,
 			);
 			const user = existingUser.user;
+
+			// Kiểm tra xem email đã được xác minh chưa
+			if (!user.emailVerified) {
+				toast.error('Please verify your email before logging in.');
+				// Đăng xuất người dùng nếu email chưa được xác minh
+				await auth.signOut();
+				return;
+			}
+
 			const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
 			const userData = userDoc.data();
 			const role = userData.role;
@@ -204,12 +213,8 @@ const Login = () => {
 									</div>
 								</div>
 
-								{/* <div className='mt-6 grid grid-cols-3 gap-3'>
-									<SignInwithFacebook />
-									
-									
-								</div> */}
-								<div className='mt-6'>
+								<div className='mt-6 grid grid-cols-2 gap-3'>
+									{/* <SignInwithFacebook /> */}
 									<SignInwithGoogle />
 									<SignInwithGithub />
 								</div>

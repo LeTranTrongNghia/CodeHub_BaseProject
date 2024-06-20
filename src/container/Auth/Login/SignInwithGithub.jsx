@@ -25,7 +25,6 @@ const SignInwithGithub = () => {
 						user.photoURL,
 					).toPlainObject();
 					await setDoc(doc(firestore, 'Users', user.uid), githubUser);
-					console.log('🚀 ~ gihubLogin ~ googleUser:', githubUser);
 					toast.success('User logged in Successfully', {
 						position: 'top-center',
 					});
