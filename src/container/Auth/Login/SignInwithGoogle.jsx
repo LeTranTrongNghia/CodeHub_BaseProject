@@ -1,12 +1,21 @@
 import { auth, firestore } from '@/firebase/firebase';
 import User from '@/model/User';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { setLoginStatus } from '@/redux/userReducer/userReducer';
+import {
+	getRedirectResult,
+	GoogleAuthProvider,
+	signInWithPopup,
+	signInWithRedirect,
+} from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const SignInwithGoogle = () => {
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
 	const googleLogin = () => {
 		const provider = new GoogleAuthProvider();
 		signInWithPopup(auth, provider)
@@ -26,6 +35,7 @@ const SignInwithGoogle = () => {
 					});
 					navigate('/main-home');
 				}
+				dispatch(setLoginStatus(true));
 			})
 			.catch(error => {
 				toast.error('Failed to log in. Please try again.');

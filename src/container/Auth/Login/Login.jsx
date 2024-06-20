@@ -7,8 +7,12 @@ import { auth, firestore } from '@/firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { UserRole } from '@/helpers/constant';
 import { useDispatch } from 'react-redux';
-import { setAdminStatus } from '@/redux/userReducer/userReducer';
+import {
+	setAdminStatus,
+	setLoginStatus,
+} from '@/redux/userReducer/userReducer';
 import SignInwithGoogle from './SignInwithGoogle';
+import SignInwithGithub from './SignInwithGithub';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -22,9 +26,19 @@ const Login = () => {
 				password,
 			);
 			const user = existingUser.user;
+
+			// Kiểm tra xem email đã được xác minh chưa
+			if (!user.emailVerified) {
+				toast.error('Please verify your email before logging in.');
+				// Đăng xuất người dùng nếu email chưa được xác minh
+				await auth.signOut();
+				return;
+			}
+
 			const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
 			const userData = userDoc.data();
 			const role = userData.role;
+			dispatch(setLoginStatus(true));
 			dispatch(setAdminStatus(false));
 			if (role === UserRole.ADMIN) {
 				dispatch(setAdminStatus(true));
@@ -199,13 +213,10 @@ const Login = () => {
 									</div>
 								</div>
 
-								{/* <div className='mt-6 grid grid-cols-3 gap-3'>
-									<SignInwithFacebook />
-									<SignInwithGithub />
-									
-								</div> */}
-								<div className='mt-6'>
+								<div className='mt-6 grid grid-cols-2 gap-3'>
+									{/* <SignInwithFacebook /> */}
 									<SignInwithGoogle />
+									<SignInwithGithub />
 								</div>
 							</div>
 						</div>
