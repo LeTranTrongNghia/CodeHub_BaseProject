@@ -1,12 +1,16 @@
 import { Alert, Button, Form, Input } from 'antd';
 
 const ChangePassword = () => {
+	const onFinish = async values => {
+		console.log('🚀 ~ ChangePassword ~ values:', values);
+	};
+
 	return (
 		<>
 			<div
 				className='min-h-screen bg-cover bg-center'
 				style={{
-					backgroundImage: `url(https://images.p exels.com/photos/7134986/pexels-photo-7134986.jpeg)`,
+					backgroundImage: `url(https://images.pexels.com/photos/7134986/pexels-photo-7134986.jpeg)`,
 				}}
 			>
 				<div className='min-h-screen  flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
@@ -18,7 +22,7 @@ const ChangePassword = () => {
 
 					<div className='mt-6 sm:mx-auto sm:w-full sm:max-w-md'>
 						<div className='bg-white py-6 px-4 shadow sm:rounded-lg sm:px-10'>
-							<Form>
+							<Form onFinish={onFinish}>
 								<div>
 									<label
 										htmlFor='password'
@@ -54,8 +58,8 @@ const ChangePassword = () => {
 											},
 										]}
 									>
-										<Input.Password
-											className='flex appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+										<Input
+											className='flex appearance-none rounded-md relative  w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
 											}}
@@ -99,8 +103,8 @@ const ChangePassword = () => {
 											},
 										]}
 									>
-										<Input
-											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+										<Input.Password
+											className='appearance-none rounded-md relative flex w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
 											}}
@@ -151,8 +155,8 @@ const ChangePassword = () => {
 											}),
 										]}
 									>
-										<Input
-											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+										<Input.Password
+											className='appearance-none rounded-md relative flex w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											classNames={{
 												input: 'text-md font-normal',
 											}}
