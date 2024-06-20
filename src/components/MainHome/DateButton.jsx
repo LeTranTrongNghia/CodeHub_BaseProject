@@ -21,7 +21,7 @@ function DateButton() {
 	return (
 		<div className='flex items-center p-3 bg-black border border-white m-2 rounded-md text-white text-sm'>
 			<svg
-				class='w-6 h-6 mr-2 text-white'
+				className='w-6 h-6 mr-2 text-white'
 				aria-hidden='true'
 				xmlns='http://www.w3.org/2000/svg'
 				width='24'

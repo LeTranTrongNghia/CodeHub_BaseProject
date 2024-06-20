@@ -1,22 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 import { adminRoute, protectedRoute, publicRoute } from './routes/routes';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import IndexHome from './container/Home/pages/IndexHome';
 import AdminRoute from './routes/AdminRoute';
-import { auth } from './firebase/firebase';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Loading from './components/Loading';
 
 const App = () => {
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-	useEffect(() => {
-		const unsubscribe = auth.onAuthStateChanged(user => {
-			setIsLoggedIn(!!user);
-		});
-
-		return () => unsubscribe();
-	}, []);
 	return (
 		<Suspense fallback={<Loading />}>
 			<Routes>
@@ -29,7 +19,7 @@ const App = () => {
 						);
 					})}
 				</Route>
-				<Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
+				<Route element={<ProtectedRoute />}>
 					{protectedRoute.map((route, idx) => {
 						const Page = route.component;
 						return (
