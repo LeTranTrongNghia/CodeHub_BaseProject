@@ -88,7 +88,6 @@ const protectedRoute = [
 		path: config.routes.coursePage,
 		component: CoursePage,
 	},
-
 	{
 		path: config.routes.home,
 		component: MainHomePage,

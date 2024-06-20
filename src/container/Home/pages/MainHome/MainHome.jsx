@@ -211,7 +211,7 @@ const MainHome = () => {
 									</TableHeader>
 									<TableBody>
 										{problemList.map((item, index) => (
-											<TableRow key={index}>
+											<TableRow key={index} className='cursor-pointer'>
 												<TableCell>
 													<div
 														className='font-medium'
