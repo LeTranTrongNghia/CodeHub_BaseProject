@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 
 const ProtectedRoute = () => {
 	const isLoggedIn = useSelector(state => state.user.isLoggedIn);
-	console.log('🚀 ~ ProtectedRoute ~ isLoggedIn:', isLoggedIn);
 	!isLoggedIn
 		? toast('You must log in to continue.', {
 				autoClose: 3000,

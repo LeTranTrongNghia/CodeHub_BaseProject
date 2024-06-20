@@ -20,7 +20,7 @@ const AIPage = React.lazy(() =>
 	import('../container/Workspace/AI_chat/AI_chat.jsx'),
 );
 const ForgotPasswordPage = React.lazy(() =>
-	import('../container/Auth/ForgotPassword'),
+	import('../container/Auth/ForgotPassword/ForgotPassword.jsx'),
 );
 
 const IndexHomePage = React.lazy(() =>
