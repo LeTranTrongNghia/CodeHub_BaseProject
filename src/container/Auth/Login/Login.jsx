@@ -184,7 +184,7 @@ const Login = () => {
 
 									<div className='text-sm'>
 										<a
-											onClick={() => navigate('/reset-password')}
+											onClick={() => navigate('/forgot-password')}
 											className='font-medium text-blue-600 hover:text-blue-500'
 										>
 											Forgot your password?
