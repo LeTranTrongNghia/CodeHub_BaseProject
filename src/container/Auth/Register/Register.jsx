@@ -1,7 +1,10 @@
 import { auth, firestore } from '@/firebase/firebase';
 import { hashPwd } from '@/helpers/helper';
 import { Alert, Button, Form, Input } from 'antd';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+	createUserWithEmailAndPassword,
+	sendEmailVerification,
+} from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -23,10 +26,14 @@ const Register = () => {
 			if (user) {
 				const newUser = new User(user.uid, email, hashPwd(password), username);
 				const userObject = newUser.toPlainObject();
+				await sendEmailVerification(user);
 				await setDoc(doc(firestore, 'Users', user.uid), userObject);
 			}
-			toast.success('Registered successfully');
-			navigate('/login');
+			toast.success(
+				'Registered successfully. Check your email inbox to verify account!',
+				{ autoClose: 7000 },
+			),
+				navigate('/login');
 		} catch (error) {
 			toast.error(error.message);
 		}
