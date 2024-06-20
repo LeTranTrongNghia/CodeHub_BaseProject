@@ -7,8 +7,12 @@ import { auth, firestore } from '@/firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { UserRole } from '@/helpers/constant';
 import { useDispatch } from 'react-redux';
-import { setAdminStatus } from '@/redux/userReducer/userReducer';
+import {
+	setAdminStatus,
+	setLoginStatus,
+} from '@/redux/userReducer/userReducer';
 import SignInwithGoogle from './SignInwithGoogle';
+import SignInwithGithub from './SignInwithGithub';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -25,6 +29,7 @@ const Login = () => {
 			const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
 			const userData = userDoc.data();
 			const role = userData.role;
+			dispatch(setLoginStatus(true));
 			dispatch(setAdminStatus(false));
 			if (role === UserRole.ADMIN) {
 				dispatch(setAdminStatus(true));
@@ -201,11 +206,12 @@ const Login = () => {
 
 								{/* <div className='mt-6 grid grid-cols-3 gap-3'>
 									<SignInwithFacebook />
-									<SignInwithGithub />
+									
 									
 								</div> */}
 								<div className='mt-6'>
 									<SignInwithGoogle />
+									<SignInwithGithub />
 								</div>
 							</div>
 						</div>

@@ -14,13 +14,16 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/firebase/firebase';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setLoginStatus } from '@/redux/userReducer/userReducer';
 
 const Topbar = () => {
 	const navigate = useNavigate();
-
+	const dispatch = useDispatch();
 	const handleLogout = () => {
 		try {
 			signOut(auth);
+			dispatch(setLoginStatus(false));
 			toast.success('Logout successfully');
 			navigate('/login');
 		} catch (error) {
@@ -63,8 +66,12 @@ const Topbar = () => {
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>My Account</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem><a href=''>Settings</a></DropdownMenuItem>
-						<DropdownMenuItem><a href="/contact">Support</a></DropdownMenuItem>
+						<DropdownMenuItem>
+							<a href=''>Settings</a>
+						</DropdownMenuItem>
+						<DropdownMenuItem>
+							<a href='/contact'>Support</a>
+						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
 					</DropdownMenuContent>

@@ -4,7 +4,7 @@ import { unstable_HistoryRouter as HistoryBrowserRouter } from 'react-router-dom
 import App from './App.jsx';
 import { createBrowserHistory } from 'history';
 import './index.css';
-import { store, persistor } from './redux/config.jsx';
+import { persistor, store } from './redux/config.jsx';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ToastContainer } from 'react-toastify';
