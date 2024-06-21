@@ -13,6 +13,7 @@ import {
 } from '@/redux/userReducer/userReducer';
 import SignInwithGoogle from './SignInwithGoogle';
 import SignInwithGithub from './SignInwithGithub';
+import SignInwithFacebook from './SignInwithFacebook';
 
 const Login = () => {
 	const dispatch = useDispatch();
