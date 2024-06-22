@@ -10,7 +10,10 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, firestore } from '@/firebase/firebase';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
 	const [activeMenu, setActiveMenu] = useState('General');
@@ -18,8 +21,37 @@ const Profile = () => {
 	const handleMenuClick = menu => {
 		setActiveMenu(menu);
 	};
+
+	const [id, setId] = useState('');
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState('');
+	const [createAt, setCreateAt] = useState('');
+
+	useEffect(() => {
+		const unsubscribe = auth.onAuthStateChanged(async user => {
+			try {
+				if (user) {
+					const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
+					if (userDoc.exists()) {
+						const userData = userDoc.data();
+						setId(userData.id);
+						setUsername(userData.display_name);
+						setEmail(userData.email);
+					} else {
+						console.log('No such document!');
+					}
+				}
+			} catch (error) {
+				toast.error('No user is signed in');
+			}
+		});
+
+		// Cleanup subscription on unmount
+		return () => unsubscribe();
+	}, []);
+
 	return (
-		<div>
+		<div className='flex min-h-screen w-full flex-col'>
 			{/* Topbar */}
 			<Topbar />
 			{/* Sidebar */}
@@ -36,79 +68,46 @@ const Profile = () => {
 					>
 						<a
 							href='#'
-							className={`${
-								activeMenu === 'General' ? 'font-semibold text-primary' : ''
-							}`}
+							className={`${activeMenu === 'General' ? 'font-semibold text-primary' : ''
+								}`}
 							onClick={() => handleMenuClick('General')}
 						>
 							General
 						</a>
 						<a
-							href='#'
-							className={`${
-								activeMenu === 'Security' ? 'font-semibold text-primary' : ''
-							}`}
-							onClick={() => handleMenuClick('Security')}
-						>
-							Security
-						</a>
-						<a
-							href='#'
-							className={`${
-								activeMenu === 'Integrations'
-									? 'font-semibold text-primary'
-									: ''
-							}`}
-							onClick={() => handleMenuClick('Integrations')}
-						>
-							Integrations
-						</a>
-						<a
-							href='#'
-							className={`${
-								activeMenu === 'Support' ? 'font-semibold text-primary' : ''
-							}`}
+							href='/contact'
+							className={`${activeMenu === 'Support' ? 'font-semibold text-primary' : ''
+								}`}
 							onClick={() => {
 								handleMenuClick('Support');
 							}}
 						>
 							Support
 						</a>
-						<a
-							href='#'
-							className={`${
-								activeMenu === 'Organizations'
-									? 'font-semibold text-primary'
-									: ''
-							}`}
-							onClick={() => handleMenuClick('Organizations')}
-						>
-							Organizations
-						</a>
-						<a
-							href='#'
-							className={`${
-								activeMenu === 'Advanced' ? 'font-semibold text-primary' : ''
-							}`}
-							onClick={() => handleMenuClick('Advanced')}
-						>
-							Advanced
-						</a>
 					</div>
 					<div className='grid gap-6'>
 						<Card x-chunk='dashboard-04-chunk-1'>
 							<CardHeader>
-								<CardTitle>Display name</CardTitle>
+								<CardTitle>Accout infomation</CardTitle>
 								<CardDescription>
 									Used to identify your account.
 								</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<form>
-									<Input placeholder='Your name' />
-								</form>
+								<div className="rounded-md border mb-4 px-4 py-3 font-mono text-sm">
+									<h1 className='font-bold'>ID: </h1>
+									{id}
+								</div>
+								<div className="rounded-md border my-4 px-4 py-3 font-mono text-sm">
+									<h1 className='font-bold'>Username: </h1>
+									{username}
+								</div>
+								<div className="rounded-md border my-4 px-4 py-3 font-mono text-sm">
+									<h1 className='font-bold'>Email: </h1>
+									{email}
+								</div>
 							</CardContent>
-							<CardFooter className='border-t px-6 py-4'>
+							<CardFooter className='border-t px-6 py-4 hidden'>
 								<Button>Save</Button>
 							</CardFooter>
 						</Card>
