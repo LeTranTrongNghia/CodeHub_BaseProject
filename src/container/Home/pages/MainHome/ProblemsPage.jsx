@@ -27,9 +27,14 @@ import {
 import { Input } from '@/components/ui/input';
 import Sidebar from '@/components/MainHome/Sidebar';
 import Topbar from '@/components/MainHome/Topbar';
+
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/firebase/firebase';
+import { useDispatch } from 'react-redux';
+import {
+	setSelectedProblem,
+} from '@/redux/problemReducer/problemReducer';
 import { useNavigate } from 'react-router-dom';
 
 const ProblemsPerPage = 7; // Number of problems displayed per page
@@ -38,19 +43,21 @@ const ProblemsPage = () => {
 	const [problems, setProblems] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchTerm, setSearchTerm] = useState('');
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const handleRowClick = problem => {
-		navigate('/coding', { state: { problem } }); // Pass problem data to coding page
+		dispatch(setSelectedProblem(problem));
+		navigate('/coding');
 	};
 
 	useEffect(() => {
 		const fetchProblems = async () => {
 			const q = searchTerm
 				? query(
-						collection(firestore, 'Problems'),
-						where('title', 'like', searchTerm),
-				  )
+					collection(firestore, 'Problems'),
+					where('title', 'like', searchTerm),
+				)
 				: collection(firestore, 'Problems');
 			const data = await getDocs(q);
 			const problemLists = data.docs.map(doc => doc.data());
@@ -134,7 +141,9 @@ const ProblemsPage = () => {
 													{item.title}
 												</TableCell>
 												<TableCell>{item.type}</TableCell>
-												<TableCell>{item.difficulty}</TableCell>
+												<TableCell className='text-right'>
+													{item.difficulty}
+												</TableCell>
 											</TableRow>
 										))}
 									</TableBody>
