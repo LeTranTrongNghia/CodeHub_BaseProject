@@ -120,11 +120,11 @@ const adminRoute = [
 		component: AdminLecture,
 	},
 	{
-		path: config.routes.problemPageAdmin,
+		path: config.routes.admin.problemPageAdmin,
 		component: ProblemPageAdmin,
 	},
 	{
-		path: config.routes.coursePageAdmin,
+		path: config.routes.admin.coursePageAdmin,
 		component: CoursePageAdmin,
 	},
 ];
