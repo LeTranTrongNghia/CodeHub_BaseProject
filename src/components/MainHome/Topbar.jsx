@@ -67,7 +67,7 @@ const Topbar = () => {
 						<DropdownMenuLabel>My Account</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem>
-							<a href=''>Settings</a>
+							<a href='/setting'>Settings</a>
 						</DropdownMenuItem>
 						<DropdownMenuItem>
 							<a href='/contact'>Support</a>

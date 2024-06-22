@@ -1,6 +1,6 @@
 const routes = {
 	home: '/main-home',
-	profile: '/profile',
+	profile: '/Setting',
 	login: '/login',
 	register: '/register',
 	resetPassword: '/reset-password',
