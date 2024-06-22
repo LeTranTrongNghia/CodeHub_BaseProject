@@ -12,12 +12,12 @@ const routes = {
 	admin: {
 		dashboard: '/admin',
 		lecture: 'admin/lecture',
+		problemPageAdmin: '/problemsAdmin',
+		coursePageAdmin: '/coursesAdmin',
 	},
 	problemPage: '/problems',
 	coursePage: '/courses',
-	problemPageAdmin: '/problemsAdmin',
-	coursePageAdmin: '/coursesAdmin',
-	contactPage:'/contact',
+	contactPage: '/contact',
 };
 
 export default routes;
