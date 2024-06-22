@@ -1,4 +1,4 @@
-import { auth, firestore } from '@/firebase/firebase';
+import { auth } from '@/firebase/firebase';
 import { Alert, Button, Form, Input } from 'antd';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ const ForgotPassword = () => {
 		try {
 			await sendPasswordResetEmail(auth, email);
 			toast('Please check your email to reset password');
+			navigate('/login');
 		} catch (error) {
 			toast.error('Reset password failed');
 			console.log(error);
@@ -85,7 +86,6 @@ const ForgotPassword = () => {
 								<Button
 									htmlType='submit'
 									className='btn-submit w-full p-0 mt-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-offset-2 focus:ring-indigo-500'
-									onClick={() => navigate('/login')}
 								>
 									RESET
 								</Button>
