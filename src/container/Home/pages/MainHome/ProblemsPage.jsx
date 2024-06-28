@@ -141,7 +141,7 @@ const ProblemsPage = () => {
 													{item.title}
 												</TableCell>
 												<TableCell>{item.type}</TableCell>
-												<TableCell className='text-right'>
+												<TableCell>
 													{item.difficulty}
 												</TableCell>
 											</TableRow>
