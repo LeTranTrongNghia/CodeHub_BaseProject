@@ -35,7 +35,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Abc from './Abc';
+import ReviewCode from './ReviewCode';
 import { CODE_SNIPPETS } from './constant/constants';
 import LanguageSelector from '/src/components/Code_Editor/LanguageSelector';
 import Output from '/src/components/Code_Editor/Output';
@@ -238,7 +238,7 @@ const CodeEditorWrapper = () => {
 						<div className='flex h-20 items-center justify-between'>
 							<LanguageSelector language={language} onSelect={onSelect} />
 							<div className='mt-5'>
-								<Abc userCode={userCode} problemText={renderProblem.title} />
+								<ReviewCode userCode={userCode} problemText={renderProblem.title} />
 							</div>
 						</div>
 						<Editor
