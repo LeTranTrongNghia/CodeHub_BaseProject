@@ -33,6 +33,8 @@ import App from "./App";
 import Record from "./components/Record";
 import RecordList from "./components/RecordList";
 import "./index.css";
+import ProblemList from "./components/ProblemList";
+import Problem from "./components/Problem";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +64,36 @@ const router = createBrowserRouter([
       {
         path: "/create",
         element: <Record />,
+      },
+    ],
+  },
+  {
+    path: "/problem",
+    element: <App />,
+    children: [
+      {
+        path: "/problem",
+        element: <ProblemList />,
+      },
+    ],
+  },
+  {
+    path: "/problem/edit/:id",
+    element: <App />,
+    children: [
+      {
+        path: "/problem/edit/:id",
+        element: <Problem />,
+      },
+    ],
+  },
+  {
+    path: "/create/problem",
+    element: <App />,
+    children: [
+      {
+        path: "/create/problem",
+        element: <Problem />,
       },
     ],
   },
