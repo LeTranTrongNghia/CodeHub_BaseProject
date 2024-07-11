@@ -1,88 +1,108 @@
 import express from "express";
-
-// This will help us connect to the database
 import db from "../db/connection.js";
-
-// This help convert the id from string to ObjectId for the _id.
 import { ObjectId } from "mongodb";
 
-// router is an instance of the express router.
-// We use it to define our routes.
-// The router will be added as a middleware and will take control of requests starting with path /record.
-const routerProblem = express.Router();
+const router = express.Router();
 
-// This section will help you get a list of all the problems.
-routerProblem.get("/problem", async (req, res) => {
-  let collection = await db.collection("problems");
-  let results = await collection.find({}).toArray();
-  res.send(results).status(200);
-});
+// Importing testCase router
+import testCaseRouter from "./testCase.js";
 
-// This section will help you get a single record by id
-routerProblem.get("/problem/:id", async (req, res) => {
-  let collection = await db.collection("problems");
-  let query = { _id: new ObjectId(req.params.id) };
-  let result = await collection.findOne(query);
+// Mounting the testCaseRouter under /testCases path
+router.use("/:id/testCases", testCaseRouter);
 
-  if (!result) res.send("Not found").status(404);
-  else res.send(result).status(200);
-});
-
-// This section will help you create a new record.
-routerProblem.post("/problem", async (req, res) => {
+// Get all problems
+router.get("/", async (req, res) => {
   try {
-    let newDocument = {
+    const collection = await db.collection("problems");
+    const results = await collection.find({}).toArray();
+    res.status(200).send(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching problems");
+  }
+});
+
+// Get a single problem by id
+router.get("/:id", async (req, res) => {
+  try {
+    const collection = await db.collection("problems");
+    const query = { _id: new ObjectId(req.params.id) };
+    const problem = await collection.findOne(query);
+
+    if (!problem) {
+      res.status(404).send("Problem not found");
+      return;
+    }
+
+    // Fetch associated test cases based on testCaseIds array
+    const testCaseIds = problem.testCases.map(tc => new ObjectId(tc.testCaseId));
+    const testCasesCollection = await db.collection("testCases");
+    const testCases = await testCasesCollection.find({ _id: { $in: testCaseIds } }).toArray();
+
+    problem.testCases = testCases;
+    res.status(200).send(problem);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching problem");
+  }
+});
+
+// Create a new problem
+router.post("/", async (req, res) => {
+  try {
+    const newProblem = {
       title: req.body.title,
-      statement: req.body.statement,
       difficulty: req.body.difficulty,
       type: req.body.type,
-      constraints: req.body.constraints
+      statement: req.body.statement,
+      constraints: req.body.constraints,
+      testCases: req.body.testCases || [], // Array of test case objects
     };
-    let collection = await db.collection("problems");
-    let result = await collection.insertOne(newDocument);
-    res.send(result).status(204);
+
+    const collection = await db.collection("problems");
+    const result = await collection.insertOne(newProblem);
+    res.status(201).send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding problem");
   }
 });
 
-// This section will help you update a record by id.
-routerProblem.patch("/problem/:id", async (req, res) => {
+// Update a problem by id
+router.patch("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
     const updates = {
       $set: {
         title: req.body.title,
-        statement: req.body.statement,
         difficulty: req.body.difficulty,
         type: req.body.type,
-        constraints: req.body.constraints
+        statement: req.body.statement,
+        constraints: req.body.constraints,
+        testCases: req.body.testCases || [], // Update testCases array
       },
     };
 
-    let collection = await db.collection("problems");
-    let result = await collection.updateOne(query, updates);
-    res.send(result).status(200);
+    const collection = await db.collection("problems");
+    const result = await collection.updateOne(query, updates);
+    res.status(200).send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error updating problem");
   }
 });
 
-// This section will help you delete a record
-routerProblem.delete("/problem/:id", async (req, res) => {
+// Delete a problem by id
+router.delete("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
-
-    const collection = db.collection("problems");
-    let result = await collection.deleteOne(query);
-
-    res.send(result).status(200);
+    const collection = await db.collection("problems");
+    const result = await collection.deleteOne(query);
+    res.status(200).send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting problem");
   }
 });
 
-export default routerProblem;
+export default router;

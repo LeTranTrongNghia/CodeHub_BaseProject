@@ -32,9 +32,9 @@ import {
 import App from "./App";
 import Record from "./components/Record";
 import RecordList from "./components/RecordList";
-import "./index.css";
-import ProblemList from "./components/ProblemList";
 import Problem from "./components/Problem";
+import ProblemList from "./components/ProblemList";
+import "./index.css";
 
 const router = createBrowserRouter([
   {
@@ -45,54 +45,24 @@ const router = createBrowserRouter([
         path: "/",
         element: <RecordList />,
       },
-    ],
-  },
-  {
-    path: "/edit/:id",
-    element: <App />,
-    children: [
       {
-        path: "/edit/:id",
+        path: "/records/edit/:id",  // Adjusted path for editing records
         element: <Record />,
       },
-    ],
-  },
-  {
-    path: "/create",
-    element: <App />,
-    children: [
       {
-        path: "/create",
+        path: "/records/create",   // Adjusted path for creating records
         element: <Record />,
       },
-    ],
-  },
-  {
-    path: "/problem",
-    element: <App />,
-    children: [
       {
-        path: "/problem",
+        path: "/problems",         // Path for problems list
         element: <ProblemList />,
       },
-    ],
-  },
-  {
-    path: "/problem/edit/:id",
-    element: <App />,
-    children: [
       {
-        path: "/problem/edit/:id",
+        path: "/problems/edit/:id",  // Path for editing problems
         element: <Problem />,
       },
-    ],
-  },
-  {
-    path: "/create/problem",
-    element: <App />,
-    children: [
       {
-        path: "/create/problem",
+        path: "/problems/create",   // Path for creating problems
         element: <Problem />,
       },
     ],
