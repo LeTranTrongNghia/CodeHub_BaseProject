@@ -25,10 +25,7 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import Record from "./components/Record";
 import RecordList from "./components/RecordList";
@@ -46,23 +43,23 @@ const router = createBrowserRouter([
         element: <RecordList />,
       },
       {
-        path: "/records/edit/:id",  // Adjusted path for editing records
+        path: "/records/edit/:id",
         element: <Record />,
       },
       {
-        path: "/records/create",   // Adjusted path for creating records
+        path: "/records/create",
         element: <Record />,
       },
       {
-        path: "/problems",         // Path for problems list
+        path: "/problems",
         element: <ProblemList />,
       },
       {
-        path: "/problems/edit/:id",  // Path for editing problems
+        path: "/problems/edit/:id",
         element: <Problem />,
       },
       {
-        path: "/problems/create",   // Path for creating problems
+        path: "/problems/create",
         element: <Problem />,
       },
     ],
@@ -74,3 +71,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <RouterProvider router={router} />
   </React.StrictMode>
 );
+

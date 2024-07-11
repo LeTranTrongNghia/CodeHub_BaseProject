@@ -4,63 +4,49 @@ import { ObjectId } from "mongodb";
 
 const router = express.Router();
 
-// Importing testCase router
-import testCaseRouter from "./testCase.js";
-
-// Mounting the testCaseRouter under /testCases path
-router.use("/:id/testCases", testCaseRouter);
-
-// Get all problems
+// Get a list of all problems
 router.get("/", async (req, res) => {
   try {
-    const collection = await db.collection("problems");
-    const results = await collection.find({}).toArray();
-    res.status(200).send(results);
+    let collection = await db.collection("problems");
+    let results = await collection.find({}).toArray();
+    res.send(results).status(200);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error fetching problems");
+    res.status(500).send("Error retrieving problems");
   }
 });
 
 // Get a single problem by id
 router.get("/:id", async (req, res) => {
   try {
-    const collection = await db.collection("problems");
-    const query = { _id: new ObjectId(req.params.id) };
-    const problem = await collection.findOne(query);
+    let collection = await db.collection("problems");
+    let query = { _id: new ObjectId(req.params.id) };
+    let result = await collection.findOne(query);
 
-    if (!problem) {
-      res.status(404).send("Problem not found");
-      return;
+    if (!result) {
+      res.status(404).send("Not found");
+    } else {
+      res.status(200).send(result);
     }
-
-    // Fetch associated test cases based on testCaseIds array
-    const testCaseIds = problem.testCases.map(tc => new ObjectId(tc.testCaseId));
-    const testCasesCollection = await db.collection("testCases");
-    const testCases = await testCasesCollection.find({ _id: { $in: testCaseIds } }).toArray();
-
-    problem.testCases = testCases;
-    res.status(200).send(problem);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error fetching problem");
+    res.status(500).send("Error retrieving problem");
   }
 });
 
 // Create a new problem
 router.post("/", async (req, res) => {
   try {
-    const newProblem = {
+    let newDocument = {
       title: req.body.title,
       difficulty: req.body.difficulty,
       type: req.body.type,
       statement: req.body.statement,
       constraints: req.body.constraints,
-      testCases: req.body.testCases || [], // Array of test case objects
+      testCases: req.body.testCases,
     };
-
-    const collection = await db.collection("problems");
-    const result = await collection.insertOne(newProblem);
+    let collection = await db.collection("problems");
+    let result = await collection.insertOne(newDocument);
     res.status(201).send(result);
   } catch (err) {
     console.error(err);
@@ -79,12 +65,12 @@ router.patch("/:id", async (req, res) => {
         type: req.body.type,
         statement: req.body.statement,
         constraints: req.body.constraints,
-        testCases: req.body.testCases || [], // Update testCases array
+        testCases: req.body.testCases,
       },
     };
 
-    const collection = await db.collection("problems");
-    const result = await collection.updateOne(query, updates);
+    let collection = await db.collection("problems");
+    let result = await collection.updateOne(query, updates);
     res.status(200).send(result);
   } catch (err) {
     console.error(err);
@@ -92,12 +78,14 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// Delete a problem by id
+// Delete a problem
 router.delete("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
-    const collection = await db.collection("problems");
-    const result = await collection.deleteOne(query);
+
+    const collection = db.collection("problems");
+    let result = await collection.deleteOne(query);
+
     res.status(200).send(result);
   } catch (err) {
     console.error(err);

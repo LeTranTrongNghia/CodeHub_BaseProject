@@ -1,8 +1,7 @@
 import express from "express";
 import cors from "cors";
 import recordsRouter from "./routes/record.js";
-import problemsRouter from "./routes/problem.js";
-import testCaseRouter from "./routes/testCase.js"; // Importing testCaseRouter
+import problemsRouter from "./routes/problem.js"; // Import the problems router
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -13,8 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use("/record", recordsRouter);
-app.use("/problem", problemsRouter);
-app.use("/problem/:id/testCases", testCaseRouter); // Mounting testCaseRouter under /problem/:id/testCases path
+app.use("/problem", problemsRouter); // Add the problems router
 
 // Error handling middleware
 app.use((err, req, res, next) => {
