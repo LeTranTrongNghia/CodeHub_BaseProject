@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Problem = (props) => (
@@ -7,25 +7,26 @@ const Problem = (props) => (
       {props.problem.title}
     </td>
     <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-      {props.problem.difficulty}
+      {props.problem.type}
     </td>
     <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-      {props.problem.type}
+      {props.problem.difficulty}
     </td>
     <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
       <div className="flex gap-2">
         <Link
           className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3"
-          to={`/problem/edit/${props.problem._id}`}
+          to={`/problems/edit/${props.problem._id}`}  // Adjusted path for editing problems
         >
           Edit
         </Link>
+
         <button
           className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 hover:text-accent-foreground h-9 rounded-md px-3"
-          color="red"
+          style={{ color: "red" }}
           type="button"
           onClick={() => {
-            props.deleteRecord(props.problem._id);
+            props.deleteProblem(props.problem._id);
           }}
         >
           Delete
@@ -38,7 +39,6 @@ const Problem = (props) => (
 export default function ProblemList() {
   const [problems, setProblems] = useState([]);
 
-  // This method fetches the problems from the database.
   useEffect(() => {
     async function getProblems() {
       const response = await fetch(`http://localhost:5050/problem/`);
@@ -54,32 +54,27 @@ export default function ProblemList() {
     return;
   }, [problems.length]);
 
-  // This method will delete a problem
   async function deleteProblem(id) {
     await fetch(`http://localhost:5050/problem/${id}`, {
       method: "DELETE",
     });
     const newProblems = problems.filter((el) => el._id !== id);
-    setRecords(newProblems);
+    setProblems(newProblems);
   }
 
-  // This method will map out the problems on the table
   function problemList() {
-    return problems.map((problem) => {
-      return (
-        <Problem
-          problem={problem}
-          deleteProblem={() => deleteProblem(problem._id)}
-          key={problem._id}
-        />
-      );
-    });
+    return problems.map((problem) => (
+      <Problem
+        problem={problem}
+        deleteProblem={() => deleteProblem(problem._id)}
+        key={problem._id}
+      />
+    ));
   }
 
-  // This following section will display the table with the records of individuals.
   return (
     <>
-      <h3 className="text-lg font-semibold p-4">Problems</h3>
+      <h3 className="text-lg font-semibold p-4">Problem Records</h3>
       <div className="border rounded-lg overflow-hidden">
         <div className="relative w-full overflow-auto">
           <table className="w-full caption-bottom text-sm">
@@ -89,10 +84,10 @@ export default function ProblemList() {
                   Title
                 </th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
-                  Difficulty
+                  Type
                 </th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
-                  Type
+                  Difficulty
                 </th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
                   Action
@@ -107,4 +102,4 @@ export default function ProblemList() {
       </div>
     </>
   );
-}   
+}
