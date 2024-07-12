@@ -32,6 +32,8 @@ import RecordList from "./components/RecordList";
 import Problem from "./components/Problem";
 import ProblemList from "./components/ProblemList";
 import "./index.css";
+import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage";
+import MainHome from "./container/Home/pages/MainHome";
 
 const router = createBrowserRouter([
   {
@@ -40,7 +42,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <RecordList />,
+        element: <MainHome />,
       },
       {
         path: "/records/edit/:id",
