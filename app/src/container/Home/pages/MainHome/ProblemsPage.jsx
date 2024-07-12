@@ -1,4 +1,3 @@
-import { Search } from 'lucide-react';
 import {
 	Card,
 	CardContent,
@@ -9,7 +8,6 @@ import {
 import {
 	Table,
 	TableBody,
-	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
@@ -25,180 +23,179 @@ import {
 	PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Input } from '@/components/ui/input';
-import Sidebar from '@/components/MainHome/Sidebar';
-import Topbar from '@/components/MainHome/Topbar';
-
-import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { firestore } from '@/firebase/firebase';
-import { useDispatch } from 'react-redux';
-import {
-	setSelectedProblem,
-} from '@/redux/problemReducer/problemReducer';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const ProblemsPerPage = 7; // Number of problems displayed per page
 
 const ProblemsPage = () => {
 	const [problems, setProblems] = useState([]);
+	const [filteredProblems, setFilteredProblems] = useState([]);
+	const [searchTerm, setSearchTerm] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
-	const [searchTerm, setSearchTerm] = useState('');
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
-	const handleRowClick = problem => {
-		dispatch(setSelectedProblem(problem));
-		navigate('/coding');
-	};
 
 	useEffect(() => {
-		const fetchProblems = async () => {
-			const q = searchTerm
-				? query(
-					collection(firestore, 'Problems'),
-					where('title', 'like', searchTerm),
-				)
-				: collection(firestore, 'Problems');
-			const data = await getDocs(q);
-			const problemLists = data.docs.map(doc => doc.data());
-			setProblems(problemLists);
-		};
+		async function getProblems() {
+			try {
+				const response = await fetch(`http://localhost:5050/problem/`);
+				if (!response.ok) {
+					throw new Error(`An error occurred: ${response.statusText}`);
+				}
+				const problems = await response.json();
+				setProblems(problems);
+				setFilteredProblems(problems);
+			} catch (error) {
+				console.error(error);
+			}
+		}
+		getProblems();
+	}, []);
 
-		fetchProblems();
-	}, [searchTerm]); // Re-fetch data on search term change
-
-	const filteredProblems = problems.filter(problem => {
-		const searchTextLower = searchTerm.toLowerCase();
-		return (
-			problem.title.toLowerCase().includes(searchTextLower) ||
-			problem.type.toLowerCase().includes(searchTextLower) ||
-			problem.difficulty.toLowerCase().includes(searchTextLower)
+	useEffect(() => {
+		const filtered = problems.filter(
+			(problem) =>
+				problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				problem.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+				problem.difficulty.toLowerCase().includes(searchTerm.toLowerCase())
 		);
-	});
+		setFilteredProblems(filtered);
+	}, [searchTerm, problems]);
 
-	const paginatedProblems = filteredProblems.slice(
-		(currentPage - 1) * ProblemsPerPage,
-		currentPage * ProblemsPerPage,
-	);
-
-	const handlePageChange = pageNumber => {
-		setCurrentPage(pageNumber);
+	const handleSearchChange = (e) => {
+		setSearchTerm(e.target.value);
 	};
 
 	const totalPages = Math.ceil(filteredProblems.length / ProblemsPerPage);
+	const currentProblems = filteredProblems.slice(
+		(currentPage - 1) * ProblemsPerPage,
+		currentPage * ProblemsPerPage
+	);
 
-	const handleSearchChange = event => {
-		setSearchTerm(event.target.value);
+	const handlePageChange = (pageNumber) => {
+		setCurrentPage(pageNumber);
 	};
 
 	return (
-		<div className='flex min-h-screen w-full flex-col'>
-			<Topbar />
-			<Sidebar />
-			<main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16'>
-				<Tabs defaultValue='all'>
-					<TabsContent value='all'>
-						<Card x-chunk='dashboard-06-chunk-0'>
-							<CardHeader>
-								<h1 className='text-3xl font-medium'>Problems</h1>
-								<CardDescription>
-									<div className='flex justify-between items-center'>
+		<>
+			<div className='flex min-h-screen w-full flex-col'>
+				{/* <Topbar />
+				<Sidebar /> */}
+				<main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16'>
+					<Tabs defaultValue='all'>
+						<TabsContent value='all'>
+							<Card x-chunk='dashboard-06-chunk-0'>
+								<CardHeader>
+									<h1 className='text-3xl font-medium'>Problems</h1>
+									<CardDescription>
 										<h1 className='text-sm font-medium'>
 											Level up your coding abilities! Explore problems designed
 											for all skill sets, from beginner to advanced.
 										</h1>
-										<form className='ml-auto flex-1 sm:flex-initial'>
-											<div className='relative'>
-												<Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
-												<Input
-													type='search'
-													placeholder='Search problems...'
-													className='pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]'
-													value={searchTerm}
-													onChange={handleSearchChange}
-												/>
-											</div>
-										</form>
-									</div>
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<Table>
-									<TableHeader>
-										<TableRow>
-											<TableHead>Title</TableHead>
-											<TableHead>Type</TableHead>
-											<TableHead>Difficulty</TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{paginatedProblems.map((item, index) => (
-											<TableRow key={index} className='cursor-pointer'>
-												<TableCell
-													className='font-medium cursor-pointer'
-													onClick={() => handleRowClick(item)}
-												>
-													{item.title}
-												</TableCell>
-												<TableCell>{item.type}</TableCell>
-												<TableCell>
-													{item.difficulty}
-												</TableCell>
+										<div className="mt-4">
+											<Input
+												type="text"
+												placeholder="Search by title, type, or difficulty"
+												className="border rounded-md px-3 py-2 w-full"
+												value={searchTerm}
+												onChange={handleSearchChange}
+											/>
+										</div>
+									</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<Table>
+										<TableHeader>
+											<TableRow>
+												<TableHead>Title</TableHead>
+												<TableHead>Type</TableHead>
+												<TableHead>Difficulty</TableHead>
 											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</CardContent>
-							<CardFooter>
-								<Pagination>
-									<PaginationContent>
-										{currentPage > 1 && (
-											<PaginationItem>
-												<PaginationPrevious
-													onClick={() => handlePageChange(currentPage - 1)}
+										</TableHeader>
+										<TableBody>
+											{currentProblems.map((problem) => (
+												<Problem
+													problem={problem}
+													key={problem._id}
 												/>
-											</PaginationItem>
-										)}
-										{Array.from({ length: totalPages }, (_, i) => i + 1).map(
-											pageNumber => (
+											))}
+										</TableBody>
+									</Table>
+								</CardContent>
+								<CardFooter>
+									<Pagination>
+										<PaginationContent>
+											{currentPage > 1 && (
+												<PaginationItem>
+													<PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} />
+												</PaginationItem>
+											)}
+											{Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
 												<PaginationItem key={pageNumber}>
 													{pageNumber === currentPage ? (
-														<span className='text-black font-bold'>
-															{pageNumber}
-														</span>
+														<span className="text-black font-bold">{pageNumber}</span>
 													) : (
-														<PaginationLink
-															onClick={() => handlePageChange(pageNumber)}
-														>
+														<PaginationLink onClick={() => handlePageChange(pageNumber)}>
 															{pageNumber}
 														</PaginationLink>
 													)}
 												</PaginationItem>
-											),
-										)}
-										{currentPage < totalPages && (
-											<PaginationItem>
-												<PaginationNext
-													onClick={() => handlePageChange(currentPage + 1)}
-												/>
-											</PaginationItem>
-										)}
-										{totalPages > 5 &&
-											currentPage !== totalPages &&
-											currentPage !== 1 && (
+											))}
+											{currentPage < totalPages && (
+												<PaginationItem>
+													<PaginationNext onClick={() => handlePageChange(currentPage + 1)} />
+												</PaginationItem>
+											)}
+											{totalPages > 5 && currentPage !== totalPages && currentPage !== 1 && (
 												<PaginationItem>
 													<PaginationEllipsis />
 												</PaginationItem>
 											)}
-									</PaginationContent>
-								</Pagination>
-							</CardFooter>
-						</Card>
-					</TabsContent>
-				</Tabs>
-			</main>
-		</div>
+										</PaginationContent>
+									</Pagination>
+								</CardFooter>
+							</Card>
+						</TabsContent>
+					</Tabs>
+				</main>
+			</div>
+		</>
 	);
 };
 
 export default ProblemsPage;
+
+const Problem = ({ problem }) => {
+	// Function to determine difficulty color class based on the level
+	const getDifficultyColorClass = (difficulty) => {
+		switch (difficulty) {
+			case "Easy":
+				return "text-green-600"; // Green color for Easy
+			case "Medium":
+				return "text-yellow-600"; // Yellow color for Medium
+			case "Hard":
+				return "text-red-600"; // Red color for Hard
+			default:
+				return "text-gray-600"; // Default to gray if no match
+		}
+	};
+
+	return (
+		<tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer">
+			<td className="p-4 align-middle">
+				<Link to={`/problems/edit/${problem._id}`} className="block">
+					{problem.title}
+				</Link>
+			</td>
+			<td className="p-4 align-middle">
+				<Link to={`/problems/edit/${problem._id}`} className="block">
+					{problem.type}
+				</Link>
+			</td>
+			<td className={`p-4 align-middle ${getDifficultyColorClass(problem.difficulty)}`}>
+				<Link to={`/problems/edit/${problem._id}`} className="block">
+					{problem.difficulty}
+				</Link>
+			</td>
+		</tr>
+	);
+};

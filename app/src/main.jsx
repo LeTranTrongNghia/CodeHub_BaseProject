@@ -30,7 +30,6 @@ import App from "./App";
 import Record from "./components/Record";
 import RecordList from "./components/RecordList";
 import Problem from "./components/Problem";
-import ProblemList from "./components/ProblemList";
 import "./index.css";
 import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage";
 import MainHome from "./container/Home/pages/MainHome";
@@ -42,7 +41,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <MainHome />,
+        element: <ProblemsPage />,
       },
       {
         path: "/records/edit/:id",
@@ -54,7 +53,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/problems",
-        element: <ProblemList />,
+        element: <ProblemsPage />,
       },
       {
         path: "/problems/edit/:id",
