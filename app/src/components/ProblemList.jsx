@@ -17,13 +17,13 @@ const Problem = ({ problem, deleteProblem }) => {
   const getDifficultyColorClass = (difficulty) => {
     switch (difficulty) {
       case "Easy":
-        return "text-green-600";
+        return "text-green-600 bg-green-400";
       case "Medium":
-        return "text-yellow-600";
+        return "text-yellow-600 bg-yellow-400";
       case "Hard":
-        return "text-red-600";
+        return "text-red-600 bg-red-400";
       default:
-        return "text-gray-600";
+        return "text-gray-600 bg-gray-400";
     }
   };
 
