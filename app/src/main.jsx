@@ -26,14 +26,22 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './redux/config.jsx';
+
+// Import components
 import App from "./App";
 import Record from "./components/Record";
-import RecordList from "./components/RecordList";
-import Problem from "./components/Problem";
-import "./index.css";
-import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage";
-import MainHome from "./container/Home/pages/MainHome";
 
+// Import styles
+import "./index.css";
+import ProblemDes from "./components/ProblemDes.jsx";
+import ProblemForm from "./components/ProblemForm.jsx";
+import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage.jsx";
+import CodeEditorWrapper from "./container/Workspace/Code_Editor/code_editor.jsx";
+
+// Create router
 const router = createBrowserRouter([
   {
     path: "/",
@@ -56,20 +64,24 @@ const router = createBrowserRouter([
         element: <ProblemsPage />,
       },
       {
-        path: "/problems/edit/:id",
-        element: <Problem />,
+        path: "/problems/solve/:id",
+        element: <CodeEditorWrapper />,
       },
       {
         path: "/problems/create",
-        element: <Problem />,
+        element: <ProblemForm />,
       },
     ],
   },
 ]);
 
+// Render the app
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+      </PersistGate>
+    </Provider>
   </React.StrictMode>
 );
-
