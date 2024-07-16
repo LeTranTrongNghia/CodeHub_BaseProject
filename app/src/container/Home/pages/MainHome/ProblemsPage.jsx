@@ -182,17 +182,17 @@ const Problem = ({ problem }) => {
 	return (
 		<tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer">
 			<td className="p-4 align-middle">
-				<Link to={`/problems/edit/${problem._id}`} className="block">
+				<Link to={`/problems/solve/${problem._id}`} className="block">
 					{problem.title}
 				</Link>
 			</td>
 			<td className="p-4 align-middle">
-				<Link to={`/problems/edit/${problem._id}`} className="block">
+				<Link to={`/problems/solve/${problem._id}`} className="block">
 					{problem.type}
 				</Link>
 			</td>
 			<td className={`p-4 align-middle ${getDifficultyColorClass(problem.difficulty)}`}>
-				<Link to={`/problems/edit/${problem._id}`} className="block">
+				<Link to={`/problems/solve/${problem._id}`} className="block">
 					{problem.difficulty}
 				</Link>
 			</td>
