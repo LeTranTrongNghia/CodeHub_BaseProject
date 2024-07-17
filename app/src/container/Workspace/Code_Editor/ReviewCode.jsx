@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +15,66 @@ import {
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 
-const ReviewCode = ({userCode, problemText}) => {
+const ReviewCode = ({ userCode }) => {
+	const [form, setForm] = useState({
+		title: "",
+		type: "",
+		difficulty: "",
+		statement: "",
+		constraints: "",
+		testCases: [
+			{
+				explanation: "",
+				inputText: "",
+				outputText: "",
+			},
+		],
+	});
+	const [isNew, setIsNew] = useState(true);
+	const [error, setError] = useState(null);
+	const params = useParams();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		async function fetchData() {
+			const id = params.id?.toString();
+			if (!id) {
+				navigate("/");
+				return;
+			}
+			setIsNew(false);
+			try {
+				const response = await fetch(`http://localhost:5050/problem/${id}`);
+				if (!response.ok) {
+					throw new Error(`An error has occurred: ${response.status} - ${response.statusText}`);
+				}
+				const problem = await response.json();
+				if (!problem) {
+					console.warn(`Problem with id ${id} not found`);
+					navigate("/");
+					return;
+				}
+				setForm(problem);
+			} catch (error) {
+				setError(error.message);
+				console.error(error);
+			}
+		}
+		fetchData();
+		return;
+	}, [params.id, navigate]);
+
+	if (error) {
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<div className="bg-red-500 text-white p-4 rounded-md">
+					<h2 className="text-lg font-bold">Error</h2>
+					<p>{error}</p>
+				</div>
+			</div>
+		);
+	}
+
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
 	const [generatingAnswer, setGeneratingAnswer] = useState(false);
@@ -48,7 +108,7 @@ const ReviewCode = ({userCode, problemText}) => {
 
 	async function guideCode() {
 		setGeneratingAnswer(true);
-		setAnswer('Generating guide... \n It might take upto 10 seconds.');
+		setAnswer('Reviewing your code... \n It might take upto 10 seconds.');
 
 		try {
 			const response = await axios({
@@ -60,10 +120,11 @@ const ReviewCode = ({userCode, problemText}) => {
 						{
 							parts: [
 								{
-									// text: 'rewrite this code in the same language: ' + userCode
-									text: 'Imagine you are a professor majoring in Information Technology. I will show you a code problem, you will review my code. This is the problem: ' +
-									problemText + 'This is the code I wrote to solve the problem: \n' + userCode +
-									"Review my code. Is this code the code used to solve the above problem? If yes then tell me what do I need to do to improve my code ? If my code isn't use for the problem above, tell me to rewrite the code on my own. Do not give me the code to solve the problem, only guide me or give me advises to code better.",
+									text: 'Imagine you are a professor majoring in Information Technology. I will show you a code problem, you will review my code. This is the problem: ' + '\n' +
+										'Title: ' + form.title + '\n' +
+										'Statement: ' + form.statement + '\n' +
+										+ 'This is the code I wrote to solve the problem: \n' + userCode +
+										"Review my code. Is this code the code used to solve the above problem? If yes then tell me what do I need to do to improve my code ? If my code isn't use for the problem above, tell me to rewrite the code on my own. Do not give me the code to solve the problem, only guide me or give me advises to code better.",
 								},
 							],
 						},
