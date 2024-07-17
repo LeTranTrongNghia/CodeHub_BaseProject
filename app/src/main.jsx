@@ -17,7 +17,7 @@
 // 		<PersistGate persistor={persistor} loading={null}>
 // 			<HistoryBrowserRouter history={history}>
 // 				<App />
-// 				<ToastContainer />
+				// <ToastContainer />
 // 			</HistoryBrowserRouter>
 // 		</PersistGate>
 // 	</Provider>,
@@ -36,6 +36,8 @@ import Record from "./components/Record";
 
 // Import styles
 import "./index.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import ProblemDes from "./components/ProblemDes.jsx";
 import ProblemForm from "./components/ProblemForm.jsx";
 import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage.jsx";
@@ -81,6 +83,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <RouterProvider router={router} />
+        <ToastContainer />
       </PersistGate>
     </Provider>
   </React.StrictMode>
