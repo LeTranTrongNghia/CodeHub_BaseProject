@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import recordsRouter from "./routes/record.js";
-import problemsRouter from "./routes/problem.js"; // Import the problems router
+import problemsRouter from "./routes/problem.js";
+import coursesRouter from "./routes/course.js";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -12,7 +13,8 @@ app.use(express.json());
 
 // Routes
 app.use("/record", recordsRouter);
-app.use("/problem", problemsRouter); // Add the problems router
+app.use("/problem", problemsRouter);
+app.use("/course", coursesRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
