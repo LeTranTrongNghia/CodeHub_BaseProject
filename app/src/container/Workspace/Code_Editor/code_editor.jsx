@@ -20,7 +20,7 @@ import { CODE_SNIPPETS } from './constant/constants';
 import LanguageSelector from '/src/components/Code_Editor/LanguageSelector';
 import Output from '/src/components/Code_Editor/Output';
 import AI from '../AI_chat/AI';
-import ProblemDes from '@/components/ProblemDes';
+import ProblemDes from '@/components/Code_Editor/ProblemDes';
 
 const CodeEditorWrapper = () => {
 	const [value, setValue] = useState('');

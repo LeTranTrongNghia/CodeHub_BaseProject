@@ -33,15 +33,17 @@ import { store, persistor } from './redux/config.jsx';
 // Import components
 import App from "./App";
 import Record from "./components/Record";
+import ProblemDes from "./components/Code_Editor/ProblemDes.jsx";
+import ProblemForm from "./components/ProblemForm.jsx";
+import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage.jsx";
+import CodeEditorWrapper from "./container/Workspace/Code_Editor/code_editor.jsx";
+import CourseList from "./components/CourseList.jsx";
+import CourseDetails from "./components/CourseDetails.jsx";
 
 // Import styles
 import "./index.css";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ProblemDes from "./components/ProblemDes.jsx";
-import ProblemForm from "./components/ProblemForm.jsx";
-import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage.jsx";
-import CodeEditorWrapper from "./container/Workspace/Code_Editor/code_editor.jsx";
 
 // Create router
 const router = createBrowserRouter([
@@ -73,6 +75,14 @@ const router = createBrowserRouter([
         path: "/problems/create",
         element: <ProblemForm />,
       },
+      {
+        path: "/courses",
+        element: <CourseList />,
+      },
+      {
+        path: "/courses/:id",
+        element: <CourseDetails />,
+      },
     ],
   },
 ]);
@@ -88,3 +98,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </Provider>
   </React.StrictMode>
 );
+
