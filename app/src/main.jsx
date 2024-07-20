@@ -39,6 +39,7 @@ import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage.jsx";
 import CodeEditorWrapper from "./container/Workspace/Code_Editor/code_editor.jsx";
 import CourseList from "./components/CourseList.jsx";
 import CourseDetails from "./components/CourseDetails.jsx";
+import FileUploadAndDisplay from "./components/Playground.jsx";
 
 // Import styles
 import "./index.css";
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
       {
         path: "/courses/:id",
         element: <CourseDetails />,
+      },
+      {
+        path: "/playground",
+        element: <FileUploadAndDisplay />,
       },
     ],
   },
