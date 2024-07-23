@@ -1,148 +1,154 @@
 import React, { useState, useEffect } from 'react';
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
-import { useSelector } from 'react-redux';
-import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '@/firebase/firebase';
 import { toast } from 'react-toastify';
+import { useParams, useNavigate } from "react-router-dom";
 
 const Output = ({ editorRef, language }) => {
-	const renderProblem = useSelector(state => state.problem.selectedProblem);
+  const [form, setForm] = useState({
+    title: "",
+    type: "",
+    difficulty: "",
+    statement: "",
+    constraints: "",
+    testCases: [
+      {
+        explanation: "",
+        inputText: "",
+        outputText: "",
+      },
+    ],
+  });
+  const [output, setOutput] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [passedTests, setPassedTests] = useState(0);
+  const params = useParams();
+  const navigate = useNavigate();
 
-	const [output, setOutput] = useState(null);
-	const [isError, setIsError] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [errorMessage, setErrorMessage] = useState(null);
-	const [passedTests, setPassedTests] = useState(0);
-	const [testcases, setTestcases] = useState({}); // Object to store test cases
+  useEffect(() => {
+    async function fetchData() {
+      const id = params.id?.toString() || undefined;
+      if (!id) return;
+      const response = await fetch(`http://localhost:5050/problem/${id}`);
+      if (!response.ok) {
+        const message = `An error has occurred: ${response.statusText}`;
+        console.error(message);
+        return;
+      }
+      const problem = await response.json();
+      if (!problem) {
+        console.warn(`Problem with id ${id} not found`);
+        navigate("/");
+        return;
+      }
+      setForm(problem);
+    }
+    fetchData();
+  }, [params.id, navigate]);
 
-	const getDocumentById = async (docId) => {
-		try {
-			const docRef = doc(firestore, 'TestCases', docId);
-			const docSnap = await getDoc(docRef);
-			if (docSnap.exists) {
-				return docSnap.data();
-			} else {
-				console.log('No such document!');
-			}
-		} catch (error) {
-			console.error('Error getting document:', error);
-		}
-		return null;
-	};
+  const runCode = async () => {
+    const sourceCode = editorRef.current.getValue();
+    if (!sourceCode) return;
 
-	const fetchTestCases = async () => {
-		try {
-			const testCase1Data = await getDocumentById(renderProblem.testCaseId[0]);
-			const testCase2Data = await getDocumentById(renderProblem.testCaseId[1]);
-			setTestcases({
-				testcase1: testCase1Data?.outputText,
-				testcase2: testCase2Data?.outputText,
-			});
-		} catch (error) {
-			console.error('Error fetching test cases:', error);
-		}
-	};
+    setIsLoading(true);
+    setErrorMessage(null);
 
-	useEffect(() => {
-		fetchTestCases();
-	}, [renderProblem]); // Re-fetch test cases when selected problem changes
+    try {
+      const { run: result } = await executeCode(language, sourceCode);
+      const userOutput = result.output.split('\n');
+      setOutput(userOutput);
+      const passed = checkTestcase(userOutput);
+      if (passed === form.testCases.length) {
+        toast.success(`Congratulations! All ${passed} test cases passed! 🎉`);
+      } else {
+        toast.info(`Your code passed ${passed} out of ${form.testCases.length} test cases.`);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+      setErrorMessage('An error occurred while running your code.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-	const runCode = async () => {
-		const sourceCode = editorRef.current.getValue();
-		if (!sourceCode) return;
+  const checkTestcase = (userOutput) => {
+    const sourceCode = editorRef.current.getValue();
+    let passed = 0;
+    const printKeywords = [
+      "console.log(",
+      "print(",
+      "System.out.println(",
+      "System.out.print(",
+      "Console.WriteLine(",
+      "Console.Write(",
+    ];
 
-		setIsLoading(true);
-		setErrorMessage(null);
+    const isOnlyprint = sourceCode.trim().split('\n').every(line => {
+      const trimmedLine = line.trim();
+      return printKeywords.some(keyword => trimmedLine.startsWith(keyword)) || trimmedLine === '';
+    });
 
-		try {
-			const { run: result } = await executeCode(language, sourceCode);
-			setOutput(result.output.split('\n'));
-			checkTestcase(result.output.split('\n'));
-		} catch (error) {
-			console.error(error);
-			setIsError(true);
-			setErrorMessage('An error occurred while running your code.');
-		} finally {
-			setIsLoading(false);
-		}
-	};
+    if (isOnlyprint) {
+      toast.error("Failed! Source code only contains print function.");
+      setPassedTests(0);
+      return 0;
+    } else {
+      const expectedOutputs = form.testCases.map(tc => tc.outputText.trim());
+      expectedOutputs.forEach(expectedOutput => {
+        if (userOutput.includes(expectedOutput)) {
+          passed++;
+        }
+      });
+      setPassedTests(passed);
+      return passed;
+    }
+  };
 
-	const checkTestcase = (userOutput) => {
-		const sourceCode = editorRef.current.getValue();
-		let passed = 0;
-		const printKeywords = [
-			"console.log(",
-			"print(",
-			"System.out.println(",
-			"System.out.print(",
-			"Console.WriteLine(",
-			"Console.Write(",
-		];
+  return (
+    <div className="flex flex-col w-full mt-4">
+      <div className="flex justify-between items-center mb-2">
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-green-700 transition-all duration-300"
+          onClick={runCode}
+        >
+          Run Code
+        </button>
+        <button
+          className={`px-4 py-2 rounded-md text-white ${passedTests === form.testCases.length ? 'bg-green-500' : 'bg-red-500'} hover:bg-opacity-75 transition-all duration-300`}
+          disabled={!output}
+          onClick={() => {
+            if (passedTests === form.testCases.length) {
+              toast.success("Congratulations! All test cases are passed! 🎉🎉🎉");
+            } else {
+              toast.error(`You passed ${passedTests} out of ${form.testCases.length} test cases.`);
+            }
+          }}
+        >
+          Submit ({passedTests}/{form.testCases.length})
+        </button>
+      </div>
 
-		const isOnlyprint = sourceCode.trim().split('\n').every(line => {
-			const trimmedLine = line.trim();
-			return printKeywords.some(keyword => trimmedLine.startsWith(keyword)) || trimmedLine === '';
-		});
+      {isError && (
+        <div className="text-red-500 text-sm mb-2">{errorMessage}</div>
+      )}
 
-		if (isOnlyprint) {
-			toast.error("Failed! Source code only contains print function.");
-			setPassedTests(0);
-		} else {
-			const expectedOutputs = Object.values(testcases); // Get array of expected outputs
-			expectedOutputs.forEach(expectedOutput => {
-				if (userOutput.includes(expectedOutput)) {
-					passed++;
-				}
-			});
-			setPassedTests(passed);
-			toast(`Your code passed ${passed} out of ${expectedOutputs.length} test cases.`);
-		}
-	};
-
-	return (
-		<div className="flex flex-col w-full mt-4">
-			<div className="flex justify-between items-center mb-2">
-				<button
-					className={`bg-green-500 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-green-700 transition-all duration-300`}
-					onClick={runCode}
-				>
-					Run Code
-				</button>
-				<button
-					className={`px-4 py-2 rounded-md text-white ${passedTests === Object.keys(testcases).length ? 'bg-green-500' : 'bg-red-500'} hover:bg-opacity-75 transition-all duration-300 disabled:opacity-50`}
-					disabled={!output}
-					onClick={() => {
-						if (passedTests === Object.keys(testcases).length) {
-							toast("Congratulations! All test cases are passed! 🎉🎉🎉");
-						} else {
-							toast.error(`You passed ${passedTests} out of ${Object.keys(testcases).length} test cases.`);
-						}
-					}}
-				>
-					Submit ({passedTests}/{Object.keys(testcases).length})
-				</button>
-			</div>
-
-			{isError && (
-				<div className="text-red-500 text-sm mb-2">{errorMessage}</div>
-			)}
-
-			<div
-				className={`h-full p-2 rounded-md border-gray-300 border ${isError ? 'border-red-500 text-red-400' : ''
-					}`}
-			>
-				{isLoading && (
-					<div className="text-center mt-2">
-						<i className="fas fa-spinner fa-spin"></i> Loading...
-					</div>
-				)}
-
-				{output
-					? output.map((line, i) => <div key={i} className="text-sm">{line}</div>)
-					: 'Click "Run Code" to see the output here'}
-			</div>
-		</div>
-	);
+      <div className={`h-full p-2 rounded-md border-gray-300 border ${isError ? 'border-red-500 text-red-400' : ''}`}>
+        {isLoading ? (
+          <div className="text-center mt-2">
+            <i className="fas fa-spinner fa-spin"></i> Loading...
+          </div>
+        ) : (
+          output ? (
+            output.map((line, i) => <div key={i} className="text-sm">{line}</div>)
+          ) : (
+            <div>Click "Run Code" to see the output here</div>
+          )
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Output;

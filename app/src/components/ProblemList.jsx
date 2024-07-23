@@ -1,18 +1,29 @@
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+const ProblemsPerPage = 7; // Number of problems displayed per page
+
 const Problem = ({ problem, deleteProblem }) => {
-  // Function to determine difficulty color class based on the level
   const getDifficultyColorClass = (difficulty) => {
     switch (difficulty) {
       case "Easy":
-        return "text-green-600"; // Green color for Easy
+        return "text-green-600 bg-green-400";
       case "Medium":
-        return "text-yellow-600"; // Yellow color for Medium
+        return "text-yellow-600 bg-yellow-400";
       case "Hard":
-        return "text-red-600"; // Red color for Hard
+        return "text-red-600 bg-red-400";
       default:
-        return "text-gray-600"; // Default to gray if no match
+        return "text-gray-600 bg-gray-400";
     }
   };
 
@@ -27,7 +38,7 @@ const Problem = ({ problem, deleteProblem }) => {
         <div className="flex gap-2">
           <Link
             className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3"
-            to={`/problems/edit/${problem._id}`}  // Adjusted path for editing problems
+            to={`/problems/edit/${problem._id}`}
           >
             Edit
           </Link>
@@ -50,6 +61,7 @@ const ProblemList = () => {
   const [problems, setProblems] = useState([]);
   const [filteredProblems, setFilteredProblems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     async function getProblems() {
@@ -60,7 +72,7 @@ const ProblemList = () => {
         }
         const problems = await response.json();
         setProblems(problems);
-        setFilteredProblems(problems); // Initialize filtered problems with all problems
+        setFilteredProblems(problems);
       } catch (error) {
         console.error(error);
       }
@@ -69,7 +81,6 @@ const ProblemList = () => {
   }, []);
 
   useEffect(() => {
-    // Filter problems based on search term
     const filtered = problems.filter(
       (problem) =>
         problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -79,21 +90,31 @@ const ProblemList = () => {
     setFilteredProblems(filtered);
   }, [searchTerm, problems]);
 
-  async function deleteProblem(id) {
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const deleteProblem = async (id) => {
     try {
       await fetch(`http://localhost:5050/problem/${id}`, {
         method: "DELETE",
       });
       const newProblems = problems.filter((problem) => problem._id !== id);
       setProblems(newProblems);
-      setFilteredProblems(newProblems); // Update filtered problems after deletion
+      setFilteredProblems(newProblems);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  const totalPages = Math.ceil(filteredProblems.length / ProblemsPerPage);
+  const currentProblems = filteredProblems.slice(
+    (currentPage - 1) * ProblemsPerPage,
+    currentPage * ProblemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -101,7 +122,7 @@ const ProblemList = () => {
       <h3 className="text-lg font-semibold p-4">Problems's list</h3>
       <div className="border rounded-lg overflow-hidden">
         <div className="p-4">
-          <input
+          <Input
             type="text"
             placeholder="Search by title, type, or difficulty"
             className="border rounded-md px-3 py-2 w-full"
@@ -120,7 +141,7 @@ const ProblemList = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredProblems.map((problem) => (
+              {currentProblems.map((problem) => (
                 <Problem
                   problem={problem}
                   deleteProblem={deleteProblem}
@@ -130,6 +151,39 @@ const ProblemList = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="flex justify-center items-center p-4">
+        <Pagination>
+          <PaginationContent>
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} />
+              </PaginationItem>
+            )}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
+              <PaginationItem key={pageNumber}>
+                {pageNumber === currentPage ? (
+                  <span className="text-black font-bold">{pageNumber}</span>
+                ) : (
+                  <PaginationLink onClick={() => handlePageChange(pageNumber)}>
+                    {pageNumber}
+                  </PaginationLink>
+                )}
+              </PaginationItem>
+            ))}
+            {currentPage < totalPages && (
+              <PaginationItem>
+                <PaginationNext onClick={() => handlePageChange(currentPage + 1)} />
+              </PaginationItem>
+            )}
+            {totalPages > 5 && currentPage !== totalPages && currentPage !== 1 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
       </div>
     </>
   );
