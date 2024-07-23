@@ -17,7 +17,7 @@
 // 		<PersistGate persistor={persistor} loading={null}>
 // 			<HistoryBrowserRouter history={history}>
 // 				<App />
-// 				<ToastContainer />
+				// <ToastContainer />
 // 			</HistoryBrowserRouter>
 // 		</PersistGate>
 // 	</Provider>,
@@ -26,13 +26,27 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './redux/config.jsx';
+
+// Import components
 import App from "./App";
 import Record from "./components/Record";
-import RecordList from "./components/RecordList";
-import Problem from "./components/Problem";
-import ProblemList from "./components/ProblemList";
-import "./index.css";
+import ProblemDes from "./components/Code_Editor/ProblemDes.jsx";
+import ProblemForm from "./components/ProblemForm.jsx";
+import ProblemsPage from "./container/Home/pages/MainHome/ProblemsPage.jsx";
+import CodeEditorWrapper from "./container/Workspace/Code_Editor/code_editor.jsx";
+import CourseList from "./components/CourseList.jsx";
+import CourseDetails from "./components/CourseDetails.jsx";
+import FileUploadAndDisplay from "./components/Playground.jsx";
 
+// Import styles
+import "./index.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Create router
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,7 +54,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <RecordList />,
+        element: <ProblemsPage />,
       },
       {
         path: "/records/edit/:id",
@@ -52,23 +66,41 @@ const router = createBrowserRouter([
       },
       {
         path: "/problems",
-        element: <ProblemList />,
+        element: <ProblemsPage />,
       },
       {
-        path: "/problems/edit/:id",
-        element: <Problem />,
+        path: "/problems/solve/:id",
+        element: <CodeEditorWrapper />,
       },
       {
         path: "/problems/create",
-        element: <Problem />,
+        element: <ProblemForm />,
+      },
+      {
+        path: "/courses",
+        element: <CourseList />,
+      },
+      {
+        path: "/courses/:id",
+        element: <CourseDetails />,
+      },
+      {
+        path: "/playground",
+        element: <FileUploadAndDisplay />,
       },
     ],
   },
 ]);
 
+// Render the app
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router} />
+        <ToastContainer />
+      </PersistGate>
+    </Provider>
   </React.StrictMode>
 );
 
