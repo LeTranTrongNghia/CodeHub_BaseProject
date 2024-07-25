@@ -1,14 +1,12 @@
 import {
     Bird,
     CornerDownLeft,
-    Mic,
     Paperclip,
     Rabbit,
     Settings,
     Share,
     Turtle,
 } from "lucide-react";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,8 +36,11 @@ import {
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import Editor from '@monaco-editor/react';
 import axios from 'axios';
+import { CODE_SNIPPETS } from "@/container/Workspace/Code_Editor/constant/constants";
+import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 
 const FileUploadAndDisplay = () => {
     const [files, setFiles] = useState([]);
@@ -53,7 +54,7 @@ const FileUploadAndDisplay = () => {
 
     // Disallowed file extensions
     const disallowedExtensions = [
-        '.doc', '.docx', '.pdf', '.ppt', '.pptx',
+        '.doc', '.docx', '.pdf', '.ppt', '.pptx', '.txt',
         '.mp3', '.wav', '.ogg', '.mp4', '.avi', '.mov', '.wmv'
     ];
 
@@ -95,6 +96,39 @@ const FileUploadAndDisplay = () => {
             setSelectedFile(file); // Optional: update the selected file state
             console.log('Selected File Name:', file.name); // Log the file name
             console.log('Selected File Content:', file.content); // Log the file content
+
+            setValue(file.content);
+
+            // Determine the file extension and set the language accordingly
+            const extension = file.name.split('.').pop().toLowerCase();
+            let selectedLanguage = '';
+
+            switch (extension) {
+                case 'py':
+                    selectedLanguage = 'python';
+                    break;
+                case 'js':
+                    selectedLanguage = 'javascript';
+                    break;
+                case 'ts':
+                    selectedLanguage = 'typescript';
+                    break;
+                case 'java':
+                    selectedLanguage = 'java';
+                    break;
+                case 'cs':
+                    selectedLanguage = 'csharp';
+                    break;
+                case 'php':
+                    selectedLanguage = 'php';
+                    break;
+                default:
+                    selectedLanguage = 'unknown'; // Default case if needed
+                    break;
+            }
+
+            setLanguage(selectedLanguage); // Update the language state
+            console.log('Selected Language:', selectedLanguage); // Log the selected language
         }
     };
 
@@ -129,42 +163,6 @@ const FileUploadAndDisplay = () => {
         setGeneratingAnswer(false);
         setQuestion('');
     };
-
-    // const requestRating = async () => {
-    //     if (!selectedFile) {
-    //         console.log('No file selected.');
-    //         return;
-    //     }
-
-    //     setGeneratingAnswer(true);
-    //     console.log('Requesting rating for:', selectedFile.name);
-
-    //     try {
-    //         const response = await axios({
-    //             url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
-    //             method: 'post',
-    //             data: {
-    //                 contents: [
-    //                     {
-    //                         parts: [
-    //                             {
-    //                                 text: `Rate the following code on a scale from 1 to 100 for the following criteria:\n\nCorrectness\nEfficiency\nReadability\nGive me the answer of numbers in order only.\n\nCode:\n${selectedFile.content}`,
-    //                             },
-    //                         ],
-    //                     },
-    //                 ],
-    //             },
-    //         });
-
-    //         const ratings = response.data.candidates[0].content.parts[0].text;
-    //         console.log('Ratings received:');
-    //         console.log(ratings);
-    //     } catch (error) {
-    //         console.log('Error while requesting ratings:', error);
-    //     } finally {
-    //         setGeneratingAnswer(false);
-    //     }
-    // };
 
     const requestRating = async () => {
         if (!selectedFile) {
@@ -214,6 +212,34 @@ const FileUploadAndDisplay = () => {
     const [correctnessRating, setCorrectnessRating] = useState(0);
     const [efficiencyRating, setEfficiencyRating] = useState(0);
     const [readabilityRating, setReadabilityRating] = useState(0);
+
+    const [value, setValue] = useState('');
+    const [language, setLanguage] = useState('');
+    const editorRef = useRef(null);
+    const [isError, setIsError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [output, setOutput] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    const runCode = async () => {
+        const sourceCode = editorRef.current.getValue();
+        if (!sourceCode) return;
+
+        setIsLoading(true);
+        setErrorMessage(null);
+
+        try {
+            const { run: result } = await executeCode(language, sourceCode);
+            const userOutput = result.output.split('\n');
+            setOutput(userOutput);
+        } catch (error) {
+            console.error(error);
+            setIsError(true);
+            setErrorMessage('An error occurred while running your code.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="grid h-screen w-full pl-[56px]">
@@ -302,7 +328,7 @@ const FileUploadAndDisplay = () => {
                                         </Select>
                                     </div>
                                     <div className="grid gap-3">
-                                        <Label htmlFor="file">Upload your files</Label>
+                                        <Label htmlFor="file">Upload your code files</Label>
                                         <Input id="file" type="file" />
                                     </div>
                                 </fieldset>
@@ -340,9 +366,9 @@ const FileUploadAndDisplay = () => {
                         Share
                     </Button>
                 </header>
-                <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
+                <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-3 lg:grid-cols-3" style={{ gridTemplateColumns: "20rem 0.8fr 1fr" }}>
                     <div
-                        className="relative hidden flex-col items-start gap-8 md:flex" x-chunk="dashboard-03-chunk-0"
+                        className="relative hidden flex-col items-start gap-8 md:flex max-w-[20rem]"
                     >
                         <form className="grid w-full items-start gap-6">
                             <fieldset className="grid gap-6 rounded-lg border p-4">
@@ -411,7 +437,7 @@ const FileUploadAndDisplay = () => {
                                     </Select>
                                 </div>
                                 <div className="grid gap-3">
-                                    <Label htmlFor="file">Upload your files</Label>
+                                    <Label htmlFor="file">Upload your code files</Label>
                                     <Input
                                         id="file"
                                         type="file"
@@ -539,13 +565,13 @@ const FileUploadAndDisplay = () => {
                                         onClick={requestRating}
                                         disabled={generatingAnswer}
                                     >
-                                        {generatingAnswer ? 'Requesting Rating...' : 'Request Rating'}
+                                        {generatingAnswer ? 'Rating your code...' : 'Request Rating'}
                                     </Button>
                                 </div>
                             </fieldset>
                         </form>
                     </div>
-                    <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 lg:col-span-2">
+                    <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
                         <Badge variant="outline" className="absolute right-3 top-3">
                             Output
                         </Badge>
@@ -605,6 +631,53 @@ const FileUploadAndDisplay = () => {
                                 </Button>
                             </div>
                         </form>
+                    </div>
+                    <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
+                        <Badge variant='outline' className='absolute right-3 top-3'>
+                            Editor
+                        </Badge>
+                        <div className="flex-1 overflow-auto p-4 mt-4 mb-4">
+                            <div className='w-full h-full'>
+                                <Editor
+                                    height='50vh'
+                                    defaultLanguage={language}
+                                    defaultValue={CODE_SNIPPETS[language]}
+                                    theme='vs-dark'
+                                    onMount={(editor) => {
+                                        editorRef.current = editor;
+                                    }}
+                                    value={value}
+                                    onChange={(newValue) => setValue(newValue)}
+                                />
+                                <div className="flex flex-col w-full mt-4">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <button
+                                            className="bg-green-500 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-green-700 transition-all duration-300"
+                                            onClick={runCode}
+                                        >
+                                            Run Code
+                                        </button>
+                                    </div>
+                                    {isError && (
+                                        <div className="text-red-500 text-sm mb-2">{errorMessage}</div>
+                                    )}
+
+                                    <div className={`h-full p-2 rounded-md border-gray-300 border ${isError ? 'border-red-500 text-red-400' : ''}`}>
+                                        {isLoading ? (
+                                            <div className="text-center mt-2">
+                                                <i className="fas fa-spinner fa-spin"></i> Running code...
+                                            </div>
+                                        ) : (
+                                            output ? (
+                                                output.map((line, i) => <div key={i} className="text-sm">{line}</div>)
+                                            ) : (
+                                                <div>Click "Run Code" to see the output here</div>
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>
