@@ -6,6 +6,7 @@ import {
     Settings,
     Share,
     Turtle,
+    Clipboard,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,8 @@ import Editor from '@monaco-editor/react';
 import axios from 'axios';
 import { CODE_SNIPPETS } from "@/container/Workspace/Code_Editor/constant/constants";
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const FileUploadAndDisplay = () => {
     const [files, setFiles] = useState([]);
@@ -154,14 +157,34 @@ const FileUploadAndDisplay = () => {
                 },
             });
 
-            setChatHistory([...chatHistory, { type: 'question', text: question }, { type: 'answer', text: response.data.candidates[0].content.parts[0].text }]);
+            const answerText = response.data.candidates[0].content.parts[0].text;
+            const containsCode = /<code>([\s\S]*?)<\/code>/.test(answerText);
+
+            setChatHistory([
+                ...chatHistory,
+                { type: 'question', text: question },
+                { type: 'answer', text: answerText, containsCode },
+            ]);
         } catch (error) {
             console.log(error);
-            setChatHistory([...chatHistory, { type: 'question', text: question }, { type: 'answer', text: 'Sorry - Something went wrong. Please try again!' }]);
+            setChatHistory([
+                ...chatHistory,
+                { type: 'question', text: question },
+                { type: 'answer', text: 'Sorry - Something went wrong. Please try again!', containsCode: false },
+            ]);
         }
 
         setGeneratingAnswer(false);
         setQuestion('');
+    };
+
+    const extractLanguageAndCode = (text) => {
+        const codeBlockRegex = /```(\w+)\n([\s\S]*?)```/;
+        const match = text.match(codeBlockRegex);
+        if (match) {
+            return { language: match[1], code: match[2] };
+        }
+        return { language: null, code: text };
     };
 
     const requestRating = async () => {
@@ -571,20 +594,37 @@ const FileUploadAndDisplay = () => {
                             </fieldset>
                         </form>
                     </div>
-                    <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
+                    {/* <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
                         <Badge variant="outline" className="absolute right-3 top-3">
                             Output
                         </Badge>
                         <div className="flex-1 overflow-auto p-4 mt-4 mb-4 max-h-[32rem]">
-                            {chatHistory.map((chat, index) => (
-                                <div
-                                    key={index}
-                                    className={`mb-4 rounded-lg p-2 ${chat.type === 'question' ? 'bg-blue-100 text-right' : 'bg-gray-100'
-                                        }`}
-                                >
-                                    {chat.text}
-                                </div>
-                            ))}
+                            {chatHistory.map((chat, index) => {
+                                const { language, code } = extractLanguageAndCode(chat.text);
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`mb-4 rounded-lg p-2 ${chat.type === 'question' ? 'bg-blue-100 text-right' : 'bg-gray-100'
+                                            }`}
+                                    >
+                                        {language ? (
+                                            <div className="relative bg-white p-4 rounded-lg">
+                                                <SyntaxHighlighter language={language} style={coy}>
+                                                    {code}
+                                                </SyntaxHighlighter>
+                                                <Button
+                                                    className="absolute top-2 right-2 p-1 bg-blue-400 text-white rounded"
+                                                    onClick={() => navigator.clipboard.writeText(code)}
+                                                >
+                                                    <Clipboard className="size-4 mx-2" />
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            chat.text
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </div>
                         <form onSubmit={generateAnswer} className="relative overflow-hidden">
                             <Label htmlFor="message" className="sr-only">
@@ -615,15 +655,79 @@ const FileUploadAndDisplay = () => {
                                         </TooltipTrigger>
                                         <TooltipContent side="top">Attach File</TooltipContent>
                                     </Tooltip>
-                                    {/* <Tooltip>
+                                </TooltipProvider>
+                                <Button type="submit" size="sm" className="ml-auto gap-1.5" disabled={generatingAnswer}>
+                                    {generatingAnswer ? 'Generating...' : 'Send Message'}
+                                    <CornerDownLeft className="size-3.5" />
+                                </Button>
+                            </div>
+                        </form>
+                    </div> */}
+                    <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
+                        <Badge variant="outline" className="absolute right-3 top-3">
+                            Output
+                        </Badge>
+                        <div className="flex-1 overflow-auto p-4 mt-4 mb-4 max-h-[32rem]">
+                            {chatHistory.map((chat, index) => {
+                                const { language, code } = extractLanguageAndCode(chat.text);
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`mb-4 rounded-lg p-2 ${chat.type === 'question' ? 'bg-blue-100 text-right' : 'bg-gray-100'
+                                            }`}
+                                    >
+                                        {language ? (
+                                            <div className="relative bg-blue-100 p-4 rounded-lg overflow-x-auto">
+                                                <SyntaxHighlighter
+                                                    language={language}
+                                                    style={coy}
+                                                    customStyle={{ overflowY: 'auto', maxWidth: '27rem' }}
+                                                >
+                                                    {code}
+                                                </SyntaxHighlighter>
+                                                <Button
+                                                    className="absolute top-2 right-2 p-1 bg-blue-700 text-white rounded"
+                                                    onClick={() => navigator.clipboard.writeText(code)}
+                                                >
+                                                    <Clipboard className="size-4 mx-2" />
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            chat.text
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <form onSubmit={generateAnswer} className="relative overflow-hidden">
+                            <Label htmlFor="message" className="sr-only">
+                                Message
+                            </Label>
+                            <Textarea
+                                id="message"
+                                placeholder="Type your message here..."
+                                value={question}
+                                onChange={(e) => setQuestion(e.target.value)}
+                                className="min-h-12 resize-none p-3 focus-visible:ring-0"
+                            />
+                            <div className="flex items-center pt-3">
+                                <TooltipProvider>
+                                    <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button variant="ghost" size="icon">
-                                                <Mic className="size-4" />
-                                                <span className="sr-only">Use Microphone</span>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={(event) => {
+                                                    event.preventDefault(); // Prevent form submission
+                                                    fileInputRef.current.click(); // Trigger the file input click
+                                                }}
+                                            >
+                                                <Paperclip className="size-4" />
+                                                <span className="sr-only">Attach file</span>
                                             </Button>
                                         </TooltipTrigger>
-                                        <TooltipContent side="top">Use Microphone</TooltipContent>
-                                    </Tooltip> */}
+                                        <TooltipContent side="top">Attach File</TooltipContent>
+                                    </Tooltip>
                                 </TooltipProvider>
                                 <Button type="submit" size="sm" className="ml-auto gap-1.5" disabled={generatingAnswer}>
                                     {generatingAnswer ? 'Generating...' : 'Send Message'}
