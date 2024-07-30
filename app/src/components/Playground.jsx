@@ -7,6 +7,7 @@ import {
     Share,
     Turtle,
     Clipboard,
+    ConstructionIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ import { CODE_SNIPPETS } from "@/container/Workspace/Code_Editor/constant/consta
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import ChartComponent from "./chart";
 
 const FileUploadAndDisplay = () => {
     const [files, setFiles] = useState([]);
@@ -205,7 +207,7 @@ const FileUploadAndDisplay = () => {
                         {
                             parts: [
                                 {
-                                    text: `Rate the following code on a scale from 1 to 100 for the following criteria:\n\nCorrectness\nEfficiency\nReadabilityGive me the answer of numbers in order only, for example: 90\n 70\n 80\n.\n\nCode:\n${selectedFile.content}`,
+                                    text: `Rate the following code on a scale from 1 to 100 for the following criteria:\n\nCorrectness\nPerformance\nClarity\nGive me the answer of numbers in order only, for example: 90\n 70\n 80\n.\n\nCode:\n${selectedFile.content}`,
                                 },
                             ],
                         },
@@ -216,12 +218,12 @@ const FileUploadAndDisplay = () => {
             const ratings = response.data.candidates[0].content.parts[0].text.trim().split('\n');
             if (ratings.length === 3) {
                 setCorrectnessRating(ratings[0]);
-                setEfficiencyRating(ratings[1]);
-                setReadabilityRating(ratings[2]);
+                setPerformanceRating(ratings[1]);
+                setClarityRating(ratings[2]);
                 console.log('Ratings received:');
                 console.log('Correctness:', ratings[0]);
-                console.log('Efficiency:', ratings[1]);
-                console.log('Readability:', ratings[2]);
+                console.log('Performance:', ratings[1]);
+                console.log('Clarity:', ratings[2]);
             } else {
                 console.log('Unexpected response format:', response.data);
             }
@@ -232,9 +234,134 @@ const FileUploadAndDisplay = () => {
         }
     };
 
+    const chartRating = async () => {
+        if (!selectedFile) {
+            console.log('No file selected.');
+            return;
+        }
+
+        setGeneratingAnswer(true);
+        setChatHistory(prevChatHistory => [
+            ...prevChatHistory,
+            { type: 'question', text: 'Rate my code' }
+        ]);
+
+        try {
+            const response = await axios.post(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
+                {
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and rate the following code on a scale from 1 to 100 for the following criteria:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\nProvide the answer in numbers only, for example: 92\n78\n81\n100\n90\n.\n\nCode:\n${selectedFile.content}`,
+                                },
+                            ],
+                        },
+                    ],
+                }
+            );
+
+            const ratings = response.data.candidates[0].content.parts[0].text.trim().split('\n');
+            if (ratings.length === 5) {
+                const newChartData = {
+                    syntax: ratings[0],
+                    functionDefinition: ratings[1],
+                    logic: ratings[2],
+                    efficiency: ratings[3],
+                    readability: ratings[4],
+                };
+                setChartData(newChartData);
+
+                // Use functional form of setChatHistory to ensure you are working with the latest state
+                setChatHistory(prevChatHistory => [
+                    ...prevChatHistory,
+                    { type: 'chart', data: newChartData }
+                ]);
+
+                console.log('Ratings received:');
+                console.log('Syntax:', ratings[0]);
+                console.log('Function Definition:', ratings[1]);
+                console.log('Logic:', ratings[2]);
+                console.log('Efficiency:', ratings[3]);
+                console.log('Readability:', ratings[4]);
+            } else {
+                console.log('Unexpected response format:', response.data);
+            }
+
+        } catch (error) {
+            console.error('Error while requesting ratings:', error);
+        } finally {
+            setGeneratingAnswer(false);
+        }
+    };
+
+    const reviewMyCode = async () => {
+        if (!selectedFile) {
+            console.log('No file selected.');
+            return '';
+        }
+
+        setGeneratingAnswer(true);
+        setChatHistory(prevChatHistory => [
+            ...prevChatHistory,
+            { type: 'question', text: 'Review my code in details' }
+        ]);
+
+        try {
+            const response = await axios({
+                url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
+                method: 'post',
+                data: {
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and provide a detailed review based on these categories:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\n\nGive me a detailed review for each category.
+                                    Answer like this format. Keep it brief and concise, short and simple:
+                                    \nSyntax analysis: ...
+                                    \nFunction definition check: ...
+                                    \nLogic analysis: ...
+                                    \nEfficiency: ...
+                                    \nReadability: ...
+                                    \nRecommendations: ...
+                                    \n\nCode:\n${selectedFile.content}`,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            });
+
+            let reviewText = response.data.candidates[0].content.parts[0].text;
+
+            reviewText = reviewText.replace(/\*/g, '');
+
+            setChatHistory(prevChatHistory => [
+                ...prevChatHistory,
+                { type: 'answer', text: reviewText, containsCode: false, isHtml: true } // Add isHtml flag to indicate HTML content
+            ]);
+
+            setGeneratingAnswer(false);
+            return reviewText; // Return the review text
+
+        } catch (error) {
+            console.log(error);
+            setChatHistory(prevChatHistory => [
+                ...prevChatHistory,
+                { type: 'answer', text: 'Sorry - Something went wrong. Please try again!', containsCode: false }
+            ]);
+
+            setGeneratingAnswer(false);
+            return ''; // Return an empty string in case of an error
+        }
+    };
+
+    const [chartData, setChartData] = useState(0);
+
     const [correctnessRating, setCorrectnessRating] = useState(0);
-    const [efficiencyRating, setEfficiencyRating] = useState(0);
-    const [readabilityRating, setReadabilityRating] = useState(0);
+    const [performanceRating, setPerformanceRating] = useState(0);
+    const [clarityRating, setClarityRating] = useState(0);
 
     const [value, setValue] = useState('');
     const [language, setLanguage] = useState('');
@@ -505,18 +632,18 @@ const FileUploadAndDisplay = () => {
                                                     </div>
                                                 </div>
                                                 <div className="grid flex-1 auto-rows-min gap-0.5">
-                                                    <div className="text-sm text-muted-foreground">Efficiency</div>
+                                                    <div className="text-sm text-muted-foreground">Performance</div>
                                                     <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none text-[#2eb88a]">
-                                                        {efficiencyRating !== null ? `${efficiencyRating}/100` : 'N/A'}
+                                                        {performanceRating !== null ? `${performanceRating}/100` : 'N/A'}
                                                         <span className="text-sm font-normal text-muted-foreground">
                                                             points
                                                         </span>
                                                     </div>
                                                 </div>
                                                 <div className="grid flex-1 auto-rows-min gap-0.5">
-                                                    <div className="text-sm text-muted-foreground">Readability</div>
+                                                    <div className="text-sm text-muted-foreground">Clarity</div>
                                                     <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none text-[#e88c30]">
-                                                        {readabilityRating !== null ? `${readabilityRating}/100` : 'N/A'}
+                                                        {clarityRating !== null ? `${clarityRating}/100` : 'N/A'}
                                                         <span className="text-sm font-normal text-muted-foreground">
                                                             points
                                                         </span>
@@ -529,12 +656,12 @@ const FileUploadAndDisplay = () => {
                                                         label: "Correctness",
                                                         color: "hsl(var(--chart-3))",
                                                     },
-                                                    Efficiency: {
-                                                        label: "Efficiency",
+                                                    Performance: {
+                                                        label: "Performance",
                                                         color: "hsl(var(--chart-2))",
                                                     },
-                                                    Readability: {
-                                                        label: "Readability",
+                                                    Clarity: {
+                                                        label: "Clarity",
                                                         color: "hsl(var(--chart-1))",
                                                     },
                                                 }}
@@ -554,14 +681,14 @@ const FileUploadAndDisplay = () => {
                                                             fill: "var(--color-Correctness)",
                                                         },
                                                         {
-                                                            activity: "Efficiency",
-                                                            value: efficiencyRating,
-                                                            fill: "var(--color-Efficiency)",
+                                                            activity: "Performance",
+                                                            value: performanceRating,
+                                                            fill: "var(--color-Performance)",
                                                         },
                                                         {
-                                                            activity: "Readability",
-                                                            value: readabilityRating,
-                                                            fill: "var(--color-Readability)",
+                                                            activity: "Clarity",
+                                                            value: clarityRating,
+                                                            fill: "var(--color-Clarity)",
                                                         },
                                                     ]}
                                                     innerRadius="20%"
@@ -594,87 +721,34 @@ const FileUploadAndDisplay = () => {
                             </fieldset>
                         </form>
                     </div>
-                    {/* <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
-                        <Badge variant="outline" className="absolute right-3 top-3">
-                            Output
-                        </Badge>
-                        <div className="flex-1 overflow-auto p-4 mt-4 mb-4 max-h-[32rem]">
-                            {chatHistory.map((chat, index) => {
-                                const { language, code } = extractLanguageAndCode(chat.text);
-                                return (
-                                    <div
-                                        key={index}
-                                        className={`mb-4 rounded-lg p-2 ${chat.type === 'question' ? 'bg-blue-100 text-right' : 'bg-gray-100'
-                                            }`}
-                                    >
-                                        {language ? (
-                                            <div className="relative bg-white p-4 rounded-lg">
-                                                <SyntaxHighlighter language={language} style={coy}>
-                                                    {code}
-                                                </SyntaxHighlighter>
-                                                <Button
-                                                    className="absolute top-2 right-2 p-1 bg-blue-400 text-white rounded"
-                                                    onClick={() => navigator.clipboard.writeText(code)}
-                                                >
-                                                    <Clipboard className="size-4 mx-2" />
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            chat.text
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <form onSubmit={generateAnswer} className="relative overflow-hidden">
-                            <Label htmlFor="message" className="sr-only">
-                                Message
-                            </Label>
-                            <Textarea
-                                id="message"
-                                placeholder="Type your message here..."
-                                value={question}
-                                onChange={(e) => setQuestion(e.target.value)}
-                                className="min-h-12 resize-none p-3 focus-visible:ring-0"
-                            />
-                            <div className="flex items-center pt-3">
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={(event) => {
-                                                    event.preventDefault(); // Prevent form submission
-                                                    fileInputRef.current.click(); // Trigger the file input click
-                                                }}
-                                            >
-                                                <Paperclip className="size-4" />
-                                                <span className="sr-only">Attach file</span>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="top">Attach File</TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                                <Button type="submit" size="sm" className="ml-auto gap-1.5" disabled={generatingAnswer}>
-                                    {generatingAnswer ? 'Generating...' : 'Send Message'}
-                                    <CornerDownLeft className="size-3.5" />
-                                </Button>
-                            </div>
-                        </form>
-                    </div> */}
+
                     <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
                         <Badge variant="outline" className="absolute right-3 top-3">
                             Output
                         </Badge>
                         <div className="flex-1 overflow-auto p-4 mt-4 mb-4 max-h-[32rem]">
                             {chatHistory.map((chat, index) => {
+                                if (chat.type === 'message') {
+                                    return (
+                                        <div key={index} className="mb-4 rounded-lg p-2 bg-blue-200 text-right">
+                                            {chat.text}
+                                        </div>
+                                    );
+                                }
+
+                                if (chat.type === 'chart' && chartData) {
+                                    return (
+                                        <div key={index} className="mb-4 rounded-lg p-2 bg-gray-100">
+                                            <ChartComponent ratings={chartData} />
+                                        </div>
+                                    );
+                                }
+
                                 const { language, code } = extractLanguageAndCode(chat.text);
                                 return (
                                     <div
                                         key={index}
-                                        className={`mb-4 rounded-lg p-2 ${chat.type === 'question' ? 'bg-blue-100 text-right' : 'bg-gray-100'
-                                            }`}
+                                        className={`mb-4 rounded-lg p-2 ${chat.type === 'question' ? 'bg-blue-100 text-right' : 'bg-gray-100'}`}
                                     >
                                         {language ? (
                                             <div className="relative bg-blue-100 p-4 rounded-lg overflow-x-auto">
@@ -703,6 +777,7 @@ const FileUploadAndDisplay = () => {
                             <Label htmlFor="message" className="sr-only">
                                 Message
                             </Label>
+
                             <Textarea
                                 id="message"
                                 placeholder="Type your message here..."
@@ -729,6 +804,24 @@ const FileUploadAndDisplay = () => {
                                         <TooltipContent side="top">Attach File</TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    className="ml-2 bg-white text-black border hover:bg-gray-100 rounded p-1"
+                                    onClick={chartRating}
+                                    disabled={generatingAnswer}
+                                >
+                                    Rate my code
+                                </Button>
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    className="ml-2 bg-white text-black border hover:bg-gray-100 rounded p-1"
+                                    onClick={reviewMyCode}
+                                    disabled={generatingAnswer}
+                                >
+                                    Review Details
+                                </Button>
                                 <Button type="submit" size="sm" className="ml-auto gap-1.5" disabled={generatingAnswer}>
                                     {generatingAnswer ? 'Generating...' : 'Send Message'}
                                     <CornerDownLeft className="size-3.5" />
@@ -736,6 +829,7 @@ const FileUploadAndDisplay = () => {
                             </div>
                         </form>
                     </div>
+
                     <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
                         <Badge variant='outline' className='absolute right-3 top-3'>
                             Editor
