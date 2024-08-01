@@ -8,6 +8,7 @@ import {
     Turtle,
     Clipboard,
     ConstructionIcon,
+    RotateCw,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,6 @@ import { CODE_SNIPPETS } from "@/container/Workspace/Code_Editor/constant/consta
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import ChartComponent from "./chart";
 
 const FileUploadAndDisplay = () => {
     const [files, setFiles] = useState([]);
@@ -98,9 +98,12 @@ const FileUploadAndDisplay = () => {
     const handleFileSelect = (fileName) => {
         const file = files.find(f => f.name === fileName);
         if (file) {
-            setSelectedFile(file); // Optional: update the selected file state
+            setSelectedFile(file); // Update the selected file state
             console.log('Selected File Name:', file.name); // Log the file name
             console.log('Selected File Content:', file.content); // Log the file content
+
+            // Call requestRating after setting the file
+            requestRating();
 
             setValue(file.content);
 
@@ -142,6 +145,23 @@ const FileUploadAndDisplay = () => {
         setGeneratingAnswer(true);
         setChatHistory([...chatHistory, { type: 'question', text: question }]);
 
+        let promptPrefix = '';
+
+        switch (selectedModel) {
+            case 'syntax':
+                promptPrefix = 'Pretending you are a Code Syntax and Debugging Expert named Genesis.';
+                break;
+            case 'algorithm':
+                promptPrefix = 'Pretending you are an Algorithm and Data Structure Master named Explorer.';
+                break;
+            case 'quality':
+                promptPrefix = 'Pretending you are a Code Quality and Collaboration Mentor named Quantum.';
+                break;
+            default:
+                promptPrefix = 'Pretending you are an AI coding assistant named CodeHub.';
+                break;
+        }
+
         try {
             const response = await axios({
                 url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
@@ -151,7 +171,7 @@ const FileUploadAndDisplay = () => {
                         {
                             parts: [
                                 {
-                                    text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and answer the question:\n\n${files.map(file => `${file.name}:\n${file.content}\n\n`).join('')}\nQuestion: ${question}`,
+                                    text: `${promptPrefix} Analyze the following file contents and answer the question:\n\n${files.map(file => `${file.name}:\n${file.content}\n\n`).join('')}\nQuestion: ${question}`,
                                 },
                             ],
                         },
@@ -160,12 +180,13 @@ const FileUploadAndDisplay = () => {
             });
 
             const answerText = response.data.candidates[0].content.parts[0].text;
+            const formattedAnswerText = formatAnswerText(answerText);
             const containsCode = /<code>([\s\S]*?)<\/code>/.test(answerText);
 
             setChatHistory([
                 ...chatHistory,
                 { type: 'question', text: question },
-                { type: 'answer', text: answerText, containsCode },
+                { type: 'answer', text: formattedAnswerText, containsCode },
             ]);
         } catch (error) {
             console.log(error);
@@ -178,7 +199,14 @@ const FileUploadAndDisplay = () => {
 
         setGeneratingAnswer(false);
         setQuestion('');
-    };
+    }
+
+    const formatAnswerText = (text) => {
+        // Replace newlines with <br /> tags for proper formatting in HTML
+        return text
+            .replace(/Code:\n([\s\S]*?)(?=<br \/>)?/g, '<pre class="bg-gray-200 p-2 rounded">$1</pre>') // Handle code blocks
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Handle bold text
+    }
 
     const extractLanguageAndCode = (text) => {
         const codeBlockRegex = /```(\w+)\n([\s\S]*?)```/;
@@ -207,7 +235,7 @@ const FileUploadAndDisplay = () => {
                         {
                             parts: [
                                 {
-                                    text: `Rate the following code on a scale from 1 to 100 for the following criteria:\n\nCorrectness\nPerformance\nClarity\nGive me the answer of numbers in order only, for example: 90\n 70\n 80\n.\n\nCode:\n${selectedFile.content}`,
+                                    text: `Rate the following code on a scale from 1 to 100 for the following criteria:\n\nCorrectness\nPerformance\nClarity\nGive me the answer of numbers in order only, for example: 90\n70\n80\n.\n\nCode:\n${selectedFile.content}`,
                                 },
                             ],
                         },
@@ -215,82 +243,26 @@ const FileUploadAndDisplay = () => {
                 },
             });
 
-            const ratings = response.data.candidates[0].content.parts[0].text.trim().split('\n');
-            if (ratings.length === 3) {
-                setCorrectnessRating(ratings[0]);
-                setPerformanceRating(ratings[1]);
-                setClarityRating(ratings[2]);
-                console.log('Ratings received:');
-                console.log('Correctness:', ratings[0]);
-                console.log('Performance:', ratings[1]);
-                console.log('Clarity:', ratings[2]);
+            // Ensure response data structure is as expected
+            const ratingsText = response.data.candidates[0]?.content?.parts[0]?.text?.trim();
+            if (ratingsText) {
+                const ratings = ratingsText.split('\n');
+                if (ratings.length === 3) {
+                    setCorrectnessRating(ratings[0]);
+                    setPerformanceRating(ratings[1]);
+                    setClarityRating(ratings[2]);
+                    console.log('Ratings received:');
+                    console.log('Correctness:', ratings[0]);
+                    console.log('Performance:', ratings[1]);
+                    console.log('Clarity:', ratings[2]);
+                } else {
+                    console.log('Unexpected response format:', ratingsText);
+                }
             } else {
-                console.log('Unexpected response format:', response.data);
+                console.log('Response data is missing expected fields:', response.data);
             }
         } catch (error) {
             console.log('Error while requesting ratings:', error);
-        } finally {
-            setGeneratingAnswer(false);
-        }
-    };
-
-    const chartRating = async () => {
-        if (!selectedFile) {
-            console.log('No file selected.');
-            return;
-        }
-
-        setGeneratingAnswer(true);
-        setChatHistory(prevChatHistory => [
-            ...prevChatHistory,
-            { type: 'question', text: 'Rate my code' }
-        ]);
-
-        try {
-            const response = await axios.post(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
-                {
-                    contents: [
-                        {
-                            parts: [
-                                {
-                                    text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and rate the following code on a scale from 1 to 100 for the following criteria:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\nProvide the answer in numbers only, for example: 92\n78\n81\n100\n90\n.\n\nCode:\n${selectedFile.content}`,
-                                },
-                            ],
-                        },
-                    ],
-                }
-            );
-
-            const ratings = response.data.candidates[0].content.parts[0].text.trim().split('\n');
-            if (ratings.length === 5) {
-                const newChartData = {
-                    syntax: ratings[0],
-                    functionDefinition: ratings[1],
-                    logic: ratings[2],
-                    efficiency: ratings[3],
-                    readability: ratings[4],
-                };
-                setChartData(newChartData);
-
-                // Use functional form of setChatHistory to ensure you are working with the latest state
-                setChatHistory(prevChatHistory => [
-                    ...prevChatHistory,
-                    { type: 'chart', data: newChartData }
-                ]);
-
-                console.log('Ratings received:');
-                console.log('Syntax:', ratings[0]);
-                console.log('Function Definition:', ratings[1]);
-                console.log('Logic:', ratings[2]);
-                console.log('Efficiency:', ratings[3]);
-                console.log('Readability:', ratings[4]);
-            } else {
-                console.log('Unexpected response format:', response.data);
-            }
-
-        } catch (error) {
-            console.error('Error while requesting ratings:', error);
         } finally {
             setGeneratingAnswer(false);
         }
@@ -305,7 +277,7 @@ const FileUploadAndDisplay = () => {
         setGeneratingAnswer(true);
         setChatHistory(prevChatHistory => [
             ...prevChatHistory,
-            { type: 'question', text: 'Review my code in details' }
+            { type: 'question', text: 'Review my current selected file in details.' }
         ]);
 
         try {
@@ -317,15 +289,7 @@ const FileUploadAndDisplay = () => {
                         {
                             parts: [
                                 {
-                                    text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and provide a detailed review based on these categories:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\n\nGive me a detailed review for each category.
-                                    Answer like this format. Keep it brief and concise, short and simple:
-                                    \nSyntax analysis: ...
-                                    \nFunction definition check: ...
-                                    \nLogic analysis: ...
-                                    \nEfficiency: ...
-                                    \nReadability: ...
-                                    \nRecommendations: ...
-                                    \n\nCode:\n${selectedFile.content}`,
+                                    text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and provide a detailed review based on these categories:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\n\nGive me a detailed review for each category. Answer in this format. Keep it brief and concise, short and simple:\n\nSyntax analysis: ...\nFunction definition check: ...\nLogic analysis: ...\nEfficiency: ...\nReadability: ...\nRecommendations: ...\n\nCode:\n${selectedFile.content}`,
                                 },
                             ],
                         },
@@ -335,15 +299,16 @@ const FileUploadAndDisplay = () => {
 
             let reviewText = response.data.candidates[0].content.parts[0].text;
 
-            reviewText = reviewText.replace(/\*/g, '');
+            // Format the review text
+            reviewText = formatReviewText(reviewText);
 
             setChatHistory(prevChatHistory => [
                 ...prevChatHistory,
-                { type: 'answer', text: reviewText, containsCode: false, isHtml: true } // Add isHtml flag to indicate HTML content
+                { type: 'answer', text: reviewText, containsCode: false, isHtml: true }
             ]);
 
             setGeneratingAnswer(false);
-            return reviewText; // Return the review text
+            return reviewText;
 
         } catch (error) {
             console.log(error);
@@ -353,15 +318,25 @@ const FileUploadAndDisplay = () => {
             ]);
 
             setGeneratingAnswer(false);
-            return ''; // Return an empty string in case of an error
+            return '';
         }
     };
 
-    const [chartData, setChartData] = useState(0);
+    const formatReviewText = (text) => {
+        // Replace newlines with <br /> for HTML rendering
+        // Handle code blocks, sections, and bold text
+        return text
+            .replace(/\n/g, '<br />') // Replace newlines with <br />
+            .replace(/Code:\n([\s\S]*?)(?=<br \/>)?/g, '<pre class="bg-gray-200 p-2 rounded">$1</pre>') // Handle code blocks
+            .replace(/(\b(?:Syntax analysis|Function definition check|Logic analysis|Efficiency|Readability|Recommendations):\s*[\s\S]*?)(?=<br \/>)?/g, '<div class="mb-2"><strong>$1</strong></div>') // Handle sections
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Handle bold text
+    };
 
     const [correctnessRating, setCorrectnessRating] = useState(0);
     const [performanceRating, setPerformanceRating] = useState(0);
     const [clarityRating, setClarityRating] = useState(0);
+
+    const [selectedModel, setSelectedModel] = useState('');
 
     const [value, setValue] = useState('');
     const [language, setLanguage] = useState('');
@@ -403,7 +378,7 @@ const FileUploadAndDisplay = () => {
                                 <span className="sr-only">Settings</span>
                             </Button>
                         </DrawerTrigger>
-                        <DrawerContent className="max-h-[80vh]">
+                        <DrawerContent className="max-h-[80vh] hidden">
                             <DrawerHeader>
                                 <DrawerTitle>Configuration</DrawerTitle>
                                 <DrawerDescription>
@@ -517,17 +492,16 @@ const FileUploadAndDisplay = () => {
                     </Button>
                 </header>
                 <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-3 lg:grid-cols-3" style={{ gridTemplateColumns: "20rem 0.8fr 1fr" }}>
-                    <div
-                        className="relative hidden flex-col items-start gap-8 md:flex max-w-[20rem]"
-                    >
+                    <div className="relative hidden flex-col items-start gap-8 md:flex max-w-[20rem]">
                         <form className="grid w-full items-start gap-6">
                             <fieldset className="grid gap-6 rounded-lg border p-4">
                                 <legend className="-ml-1 px-1 text-sm font-medium">
                                     Infomation
                                 </legend>
+
                                 <div className="grid gap-3">
                                     <Label htmlFor="model">Model</Label>
-                                    <Select>
+                                    <Select onValueChange={(value) => setSelectedModel(value)}>
                                         <SelectTrigger
                                             id="model"
                                             className="items-start [&_[data-description]]:hidden"
@@ -535,7 +509,7 @@ const FileUploadAndDisplay = () => {
                                             <SelectValue placeholder="Select a model" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="genesis">
+                                            <SelectItem value="syntax">
                                                 <div className="flex items-start gap-3 text-muted-foreground">
                                                     <Rabbit className="size-5" />
                                                     <div className="grid gap-0.5">
@@ -546,12 +520,12 @@ const FileUploadAndDisplay = () => {
                                                             </span>
                                                         </p>
                                                         <p className="text-xs" data-description>
-                                                            Our fastest model for general use cases.
+                                                            Code Syntax and Debugging Expert
                                                         </p>
                                                     </div>
                                                 </div>
                                             </SelectItem>
-                                            <SelectItem value="explorer">
+                                            <SelectItem value="algorithm">
                                                 <div className="flex items-start gap-3 text-muted-foreground">
                                                     <Bird className="size-5" />
                                                     <div className="grid gap-0.5">
@@ -562,12 +536,12 @@ const FileUploadAndDisplay = () => {
                                                             </span>
                                                         </p>
                                                         <p className="text-xs" data-description>
-                                                            Performance and speed for efficiency.
+                                                            Algorithm and Data Structure Guru
                                                         </p>
                                                     </div>
                                                 </div>
                                             </SelectItem>
-                                            <SelectItem value="quantum">
+                                            <SelectItem value="quality">
                                                 <div className="flex items-start gap-3 text-muted-foreground">
                                                     <Turtle className="size-5" />
                                                     <div className="grid gap-0.5">
@@ -578,7 +552,7 @@ const FileUploadAndDisplay = () => {
                                                             </span>
                                                         </p>
                                                         <p className="text-xs" data-description>
-                                                            The most powerful model for complex computations.
+                                                            Code Quality and Collaboration Mentor
                                                         </p>
                                                     </div>
                                                 </div>
@@ -586,6 +560,7 @@ const FileUploadAndDisplay = () => {
                                         </SelectContent>
                                     </Select>
                                 </div>
+
                                 <div className="grid gap-3">
                                     <Label htmlFor="file">Upload your code files</Label>
                                     <Input
@@ -618,105 +593,65 @@ const FileUploadAndDisplay = () => {
                                 </div>
 
                                 <div className="grid gap-3">
-                                    <Label htmlFor="content">Overall Review</Label>
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="content" className="flex-shrink-0">Overall Review</Label>
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={requestRating}
+                                                        disabled={generatingAnswer}
+                                                    >
+                                                        {generatingAnswer ? '...' : <RotateCw className="size-4" />}
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="top">Reload rating</TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
                                     <Card className="max-w">
                                         <CardContent className="flex gap-4 p-4">
                                             <div className="grid items-center gap-2">
-                                                <div className="grid flex-1 auto-rows-min gap-0.5">
-                                                    <div className="text-sm text-muted-foreground">Correctness</div>
-                                                    <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none text-[#2662d9]">
-                                                        {correctnessRating !== null ? `${correctnessRating}/100` : 'N/A'}
-                                                        <span className="text-sm font-normal text-muted-foreground">
-                                                            points
-                                                        </span>
+                                                {['Correctness', 'Performance', 'Clarity'].map((criteria, idx) => (
+                                                    <div key={idx} className="grid flex-1 auto-rows-min gap-0.5">
+                                                        <div className="text-sm text-muted-foreground">{criteria}</div>
+                                                        <div className={`flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none ${idx === 0 ? 'text-[#2662d9]' : idx === 1 ? 'text-[#2eb88a]' : 'text-[#e88c30]'}`}>
+                                                            {criteria === 'Correctness' ? (correctnessRating !== null ? `${correctnessRating}/100` : 'N/A') :
+                                                                criteria === 'Performance' ? (performanceRating !== null ? `${performanceRating}/100` : 'N/A') :
+                                                                    criteria === 'Clarity' ? (clarityRating !== null ? `${clarityRating}/100` : 'N/A') : 'N/A'}
+                                                            <span className="text-sm font-normal text-muted-foreground">points</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="grid flex-1 auto-rows-min gap-0.5">
-                                                    <div className="text-sm text-muted-foreground">Performance</div>
-                                                    <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none text-[#2eb88a]">
-                                                        {performanceRating !== null ? `${performanceRating}/100` : 'N/A'}
-                                                        <span className="text-sm font-normal text-muted-foreground">
-                                                            points
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div className="grid flex-1 auto-rows-min gap-0.5">
-                                                    <div className="text-sm text-muted-foreground">Clarity</div>
-                                                    <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none text-[#e88c30]">
-                                                        {clarityRating !== null ? `${clarityRating}/100` : 'N/A'}
-                                                        <span className="text-sm font-normal text-muted-foreground">
-                                                            points
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                ))}
                                             </div>
                                             <ChartContainer
                                                 config={{
-                                                    Correctness: {
-                                                        label: "Correctness",
-                                                        color: "hsl(var(--chart-3))",
-                                                    },
-                                                    Performance: {
-                                                        label: "Performance",
-                                                        color: "hsl(var(--chart-2))",
-                                                    },
-                                                    Clarity: {
-                                                        label: "Clarity",
-                                                        color: "hsl(var(--chart-1))",
-                                                    },
+                                                    Correctness: { label: "Correctness", color: "hsl(var(--chart-3))" },
+                                                    Performance: { label: "Performance", color: "hsl(var(--chart-2))" },
+                                                    Clarity: { label: "Clarity", color: "hsl(var(--chart-1))" },
                                                 }}
                                                 className="mx-auto aspect-square w-full max-w-[80%]"
                                             >
                                                 <RadialBarChart
-                                                    margin={{
-                                                        left: -10,
-                                                        right: -10,
-                                                        top: -10,
-                                                        bottom: -10,
-                                                    }}
+                                                    margin={{ left: -10, right: -10, top: -10, bottom: -10 }}
                                                     data={[
-                                                        {
-                                                            activity: "Correctness",
-                                                            value: correctnessRating,
-                                                            fill: "var(--color-Correctness)",
-                                                        },
-                                                        {
-                                                            activity: "Performance",
-                                                            value: performanceRating,
-                                                            fill: "var(--color-Performance)",
-                                                        },
-                                                        {
-                                                            activity: "Clarity",
-                                                            value: clarityRating,
-                                                            fill: "var(--color-Clarity)",
-                                                        },
+                                                        { activity: "Correctness", value: correctnessRating, fill: "var(--color-Correctness)" },
+                                                        { activity: "Performance", value: performanceRating, fill: "var(--color-Performance)" },
+                                                        { activity: "Clarity", value: clarityRating, fill: "var(--color-Clarity)" },
                                                     ]}
                                                     innerRadius="20%"
                                                     barSize={24}
                                                     startAngle={90}
                                                     endAngle={450}
                                                 >
-                                                    <PolarAngleAxis
-                                                        type="number"
-                                                        domain={[0, 100]}
-                                                        dataKey="value"
-                                                        tick={false}
-                                                    />
+                                                    <PolarAngleAxis type="number" domain={[0, 100]} dataKey="value" tick={false} />
                                                     <RadialBar dataKey="value" background cornerRadius={5} />
                                                 </RadialBarChart>
                                             </ChartContainer>
-
                                         </CardContent>
                                     </Card>
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        className="mt-4"
-                                        onClick={requestRating}
-                                        disabled={generatingAnswer}
-                                    >
-                                        {generatingAnswer ? 'Rating your code...' : 'Request Rating'}
-                                    </Button>
                                 </div>
                             </fieldset>
                         </form>
@@ -736,14 +671,6 @@ const FileUploadAndDisplay = () => {
                                     );
                                 }
 
-                                if (chat.type === 'chart' && chartData) {
-                                    return (
-                                        <div key={index} className="mb-4 rounded-lg p-2 bg-gray-100">
-                                            <ChartComponent ratings={chartData} />
-                                        </div>
-                                    );
-                                }
-
                                 const { language, code } = extractLanguageAndCode(chat.text);
                                 return (
                                     <div
@@ -751,7 +678,7 @@ const FileUploadAndDisplay = () => {
                                         className={`mb-4 rounded-lg p-2 ${chat.type === 'question' ? 'bg-blue-100 text-right' : 'bg-gray-100'}`}
                                     >
                                         {language ? (
-                                            <div className="relative bg-blue-100 p-4 rounded-lg overflow-x-auto">
+                                            <div className="relative bg-gray-100 p-4 rounded-lg overflow-x-auto">
                                                 <SyntaxHighlighter
                                                     language={language}
                                                     style={coy}
@@ -767,12 +694,16 @@ const FileUploadAndDisplay = () => {
                                                 </Button>
                                             </div>
                                         ) : (
-                                            chat.text
+                                            <div
+                                                dangerouslySetInnerHTML={{ __html: chat.text }}
+                                                className="whitespace-pre-line" // Ensure formatting preserves newlines
+                                            />
                                         )}
                                     </div>
                                 );
                             })}
                         </div>
+
                         <form onSubmit={generateAnswer} className="relative overflow-hidden">
                             <Label htmlFor="message" className="sr-only">
                                 Message
@@ -804,15 +735,6 @@ const FileUploadAndDisplay = () => {
                                         <TooltipContent side="top">Attach File</TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
-                                <Button
-                                    type="button"
-                                    size="sm"
-                                    className="ml-2 bg-white text-black border hover:bg-gray-100 rounded p-1"
-                                    onClick={chartRating}
-                                    disabled={generatingAnswer}
-                                >
-                                    Rate my code
-                                </Button>
                                 <Button
                                     type="button"
                                     size="sm"
