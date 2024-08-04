@@ -20,11 +20,10 @@ import { MESSAGES } from '../constants/message.js';
 
 const userRouter = express.Router();
 
-userRouter.post(
-	'/login',
-	loginValidator,
-	wrapRequestHandler(userController.login),
-);
+userRouter.post('/login', async (req, res) => {
+	const result = await userServices.login(req.body);
+	return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.LOGIN);
+});
 
 // userRouter.post(
 // 	'/register',
@@ -51,16 +50,12 @@ userRouter.post(
 );
 
 userRouter.post('/otp/authenticate', async (req, res) => {
-	try {
-		const result = await userServices.verifyAccount(req.body);
-		return sendResponse.success(
-			res,
-			result,
-			MESSAGES.SUCCESS_MESSAGES.OTP.VERIFY,
-		);
-	} catch (error) {
-		console.log('🚀 ~ userRouter.post ~ error:', error);
-	}
+	const result = await userServices.verifyAccount(req.body);
+	return sendResponse.success(
+		res,
+		result,
+		MESSAGES.SUCCESS_MESSAGES.OTP.VERIFY,
+	);
 });
 
 userRouter.post(
