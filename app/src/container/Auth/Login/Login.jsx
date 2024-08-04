@@ -5,7 +5,6 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { toast } from 'react-toastify';
 import { auth, firestore } from '@/firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { UserRole } from '@/helpers/constant';
 import { useDispatch } from 'react-redux';
 import {
 	setAdminStatus,
@@ -41,7 +40,7 @@ const Login = () => {
 			const role = userData.role;
 			dispatch(setLoginStatus(true));
 			dispatch(setAdminStatus(false));
-			if (role === UserRole.ADMIN) {
+			if (role === 'Admin') {
 				dispatch(setAdminStatus(true));
 			}
 			toast.success('Logged in Successfully');
