@@ -4,7 +4,6 @@ import _ from 'lodash';
 import { signToken, verifyToken } from '../utils/jwt.js';
 import bcrypt from 'bcrypt';
 import { databaseService } from './database.service.js';
-import User from '../models/schemas/User.schema.js';
 import { ErrorWithStatus } from '../models/errors/Error.schema.js';
 import { StatusCodes } from 'http-status-codes';
 import { MESSAGES } from '../constants/message.js';
@@ -12,16 +11,24 @@ import otpService from './otp.service.js';
 import { generateEmailContent } from '../utils/email.js';
 import emailService from './email.service.js';
 import { ObjectId } from 'mongodb';
+import db from '../db/connection.js';
+import dotenv from 'dotenv';
+import User from '../models/schemas/User.schema.js';
+dotenv.config();
 class UserService {
 	// Generate accesstoken
 	signAccessToken(_id, email, username, role) {
-		const { access_token_exp, jwt_algorithm, secret_key } = env.jwt;
+		const secret_key = process.env.JWT_ACCESS_TOKEN_SECRET;
+		const access_token_exp = process.env.ACCESS_TOKEN_EXPIRESIN;
+
+		const jwt_algorithm = process.env.JWT_ALGORITHM;
+
 		const payload = {
 			_id,
 			email,
 			username,
 			role,
-			token_type: TokenType.AccessToken,
+			token_type: 'AccessToken',
 		};
 		const options = {
 			expiresIn: access_token_exp,
@@ -32,14 +39,16 @@ class UserService {
 
 	// Generate freshtoken
 	signRefreshToken(_id, email, username, role) {
-		let { refresh_token_exp, jwt_algorithm, refresh_token_key } = env.jwt;
+		const refresh_token_key = process.env.JWT_REFRESH_TOKEN_SECRET;
+		const jwt_algorithm = process.env.JWT_ALGORITHM;
+		const refresh_token_exp = process.env.REFRESH_TOKEN_EXPIRESIN;
 		return signToken({
 			payload: {
 				_id,
 				email,
 				username,
 				role,
-				token_type: TokenType.RefreshToken,
+				token_type: 'RefreshToken',
 			},
 			privateKey: refresh_token_key,
 			options: {
@@ -61,19 +70,20 @@ class UserService {
 	async register(user) {
 		const { username, email, password } = user;
 		try {
-			const hashPwd = bcrypt.hashSync(password, env.password.salt_round);
+			const hashPwd = bcrypt.hashSync(password, 10);
 			const user = new User({
 				username,
 				email,
 				password: hashPwd,
 			});
-			const newUser = await databaseService.users.insertOne(user);
-			console.log('🚀 ~ UserService ~ register ~ newUser:', newUser);
+
+			const newUser = await db.collection('users').insertOne(user);
 			const userId = newUser.insertedId.toString();
 			const [access_token, refresh_token] =
 				await this.signAccessAndRefreshToken(userId, email, username, 'User');
 
 			await this.sendOTP(email);
+
 			return {
 				_id: userId,
 				username,
@@ -121,11 +131,10 @@ class UserService {
 		try {
 			const existingOTP = await otpService.findOTP(otpObject.otp);
 			const { email } = existingOTP;
-			await databaseService.users.findOneAndUpdate(
-				{ email },
-				{ $set: { verify: UserVerifyStatus.Verified } },
-			);
-			await databaseService.otps.findOneAndDelete({ email });
+			await db
+				.collection('users')
+				.findOneAndUpdate({ email }, { $set: { verify: 'Verified' } });
+			await db.collection('otps').findOneAndDelete({ email });
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -138,7 +147,7 @@ class UserService {
 	async login(payload) {
 		try {
 			const { email, password } = payload;
-			const user = await databaseService.users.findOne({ email });
+			const user = await db.collection('users').findOne({ email });
 			if (!user) {
 				throw new ErrorWithStatus({
 					statusCode: StatusCodes.NOT_FOUND,
@@ -164,7 +173,7 @@ class UserService {
 			const query = { user_id: user._id };
 			const update = { $set: { token: refresh_token } };
 			const options = { upsert: true };
-			await databaseService.refreshTokens.updateOne(query, update, options);
+			await db.collection('refreshTokens').updateOne(query, update, options);
 			return {
 				_id: user._id.toString(),
 				username: user.username,
@@ -216,7 +225,7 @@ class UserService {
 	async logout(payload) {
 		try {
 			const { refresh_token } = payload;
-			const token = await databaseService.refreshTokens.findOne({
+			const token = await db.collection('refreshTokens').findOne({
 				token: refresh_token,
 			});
 			if (!token) {
@@ -226,7 +235,7 @@ class UserService {
 						MESSAGES.VALIDATION_MESSAGES.USER.TOKEN.REFRESH_TOKEN.NOT_FOUND,
 				});
 			}
-			await databaseService.refreshTokens.deleteOne(token);
+			await db.collection('refreshTokens').deleteOne(token);
 		} catch (error) {
 			if (error instanceof ErrorWithStatus && error.statusCode) {
 				throw error;
@@ -242,11 +251,11 @@ class UserService {
 		try {
 			const { email, new_password } = payload;
 			const hashNewPwd = bcrypt.hashSync(new_password, env.password.salt_round);
-			const changePwdUser = await databaseService.users.findOne({ email });
+			const changePwdUser = await db.collection('users').findOne({ email });
 			const query = { _id: changePwdUser._id };
 			const update = { $set: { password: hashNewPwd } };
 			const options = { upsert: false };
-			await databaseService.users.updateOne(query, update, options);
+			await db.collection('users').updateOne(query, update, options);
 		} catch (error) {
 			if (error instanceof ErrorWithStatus) {
 				throw error;
@@ -285,15 +294,8 @@ class UserService {
 
 	async resetPwd(payload) {
 		try {
-			const { email, new_password } = payload;
-			console.log('🚀 ~ UserService ~ resetPwd ~ payload:', payload);
-			console.log(
-				'🚀 ~ UserService ~ resetPwd ~ email, new_password:',
-				email,
-				new_password,
-			);
 			const hashedPwd = bcrypt.hashSync(new_password, env.password.salt_round);
-			const updatedUser = await databaseService.users.findOne({ email });
+			const updatedUser = await db.collection('users').findOne({ email });
 			if (!updatedUser) {
 				throw new ErrorWithStatus({
 					statusCode: StatusCodes.NOT_FOUND,
@@ -304,7 +306,7 @@ class UserService {
 			const query = { _id: updatedUser._id };
 			const update = { $set: { password: hashedPwd } };
 			const options = { upsert: false };
-			await databaseService.users.updateOne(query, update, options);
+			await db.collection('users').updateOne(query, update, options);
 			await databaseService.otps.deleteMany({ email });
 		} catch (error) {
 			if (error instanceof ErrorWithStatus) {
@@ -320,7 +322,7 @@ class UserService {
 
 	async getProfile(id) {
 		try {
-			const user = await databaseService.users.findOne({
+			const user = await db.collection('users').findOne({
 				_id: new ObjectId(id),
 			});
 			const filterUser = _.omit(user, 'password', 'password_change_at');
@@ -350,13 +352,15 @@ class UserService {
 				updated_at: new Date(),
 			};
 
-			await databaseService.users.updateOne(
-				{ _id: new ObjectId(id) },
-				{ $set: update },
-				{ upsert: false },
-			);
+			await db
+				.collection('users')
+				.updateOne(
+					{ _id: new ObjectId(id) },
+					{ $set: update },
+					{ upsert: false },
+				);
 
-			const user = await databaseService.users.findOne({
+			const user = await db.collection('users').findOne({
 				_id: new ObjectId(id),
 			});
 

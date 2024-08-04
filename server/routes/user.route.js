@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import express from 'express';
 import userController from '../controllers/user.controller.js';
 import { requireLoginMiddleware } from '../middlewares/auth.middleware.js';
 import {
@@ -13,8 +13,12 @@ import {
 	verifyValidator,
 } from '../middlewares/user.middleware.js';
 import { wrapRequestHandler } from '../utils/handler.js';
+import db from '../db/connection.js';
+import userServices from '../services/user.service.js';
+import { sendResponse } from '../config/response.config.js';
+import { MESSAGES } from '../constants/message.js';
 
-const userRouter = Router();
+const userRouter = express.Router();
 
 userRouter.post(
 	'/login',
@@ -22,11 +26,16 @@ userRouter.post(
 	wrapRequestHandler(userController.login),
 );
 
-userRouter.post(
-	'/register',
-	registerValidator,
-	wrapRequestHandler(userController.register),
-);
+// userRouter.post(
+// 	'/register',
+// 	registerValidator,
+// 	wrapRequestHandler(userController.register),
+// );
+
+userRouter.post('/register', async (req, res) => {
+	const result = await userServices.register(req.body);
+	return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.REGISTER);
+});
 
 userRouter.post(
 	'/logout',
@@ -41,11 +50,18 @@ userRouter.post(
 	wrapRequestHandler(userController.refreshToken),
 );
 
-userRouter.post(
-	'/otp/authenticate',
-	verifyValidator,
-	wrapRequestHandler(userController.verifyAccount),
-);
+userRouter.post('/otp/authenticate', async (req, res) => {
+	try {
+		const result = await userServices.verifyAccount(req.body);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.OTP.VERIFY,
+		);
+	} catch (error) {
+		console.log('🚀 ~ userRouter.post ~ error:', error);
+	}
+});
 
 userRouter.post(
 	'/otp/revalidate',

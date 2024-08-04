@@ -163,6 +163,8 @@ export const registerValidator = validate(
 										.CONTAINS_EMOJI,
 							});
 						}
+
+						console.log('🚀 ~ req.body.password:', req.body.password);
 						if (value !== req.body.password) {
 							throw new Error(
 								MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.CONFIRM_PASSWORD.MUST_BE_THE_SAME_AS_PASSWORD,

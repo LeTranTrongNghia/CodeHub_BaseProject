@@ -4,7 +4,8 @@ import { MESSAGES } from '../constants/message.js';
 
 const userController = {
 	register: async (req, res) => {
-		console.log('🚀 ~ register: ~ req:', req.body);
+		console.log('tới conntroller');
+
 		const result = await userServices.register(req.body);
 		return sendResponse.success(
 			res,
