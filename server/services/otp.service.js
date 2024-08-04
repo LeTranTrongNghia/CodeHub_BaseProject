@@ -4,12 +4,13 @@ import { ErrorWithStatus } from '../models/errors/Error.schema.js';
 import OTP from '../models/schemas/Otp.schema.js';
 import { databaseService } from './database.service.js';
 import { generateOTPCode, hashOTP } from '../utils/crypto.js';
+import db from '../db/connection.js';
 
 class OTPService {
 	async findOTP(otp) {
 		try {
 			const hashedOTP = hashOTP(otp);
-			return (await databaseService.otps.findOne) < OTP > { otp: hashedOTP };
+			return await db.collection('otps').findOne({ otp: hashedOTP });
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
@@ -28,8 +29,8 @@ class OTPService {
 				expiredIn: new Date(Date.now() + OTP_LIFETIME), // Expires in 5 minutes
 			});
 
-			await databaseService.otps.deleteMany({ email: email });
-			await databaseService.otps.insertOne(otp);
+			await db.collection('otps').deleteMany({ email: email });
+			await db.collection('otps').insertOne(otp);
 			return { code: otpCode, email };
 		} catch (error) {
 			throw new ErrorWithStatus({

@@ -5,6 +5,8 @@ import problemsRouter from './routes/problem.js';
 import coursesRouter from './routes/course.js';
 import authRouter from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = process.env.PORT || 5050;
 const app = express();

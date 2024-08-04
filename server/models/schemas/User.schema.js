@@ -23,8 +23,8 @@ export default class User {
 		this.email = user.email;
 		this.password = user.password;
 		this.gender = user.gender || null;
-		this.role = user.role || UserRole.User;
-		this.verify = user.verify || UserVerifyStatus.Unverified;
+		this.role = user.role || 'User';
+		this.verify = user.verify || 'Unverify';
 		this.address = user.address || '';
 		this.avatar = user.avatar || '';
 		this.cover_photo = user.cover_photo || '';

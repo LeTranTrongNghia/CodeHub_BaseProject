@@ -6,21 +6,14 @@ var transporter = nodemailer.createTransport({
 	port: 465,
 	secure: true,
 	auth: {
-		// user: env.email.account,
-		// pass: env.email.password,
-		user: 'CodeHub',
-		pass: 'fnir zquo fixk txuo',
+		user: process.env.EMAIL_USER,
+		pass: process.env.EMAIL_PASSWORD,
 	},
 });
-
 class EmailService {
 	async sendMail(toEmail, subject, content) {
 		const mailOptions = {
-			// from: env.email.name,
-			// to: toEmail,
-			// subject: subject,
-			// html: content,
-			from: 'ngocuyenlepham@gmail.com',
+			from: process.env.EMAIL_USER,
 			to: toEmail,
 			subject: subject,
 			html: content,
