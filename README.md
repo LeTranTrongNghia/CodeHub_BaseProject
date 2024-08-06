@@ -4,6 +4,9 @@
   cd server
   ```
   ```sh
+  npm i
+  ```
+  ```sh
   node --env-file=config.env server
   ```
 
