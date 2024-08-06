@@ -40,6 +40,7 @@ import CodeEditorWrapper from "./container/Workspace/Code_Editor/code_editor.jsx
 import CourseList from "./components/CourseList.jsx";
 import CourseDetails from "./components/CourseDetails.jsx";
 import FileUploadAndDisplay from "./components/Playground.jsx";
+import IndexHome from "./container/Home/pages/IndexHome/IndexHome.jsx";
 
 // Import styles
 import "./index.css";
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <ProblemsPage />,
+        element: <IndexHome />,
       },
       {
         path: "/records/edit/:id",
