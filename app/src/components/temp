@@ -1,77 +1,99 @@
+"use client"
 
-const [reviewResponse, setReviewResponse] = useState(null);
+import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts"
 
-const reviewMyCode = async () => {
-    setGeneratingAnswer(true);
-    setChatHistory([...chatHistory, { type: 'question', text: 'Review my code in detail' }]);
-    const file = selectedFile;
+import { Card, CardContent } from "@/components/ui/card"
+import { ChartContainer } from "@/components/ui/chart"
 
-    try {
-        const response = await axios({
-            url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
-            method: 'post',
-            data: {
-                contents: [
-                    {
-                        parts: [
-                            {
-                                text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and provide a detailed review (Including: Syntax analysis, Function definition check, Logic analysis, Efficiency check, Readability check) with the following JSON structure:\n\nFile: ${file.name}\n\nContents:\n${file.content}\n\n{
-                                    "language": "Python",
-                                    "evaluation": [
-                                        {
-                                            "step": "Syntax Analysis",
-                                            "description": "The code fully adheres to Python syntax. No syntax errors like missing colons, parentheses, or incorrect keywords.",
-                                            "score": 86
-                                        },
-                                        {
-                                            "step": "Function Definition",
-                                            "description": "The \`bubble_sort\` function is correctly defined, taking a list as input and sorting it in place without returning a value.",
-                                            "score": 95
-                                        },
-                                        {
-                                            "step": "Logic Analysis",
-                                            "description": "The core logic of bubble sort is implemented correctly. However, the outer loop could be optimized to run fewer iterations.",
-                                            "score": 90
-                                        },
-                                        {
-                                            "step": "Efficiency Analysis",
-                                            "description": "The algorithm has a time complexity of O(n^2). Consider using more efficient sorting algorithms for large datasets.",
-                                            "score": 92
-                                        },
-                                        {
-                                            "step": "Readability Analysis",
-                                            "description": "Adding comments to explain the purpose of different code sections would enhance readability.",
-                                            "score": 80
-                                        }
-                                    ],
-                                    "total_score": 490/500,
-                                    "remarks": "Your implementation demonstrates a solid understanding of the bubble sort algorithm. However, there are areas for improvement to optimize the program's performance. Consider exploring algorithm optimization techniques to enhance your code.",
-                                    "suggestions": "Learn about quick sort algorithm to compare its performance with bubble sort."
-                                }`
-                            },
-                        ],
-                    },
-                ],
+export default function Component() {
+  return (
+    <Card className="max-w-xs">
+      <CardContent className="flex gap-4 p-4">
+        <div className="grid items-center gap-2">
+          <div className="grid flex-1 auto-rows-min gap-0.5">
+            <div className="text-sm text-muted-foreground">Move</div>
+            <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+              562/600
+              <span className="text-sm font-normal text-muted-foreground">
+                kcal
+              </span>
+            </div>
+          </div>
+          <div className="grid flex-1 auto-rows-min gap-0.5">
+            <div className="text-sm text-muted-foreground">Exercise</div>
+            <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+              73/120
+              <span className="text-sm font-normal text-muted-foreground">
+                min
+              </span>
+            </div>
+          </div>
+          <div className="grid flex-1 auto-rows-min gap-0.5">
+            <div className="text-sm text-muted-foreground">Stand</div>
+            <div className="flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none">
+              8/12
+              <span className="text-sm font-normal text-muted-foreground">
+                hr
+              </span>
+            </div>
+          </div>
+        </div>
+        <ChartContainer
+          config={{
+            move: {
+              label: "Move",
+              color: "hsl(var(--chart-1))",
             },
-        });
-
-        const reviewText = response.data.candidates[0].content.parts[0].text;
-
-        setChatHistory([
-            ...chatHistory,
-            { type: 'question', text: 'Review my code in detail' },
-            { type: 'answer', text: reviewText, containsCode: false },
-        ]);
-
-        setReviewResponse(reviewText);
-    } catch (error) {
-        console.log(error);
-        setChatHistory([
-            ...chatHistory,
-            { type: 'question', text: 'Review my code in detail' },
-            { type: 'answer', text: 'Sorry - Something went wrong. Please try again!', containsCode: false },
-        ]);
-    }
-
-    setGeneratingAnswer(false);
-};
+            exercise: {
+              label: "Exercise",
+              color: "hsl(var(--chart-2))",
+            },
+            stand: {
+              label: "Stand",
+              color: "hsl(var(--chart-3))",
+            },
+          }}
+          className="mx-auto aspect-square w-full max-w-[80%]"
+        >
+          <RadialBarChart
+            margin={{
+              left: -10,
+              right: -10,
+              top: -10,
+              bottom: -10,
+            }}
+            data={[
+              {
+                activity: "stand",
+                value: (8 / 12) * 100,
+                fill: "var(--color-stand)",
+              },
+              {
+                activity: "exercise",
+                value: (46 / 60) * 100,
+                fill: "var(--color-exercise)",
+              },
+              {
+                activity: "move",
+                value: (245 / 360) * 100,
+                fill: "var(--color-move)",
+              },
+            ]}
+            innerRadius="20%"
+            barSize={24}
+            startAngle={90}
+            endAngle={450}
+          >
+            <PolarAngleAxis
+              type="number"
+              domain={[0, 100]}
+              dataKey="value"
+              tick={false}
+            />
+            <RadialBar dataKey="value" background cornerRadius={5} />
+          </RadialBarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  )
+}

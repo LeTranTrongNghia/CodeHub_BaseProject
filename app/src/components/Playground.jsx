@@ -39,7 +39,7 @@ import {
 import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
 import { CODE_SNIPPETS } from "@/container/Workspace/Code_Editor/constant/constants";
@@ -95,50 +95,136 @@ const FileUploadAndDisplay = () => {
         }
     };
 
+    // const handleFileSelect = (fileName) => {
+    //     const file = files.find(f => f.name === fileName);
+    //     if (file) {
+    //         setSelectedFile(file); // Update the selected file state
+    //         console.log('Selected File Name:', file.name); // Log the file name
+    //         console.log('Selected File Content:', file.content); // Log the file content
+
+    //         setValue(file.content);
+
+    //         // Call requestRating after setting the file
+    //         requestRating();
+
+    //         // Determine the file extension and set the language accordingly
+    //         const extension = file.name.split('.').pop().toLowerCase();
+    //         let selectedLanguage = '';
+
+    //         switch (extension) {
+    //             case 'py':
+    //                 selectedLanguage = 'python';
+    //                 break;
+    //             case 'js':
+    //                 selectedLanguage = 'javascript';
+    //                 break;
+    //             case 'ts':
+    //                 selectedLanguage = 'typescript';
+    //                 break;
+    //             case 'java':
+    //                 selectedLanguage = 'java';
+    //                 break;
+    //             case 'cs':
+    //                 selectedLanguage = 'csharp';
+    //                 break;
+    //             case 'php':
+    //                 selectedLanguage = 'php';
+    //                 break;
+    //             default:
+    //                 selectedLanguage = 'unknown'; // Default case if needed
+    //                 break;
+    //         }
+
+    //         setLanguage(selectedLanguage); // Update the language state
+    //         console.log('Selected Language:', selectedLanguage); // Log the selected language
+    //     }
+    // };
+
     const handleFileSelect = (fileName) => {
         const file = files.find(f => f.name === fileName);
         if (file) {
-            setSelectedFile(file); // Update the selected file state
-            console.log('Selected File Name:', file.name); // Log the file name
-            console.log('Selected File Content:', file.content); // Log the file content
-
-            // Call requestRating after setting the file
-            requestRating();
-
+            setSelectedFile(file);
             setValue(file.content);
 
             // Determine the file extension and set the language accordingly
             const extension = file.name.split('.').pop().toLowerCase();
-            let selectedLanguage = '';
-
-            switch (extension) {
-                case 'py':
-                    selectedLanguage = 'python';
-                    break;
-                case 'js':
-                    selectedLanguage = 'javascript';
-                    break;
-                case 'ts':
-                    selectedLanguage = 'typescript';
-                    break;
-                case 'java':
-                    selectedLanguage = 'java';
-                    break;
-                case 'cs':
-                    selectedLanguage = 'csharp';
-                    break;
-                case 'php':
-                    selectedLanguage = 'php';
-                    break;
-                default:
-                    selectedLanguage = 'unknown'; // Default case if needed
-                    break;
-            }
-
-            setLanguage(selectedLanguage); // Update the language state
-            console.log('Selected Language:', selectedLanguage); // Log the selected language
+            const languageMap = {
+                py: 'python',
+                js: 'javascript',
+                ts: 'typescript',
+                java: 'java',
+                cs: 'csharp',
+                php: 'php'
+            };
+            setLanguage(languageMap[extension] || 'unknown');
         }
     };
+    
+    useEffect(() => {
+        const requestRating = async () => {
+            if (!selectedFile) {
+                console.log('No file selected.');
+                return;
+            }
+
+            setGeneratingAnswer(true);
+            console.log('Requesting rating for:', selectedFile.name);
+
+            try {
+                const response = await axios({
+                    url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
+                    method: 'post',
+                    data: {
+                        contents: [
+                            {
+                                parts: [
+                                    {
+                                        text: `Rate the following code on a scale from 1 to 100 for the following criteria:\n\nCorrectness\nPerformance\nClarity\nGive me the answer of numbers in order only, for example: 90\n70\n80\n.\n\nCode:\n${selectedFile.content}`,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                });
+
+                const ratingsText = response.data.candidates[0]?.content?.parts[0]?.text?.trim();
+                if (ratingsText) {
+                    const ratings = ratingsText.split('\n');
+                    if (ratings.length === 3) {
+                        setCorrectnessRating(Number(ratings[0]));
+                        setPerformanceRating(Number(ratings[1]));
+                        setClarityRating(Number(ratings[2]));
+                        console.log('Ratings received:');
+                        console.log('Correctness:', ratings[0]);
+                        console.log('Performance:', ratings[1]);
+                        console.log('Clarity:', ratings[2]);
+
+                        // Add delay before updating chart data
+                        await new Promise(resolve => setTimeout(resolve, 300)); // 1000 ms = 1 second
+
+                        // Update chart data after delay
+                        setData([
+                            { activity: "Correctness", value: Number(ratings[0]), fill: "var(--color-Correctness)" },
+                            { activity: "Performance", value: Number(ratings[1]), fill: "var(--color-Performance)" },
+                            { activity: "Clarity", value: Number(ratings[2]), fill: "var(--color-Clarity)" },
+                        ]);
+                    } else {
+                        console.log('Unexpected response format:', ratingsText);
+                    }
+                } else {
+                    console.log('Response data is missing expected fields:', response.data);
+                }
+            } catch (error) {
+                console.log('Error while requesting ratings:', error);
+            } finally {
+                setGeneratingAnswer(false);
+            }
+        };
+
+        if (selectedFile) {
+            requestRating();
+        }
+    }, [selectedFile]);
 
     const generateAnswer = async (e) => {
         e.preventDefault();
@@ -332,6 +418,7 @@ const FileUploadAndDisplay = () => {
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Handle bold text
     };
 
+    const [data, setData] = useState([]);
     const [correctnessRating, setCorrectnessRating] = useState(0);
     const [performanceRating, setPerformanceRating] = useState(0);
     const [clarityRating, setClarityRating] = useState(0);
@@ -617,7 +704,7 @@ const FileUploadAndDisplay = () => {
                                                 {['Correctness', 'Performance', 'Clarity'].map((criteria, idx) => (
                                                     <div key={idx} className="grid flex-1 auto-rows-min gap-0.5">
                                                         <div className="text-sm text-muted-foreground">{criteria}</div>
-                                                        <div className={`flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none ${idx === 0 ? 'text-[#2662d9]' : idx === 1 ? 'text-[#2eb88a]' : 'text-[#e88c30]'}`}>
+                                                        <div className={`flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none ${idx === 0 ? 'text-[#e88c30]' : idx === 1 ? 'text-[#2eb88a]' : 'text-[#2662d9]'}`}>
                                                             {criteria === 'Correctness' ? (correctnessRating !== null ? `${correctnessRating}/100` : 'N/A') :
                                                                 criteria === 'Performance' ? (performanceRating !== null ? `${performanceRating}/100` : 'N/A') :
                                                                     criteria === 'Clarity' ? (clarityRating !== null ? `${clarityRating}/100` : 'N/A') : 'N/A'}
@@ -636,11 +723,7 @@ const FileUploadAndDisplay = () => {
                                             >
                                                 <RadialBarChart
                                                     margin={{ left: -10, right: -10, top: -10, bottom: -10 }}
-                                                    data={[
-                                                        { activity: "Correctness", value: correctnessRating, fill: "var(--color-Correctness)" },
-                                                        { activity: "Performance", value: performanceRating, fill: "var(--color-Performance)" },
-                                                        { activity: "Clarity", value: clarityRating, fill: "var(--color-Clarity)" },
-                                                    ]}
+                                                    data={data}
                                                     innerRadius="20%"
                                                     barSize={24}
                                                     startAngle={90}
