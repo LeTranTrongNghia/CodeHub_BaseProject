@@ -414,8 +414,8 @@ const FileUploadAndDisplay = () => {
         return text
             .replace(/\n/g, '<br />') // Replace newlines with <br />
             .replace(/Code:\n([\s\S]*?)(?=<br \/>)?/g, '<pre class="bg-gray-200 p-2 rounded">$1</pre>') // Handle code blocks
-            .replace(/(\b(?:Syntax analysis|Function definition check|Logic analysis|Efficiency|Readability|Recommendations):\s*[\s\S]*?)(?=<br \/>)?/g, '<div class="mb-2"><strong>$1</strong></div>') // Handle sections
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Handle bold text
+            .replace(/(\b(?:Syntax analysis|Function definition check|Logic analysis|Efficiency|Readability|Recommendations):\s*[\s\S]*?)(?=<br \/>)?/g, '<div class="mb-2 font-bold">$1</div>') // Handle sections
+            .replace(/\*\*(.*?)\*\*/g, '<div class="mb-2 font-bold">$1</div>'); // Handle bold text
     };
 
     const [data, setData] = useState([]);
