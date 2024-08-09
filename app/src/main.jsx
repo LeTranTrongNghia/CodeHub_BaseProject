@@ -46,6 +46,7 @@ import IndexHome from "./container/Home/pages/IndexHome/IndexHome.jsx";
 import "./index.css";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MainHome from "./container/Home/pages/MainHome/MainHome.jsx";
 
 // Create router
 const router = createBrowserRouter([
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <IndexHome />,
+      },
+      {
+        path: "/main-home",
+        element: <MainHome />,
       },
       {
         path: "/records/edit/:id",
