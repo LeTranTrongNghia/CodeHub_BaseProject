@@ -52,23 +52,6 @@ const Sidebar = () => {
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
-            {/* <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="rounded-lg bg-black text-white"
-                            aria-label="Models"
-                        >
-                            <Bot className="size-5" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={5}>
-                        Playground
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider> */}
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -107,23 +90,25 @@ const Sidebar = () => {
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
-            {/* <TooltipProvider>
+            <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="rounded-lg bg-black text-white"
-                            aria-label="Settings"
+                            className="rounded-lg"
+                            aria-label="Playground"
                         >
-                            <Settings2 className="size-5" />
+                            <a href='/playground'>
+                                <Bot className="size-5" />
+                            </a>
                         </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
-                        Settings
+                        <p>Playground</p>
                     </TooltipContent>
                 </Tooltip>
-            </TooltipProvider> */}
+            </TooltipProvider>
         </div>
         <div className="mt-auto grid gap-1 p-2">
             <TooltipProvider>

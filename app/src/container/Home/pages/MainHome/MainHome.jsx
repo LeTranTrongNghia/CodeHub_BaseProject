@@ -85,8 +85,8 @@ const MainHome = () => {
 	return (
 		<>
 			<div className='flex min-h-screen w-full flex-col'>
-				{/* <Topbar />
-				<Sidebar /> */}
+				<Topbar />
+				<Sidebar />
 				<main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16'>
 					<Card x-chunk='dashboard-01-chunk-0'>
 						<CardHeader className='flex flex-row items-center justify-between text-white bg-black'></CardHeader>
@@ -94,7 +94,7 @@ const MainHome = () => {
 							<div className='container relative w-full h-[200px]'>
 								<Spline scene='https://prod.spline.design/8rK8Mhnerno7UApB/scene.splinecode' />
 								<div className='text-layer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full justify-between'>
-									<p className='text-4xl font-bold mb-6'>Welcome username!</p>
+									<p className='text-4xl font-bold mb-6'>Welcome TrongNghia!</p>
 									<div className='flex flex-row items-center justify-between text-white'>
 										<div className='text-xl'>
 											Track your progress, manage your courses activity and
@@ -293,17 +293,17 @@ const Problem = ({ problem }) => {
 	return (
 		<tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer">
 			<td className="p-4 align-middle">
-				<Link to={`/problems/edit/${problem._id}`} className="block">
+				<Link to={`/problems/solve/${problem._id}`} className="block">
 					{problem.title}
 				</Link>
 			</td>
 			<td className="p-4 align-middle">
-				<Link to={`/problems/edit/${problem._id}`} className="block">
+				<Link to={`/problems/solve/${problem._id}`} className="block">
 					{problem.type}
 				</Link>
 			</td>
 			<td className={`p-4 align-middle ${getDifficultyColorClass(problem.difficulty)}`}>
-				<Link to={`/problems/edit/${problem._id}`} className="block">
+				<Link to={`/problems/solve/${problem._id}`} className="block">
 					{problem.difficulty}
 				</Link>
 			</td>

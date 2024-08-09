@@ -46,6 +46,7 @@ import { CODE_SNIPPETS } from "@/container/Workspace/Code_Editor/constant/consta
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Sidebar from "./MainHome/Sidebar";
 
 const FileUploadAndDisplay = () => {
     const [files, setFiles] = useState([]);
@@ -455,6 +456,7 @@ const FileUploadAndDisplay = () => {
 
     return (
         <div className="grid h-screen w-full pl-[56px]">
+            <Sidebar/>
             <div className="flex flex-col">
                 <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
                     <h1 className="text-xl font-semibold">Playground</h1>
