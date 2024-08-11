@@ -25,7 +25,7 @@ const Header = () => {
 
 				<div className='flex justify-center space-x-2 md:space-x-4'>
 					<Button asChild size='sm'>
-						<a href='/login'>
+						<a href='/main-home'>
 							<span>Explore now</span>
 							<ArrowRight className='ml-3 h-4 w-4' />
 						</a>
