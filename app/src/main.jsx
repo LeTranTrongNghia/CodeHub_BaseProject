@@ -37,14 +37,6 @@ const router = createBrowserRouter([
         element: <MainHome />,
       },
       {
-        path: "/records/edit/:id",
-        element: <Record />,
-      },
-      {
-        path: "/records/create",
-        element: <Record />,
-      },
-      {
         path: "/problems",
         element: <ProblemsPage />,
       },
