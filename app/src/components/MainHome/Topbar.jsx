@@ -64,16 +64,16 @@ const Topbar = () => {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>
-						<DropdownMenuLabel>My Account</DropdownMenuLabel>
+						{/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
 						<DropdownMenuSeparator />
 						<DropdownMenuItem>
-							<a href='/setting'>Settings</a>
+							{/* <a href='/setting'>Settings</a> */}
 						</DropdownMenuItem>
 						<DropdownMenuItem>
 							<a href='/contact'>Support</a>
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+						{/* <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem> */}
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
