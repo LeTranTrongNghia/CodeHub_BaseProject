@@ -4,11 +4,10 @@ import {
     Paperclip,
     Rabbit,
     Settings,
-    Share,
     Turtle,
     Clipboard,
-    ConstructionIcon,
     RotateCw,
+    Github,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,7 +45,7 @@ import { CODE_SNIPPETS } from "@/container/Workspace/Code_Editor/constant/consta
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import Sidebar from "./MainHome/Sidebar";
+import Sidebar from "./Sidebar";
 
 const FileUploadAndDisplay = () => {
     const [files, setFiles] = useState([]);
@@ -576,8 +575,8 @@ const FileUploadAndDisplay = () => {
                         size="sm"
                         className="ml-auto gap-1.5 text-sm"
                     >
-                        <Share className="size-3.5" />
-                        Share
+                        <Github className="size-3.5" />
+                        <a href='https://github.com/tsdevtool/CodeHub_BaseProject.git'>Learn more</a>
                     </Button>
                 </header>
                 <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-3 lg:grid-cols-3" style={{ gridTemplateColumns: "20rem 0.8fr 1fr" }}>

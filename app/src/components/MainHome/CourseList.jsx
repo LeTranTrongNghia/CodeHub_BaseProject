@@ -14,6 +14,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Topbar from "./Topbar";
+import Sidebar from "./Sidebar";
 
 const CourseList = () => {
     const [courses, setCourses] = useState([]);
@@ -43,6 +45,8 @@ const CourseList = () => {
 
     return (
         <div className="flex min-h-screen w-full flex-col">
+            <Topbar/>
+            <Sidebar/>
             <div className="grid grid-cols-4 gap-4 p-4 md:gap-8 md:p-8 ml-16">
                 {courses.map((course, index) => (
                     <Card className="w-[350px]" key={index}>

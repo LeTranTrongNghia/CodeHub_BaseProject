@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 // import { signOut } from 'firebase/auth';
@@ -65,7 +64,7 @@ const CodeEditorWrapper = () => {
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<Button variant='outline' size='icon'>
-										<a href='/'>
+										<a href='/main-home'>
 											<ChevronLeft className='h-4 w-4' />
 										</a>
 									</Button>
