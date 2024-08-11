@@ -25,6 +25,8 @@ import {
 import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Sidebar from '@/components/MainHome/Sidebar';
+import Topbar from '@/components/MainHome/Topbar';
 
 const ProblemsPerPage = 7; // Number of problems displayed per page
 
@@ -78,8 +80,8 @@ const ProblemsPage = () => {
 	return (
 		<>
 			<div className='flex min-h-screen w-full flex-col'>
-				{/* <Topbar />
-				<Sidebar /> */}
+				<Topbar/>
+				<Sidebar/>
 				<main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 ml-16'>
 					<Tabs defaultValue='all'>
 						<TabsContent value='all'>

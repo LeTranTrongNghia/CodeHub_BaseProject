@@ -12,7 +12,6 @@ import {
 import {
 	Table,
 	TableBody,
-	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
@@ -25,43 +24,10 @@ import {
 	Code2,
 	CreditCard,
 } from 'lucide-react';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { auth, firestore } from '@/firebase/firebase';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-	setProblems,
-	setSelectedProblem,
-} from '@/redux/problemReducer/problemReducer';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const MainHome = () => {
-	// const [username, setUsername] = useState('');
-
-	// useEffect(() => {
-	// 	const unsubscribe = auth.onAuthStateChanged(async user => {
-	// 		try {
-	// 			if (user) {
-	// 				const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
-	// 				if (userDoc.exists()) {
-	// 					const userData = userDoc.data();
-	// 					setUsername(userData.display_name);
-	// 				} else {
-	// 					console.log('No such document!');
-	// 				}
-	// 			}
-	// 		} catch (error) {
-	// 			toast.error('No user is signed in');
-	// 		}
-	// 	});
-
-	// 	// Cleanup subscription on unmount
-	// 	return () => unsubscribe();
-	// }, []);
-
 	const [problems, setProblems] = useState([]);
 	const [filteredProblems, setFilteredProblems] = useState([]);
 
