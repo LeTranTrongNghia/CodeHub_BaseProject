@@ -21,6 +21,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MainHome from "./container/Home/pages/MainHome/MainHome.jsx";
 import ContactPage from "./container/Home/pages/MainHome/support.jsx";
+import OTPVerification from "./container/Auth/OTP-Verification/otp.jsx";
 
 // Create router
 const router = createBrowserRouter([
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
         path: "/contact",
         element: <ContactPage />,
       },
+      {
+        path: "/otp",
+        element: <OTPVerification />,
+      }
     ],
   },
 ]);
