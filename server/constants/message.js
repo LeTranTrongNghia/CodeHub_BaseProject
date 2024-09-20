@@ -312,6 +312,7 @@ export const MESSAGES = {
 				EMAIL_OR_PASSWORD_IS_INCORRECT: 'The email or password is incorrect.',
 				INVALID_BEARER_TOKEN: 'The bearer token is invalid.',
 				HEADER_AUTHORIZATION_IS_INVALID: 'Authorization header is invalid.',
+				NOT_VERIFIED: 'User has not verified yet',
 
 				EMAIL: {
 					IS_REQUIRED: 'Email is required.',

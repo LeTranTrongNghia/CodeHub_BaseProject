@@ -1,39 +1,32 @@
-import { auth, firestore } from '@/firebase/firebase';
-import { hashPwd } from '@/helpers/helper';
 import { Alert, Button, Form, Input } from 'antd';
-import {
-	createUserWithEmailAndPassword,
-	sendEmailVerification,
-} from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './style.css';
-import User from '@/model/User';
 import SignInwithGoogle from '../Login/SignInwithGoogle';
 
 const Register = () => {
 	const navigate = useNavigate();
 	const handleSubmitForm = async values => {
 		try {
-			const { email, password, username } = values;
-			const result = await createUserWithEmailAndPassword(
-				auth,
-				email,
-				password,
-			);
-			const user = result.user;
-			if (user) {
-				const newUser = new User(user.uid, email, hashPwd(password), username);
-				const userObject = newUser.toPlainObject();
-				await sendEmailVerification(user);
-				await setDoc(doc(firestore, 'Users', user.uid), userObject);
-			}
+			const { email, password, username, confirm_password } = values;
+			const response = await fetch(`http://localhost:5050/user/register`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					username,
+					email,
+					password,
+					confirm_password,
+				}),
+			});
+
 			toast.success(
 				'Registered successfully. Check your email inbox to verify account!',
 				{ autoClose: 7000 },
 			),
-				navigate('/login');
+				navigate('/otp');
 		} catch (error) {
 			toast.error(error.message);
 		}

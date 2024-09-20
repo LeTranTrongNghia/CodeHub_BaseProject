@@ -14,8 +14,12 @@ const userController = {
 		);
 	},
 	login: async (req, res) => {
-		const result = await userServices.login(req.body);
-		return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.LOGIN);
+		try {
+			const result = await userServices.login(req.body);
+			return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.LOGIN);
+		} catch (error) {
+			console.log('🚀 ~ login: ~ error:', error);
+		}
 	},
 	verifyAccount: async (req, res) => {
 		const result = await userServices.verifyAccount(req.body);

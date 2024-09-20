@@ -154,6 +154,13 @@ class UserService {
 					message: MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.EMAIL.NOT_REGISTER,
 				});
 			}
+			console.log('🚀 ~ UserService ~ login ~ user.verify:', user.verify);
+			// if (user.verify === 'Unverify') {
+			// 	throw new ErrorWithStatus({
+			// 		statusCode: StatusCodes.FORBIDDEN,
+			// 		message: MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.NOT_VERIFIED,
+			// 	});
+			// }
 			const isPasswordMatch = await bcrypt.compare(password, user.password);
 			if (!isPasswordMatch) {
 				throw new ErrorWithStatus({
@@ -182,7 +189,8 @@ class UserService {
 				refresh_token,
 			};
 		} catch (error) {
-			if (error instanceof ErrorWithStatus && error.statusCode) {
+			console.log('🚀 ~ UserService ~ login ~ error:', error);
+			if (error instanceof ErrorWithStatus) {
 				throw error;
 			}
 			throw new ErrorWithStatus({
