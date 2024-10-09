@@ -80,6 +80,7 @@ export const MESSAGES = {
 			GET_USER_PROFILE: 'Failed to retrieve users profile',
 			UPDATE_USER: 'User update failed',
 			AVATAR: 'Upload avatar failed',
+			EXISTED: 'User had existed',
 
 			LOGOUT: 'Logout process failed',
 			CHANGE_PASSWORD: 'Password change failed',

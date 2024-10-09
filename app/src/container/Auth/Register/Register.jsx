@@ -21,6 +21,7 @@ const Register = () => {
 					confirm_password,
 				}),
 			});
+			console.log('🚀 ~ handleSubmitForm ~ response:', response);
 
 			toast.success(
 				'Registered successfully. Check your email inbox to verify account!',
@@ -28,6 +29,7 @@ const Register = () => {
 			),
 				navigate('/otp');
 		} catch (error) {
+			console.log('🚀 ~ handleSubmitForm ~ error:', error);
 			toast.error(error.message);
 		}
 	};

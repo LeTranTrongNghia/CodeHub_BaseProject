@@ -68,16 +68,18 @@ const Profile = () => {
 					>
 						<a
 							href='#'
-							className={`${activeMenu === 'General' ? 'font-semibold text-primary' : ''
-								}`}
+							className={`${
+								activeMenu === 'General' ? 'font-semibold text-primary' : ''
+							}`}
 							onClick={() => handleMenuClick('General')}
 						>
 							General
 						</a>
 						<a
 							href='/contact'
-							className={`${activeMenu === 'Support' ? 'font-semibold text-primary' : ''
-								}`}
+							className={`${
+								activeMenu === 'Support' ? 'font-semibold text-primary' : ''
+							}`}
 							onClick={() => {
 								handleMenuClick('Support');
 							}}
@@ -94,15 +96,15 @@ const Profile = () => {
 								</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<div className="rounded-md border mb-4 px-4 py-3 font-mono text-sm">
+								<div className='rounded-md border mb-4 px-4 py-3 font-mono text-sm'>
 									<h1 className='font-bold'>ID: </h1>
 									{id}
 								</div>
-								<div className="rounded-md border my-4 px-4 py-3 font-mono text-sm">
+								<div className='rounded-md border my-4 px-4 py-3 font-mono text-sm'>
 									<h1 className='font-bold'>Username: </h1>
 									{username}
 								</div>
-								<div className="rounded-md border my-4 px-4 py-3 font-mono text-sm">
+								<div className='rounded-md border my-4 px-4 py-3 font-mono text-sm'>
 									<h1 className='font-bold'>Email: </h1>
 									{email}
 								</div>

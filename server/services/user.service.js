@@ -70,6 +70,13 @@ class UserService {
 	async register(user) {
 		const { username, email, password } = user;
 		try {
+			const existingUser = await db.collection('users').findOne({ email });
+			// if (existingUser) {
+			// 	throw new ErrorWithStatus({
+			// 		statusCode: StatusCodes.CONFLICT,
+			// 		message: MESSAGES.ERROR_MESSAGES.GENERAL.EXISTED,
+			// 	});
+			// }
 			const hashPwd = bcrypt.hashSync(password, 10);
 			const user = new User({
 				username,
@@ -92,6 +99,10 @@ class UserService {
 				refresh_token,
 			};
 		} catch (error) {
+			console.log('🚀 ~ UserService ~ register ~ error:', error);
+			if (error instanceof ErrorWithStatus) {
+				throw error;
+			}
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
 				message: MESSAGES.ERROR_MESSAGES.GENERAL.REGISTER,
@@ -154,13 +165,12 @@ class UserService {
 					message: MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.EMAIL.NOT_REGISTER,
 				});
 			}
-			console.log('🚀 ~ UserService ~ login ~ user.verify:', user.verify);
-			// if (user.verify === 'Unverify') {
-			// 	throw new ErrorWithStatus({
-			// 		statusCode: StatusCodes.FORBIDDEN,
-			// 		message: MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.NOT_VERIFIED,
-			// 	});
-			// }
+			if (user.verify === 'Unverify') {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.FORBIDDEN,
+					message: MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.NOT_VERIFIED,
+				});
+			}
 			const isPasswordMatch = await bcrypt.compare(password, user.password);
 			if (!isPasswordMatch) {
 				throw new ErrorWithStatus({

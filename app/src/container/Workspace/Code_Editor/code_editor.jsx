@@ -9,9 +9,21 @@ import * as monaco from 'monaco-editor';
 import Sidebar from '@/components/MainHome/Sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { BookMarked, Bot, ChevronLeft, CircleUser, Search } from 'lucide-react';
 
 import ReviewCode from './ReviewCode';
@@ -38,7 +50,7 @@ const CodeEditorWrapper = () => {
 		}
 	}, [editorRef]);
 
-	const onSelect = (selectedLanguage) => {
+	const onSelect = selectedLanguage => {
 		setLanguage(selectedLanguage);
 		setValue(CODE_SNIPPETS[selectedLanguage]);
 	};
@@ -80,7 +92,9 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${option === '1' ? 'selected' : ''} flex bg-white p-3 rounded-md text-left w-[120px]`}
+									className={`option ${
+										option === '1' ? 'selected' : ''
+									} flex bg-white p-3 rounded-md text-left w-[120px]`}
 									onClick={() => setOption('1')}
 								>
 									<BookMarked className='size-5 mr-4' />
@@ -97,7 +111,9 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${option === '2' ? 'selected' : ''} flex bg-white p-3 rounded-md text-left w-[150px]`}
+									className={`option ${
+										option === '2' ? 'selected' : ''
+									} flex bg-white p-3 rounded-md text-left w-[150px]`}
 									onClick={() => setOption('2')}
 								>
 									<Bot className='size-5 mr-4' />
@@ -173,11 +189,11 @@ const CodeEditorWrapper = () => {
 							defaultLanguage={language}
 							defaultValue={CODE_SNIPPETS[language]}
 							theme='vs-dark'
-							onMount={(editor) => {
+							onMount={editor => {
 								editorRef.current = editor;
 							}}
 							value={value}
-							onChange={(newValue) => setValue(newValue)}
+							onChange={newValue => setValue(newValue)}
 						/>
 						<Output editorRef={editorRef} language={language} />
 					</div>
@@ -185,6 +201,6 @@ const CodeEditorWrapper = () => {
 			</main>
 		</div>
 	);
-}
+};
 
 export default CodeEditorWrapper;

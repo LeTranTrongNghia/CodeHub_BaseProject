@@ -3,15 +3,18 @@ import { sendResponse } from '../config/response.config.js';
 import { MESSAGES } from '../constants/message.js';
 
 const userController = {
-	register: async (req, res) => {
-		console.log('tới conntroller');
-
-		const result = await userServices.register(req.body);
-		return sendResponse.success(
-			res,
-			result,
-			MESSAGES.SUCCESS_MESSAGES.REGISTER,
-		);
+	register: async (req, res, next) => {
+		try {
+			const result = await userServices.register(req.body);
+			return sendResponse.success(
+				res,
+				result,
+				MESSAGES.SUCCESS_MESSAGES.REGISTER,
+			);
+		} catch (error) {
+			console.log('🚀 ~ register: ~ error:', error);
+			next(error);
+		}
 	},
 	login: async (req, res) => {
 		try {

@@ -1,91 +1,80 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './redux/config.jsx';
-
-// Import components
+import { unstable_HistoryRouter as HistoryBrowserRouter } from 'react-router-dom';
 import App from './App';
-import Record from './components/MainHome/Record.jsx';
-import ProblemsPage from './container/Home/pages/MainHome/ProblemsPage.jsx';
-import CodeEditorWrapper from './container/Workspace/Code_Editor/code_editor.jsx';
-import CourseList from './components/MainHome/CourseList.jsx';
-import CourseDetails from './components/MainHome/CourseDetails.jsx';
-import FileUploadAndDisplay from './components/MainHome/Playground.jsx';
-import IndexHome from './container/Home/pages/IndexHome/IndexHome.jsx';
-
-// Import styles
 import './index.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import MainHome from './container/Home/pages/MainHome/MainHome.jsx';
-import ContactPage from './container/Home/pages/MainHome/support.jsx';
-import OTPVerification from './container/Auth/OTP-Verification/otp.jsx';
-import Login from '@/container/Auth/Login/Login.jsx';
-import Register from '@/container/Auth/Register/Register.jsx';
+import { createBrowserHistory } from 'history';
+export const history = createBrowserHistory();
 
 // Create router
-const router = createBrowserRouter([
-	{
-		path: '/',
-		element: <App />,
-		children: [
-			{
-				path: '/',
-				element: <IndexHome />,
-			},
-			{
-				path: '/main-home',
-				element: <MainHome />,
-			},
-			{
-				path: '/problems',
-				element: <ProblemsPage />,
-			},
-			{
-				path: '/problems/solve/:id',
-				element: <CodeEditorWrapper />,
-			},
-			{
-				path: '/courses',
-				element: <CourseList />,
-			},
-			{
-				path: '/courses/:id',
-				element: <CourseDetails />,
-			},
-			{
-				path: '/playground',
-				element: <FileUploadAndDisplay />,
-			},
-			{
-				path: '/contact',
-				element: <ContactPage />,
-			},
-			{
-				path: '/otp',
-				element: <OTPVerification />,
-			},
-			{
-				path: '/login',
-				element: <Login />,
-			},
-			{
-				path: '/register',
-				element: <Register />,
-			},
-		],
-	},
-]);
+// const router = createBrowserRouter([
+// 	{
+// 		path: '/',
+// 		element: <App />,
+// 		children: [
+// 			{
+// 				path: '/',
+// 				element: <IndexHome />,
+// 			},
+// 			{
+// 				path: '/main-home',
+// 				element: <MainHome />,
+// 			},
+// 			{
+// 				path: '/problems',
+// 				element: <ProblemsPage />,
+// 			},
+// 			{
+// 				path: '/problems/solve/:id',
+// 				element: <CodeEditorWrapper />,
+// 			},
+// 			{
+// 				path: '/courses',
+// 				element: <CourseList />,
+// 			},
+// 			{
+// 				path: '/courses/:id',
+// 				element: <CourseDetails />,
+// 			},
+// 			{
+// 				path: '/playground',
+// 				element: <FileUploadAndDisplay />,
+// 			},
+// 			{
+// 				path: '/contact',
+// 				element: <ContactPage />,
+// 			},
+// 			{
+// 				path: '/otp',
+// 				element: <OTPVerification />,
+// 			},
+// 			{
+// 				path: '/login',
+// 				element: <Login />,
+// 			},
+// 			{
+// 				path: '/register',
+// 				element: <Register />,
+// 			},
+// 		],
+// 	},
+// ]);
 
 // Render the app
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
-				<RouterProvider router={router} />
-				<ToastContainer />
+				{/* <RouterProvider router={router} /> */}
+				<HistoryBrowserRouter history={history}>
+					<App />
+					<ToastContainer />
+				</HistoryBrowserRouter>
 			</PersistGate>
 		</Provider>
 	</React.StrictMode>,

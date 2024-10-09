@@ -5,6 +5,11 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import SignInwithGoogle from './SignInwithGoogle';
 import SignInwithGithub from './SignInwithGithub';
+import {
+	setAdminStatus,
+	setLoginStatus,
+} from '@/redux/userReducer/userReducer';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -22,10 +27,18 @@ const Login = () => {
 					password,
 				}),
 			});
-
+			// Chuyển đổi response thành JSON
+			const data = await response.json();
+			const { access_token } = data.data;
+			const decodedData = jwtDecode(access_token);
+			const { role } = decodedData;
+			if (role === 'Admin') {
+				dispatch(setAdminStatus(true));
+			}
 			if (!response.ok) {
 				throw new Error(`An error occurred: ${response.statusText}`);
 			}
+			dispatch(setLoginStatus(true));
 			navigate('/main-home');
 		} catch (error) {
 			toast.error(error.message);

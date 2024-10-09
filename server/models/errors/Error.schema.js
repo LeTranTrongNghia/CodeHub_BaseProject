@@ -2,7 +2,7 @@ import moment from 'moment';
 import { StatusCodes } from 'http-status-codes';
 import { MESSAGES } from '../../constants/message.js';
 
-export class ErrorWithStatus {
+export class ErrorWithStatus extends Error {
 	statusCode;
 	message;
 	created_at;
@@ -10,6 +10,7 @@ export class ErrorWithStatus {
 	messageConstants;
 
 	constructor(item) {
+		super(item.message);
 		this.statusCode = item.statusCode;
 		this.message = item.message;
 		this.created_at =

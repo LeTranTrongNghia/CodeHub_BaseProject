@@ -17,12 +17,29 @@ import db from '../db/connection.js';
 import userServices from '../services/user.service.js';
 import { sendResponse } from '../config/response.config.js';
 import { MESSAGES } from '../constants/message.js';
+import { ErrorWithStatus } from '../models/errors/Error.schema.js';
 
 const userRouter = express.Router();
 
 userRouter.post('/login', async (req, res) => {
-	const result = await userServices.login(req.body);
-	return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.LOGIN);
+	try {
+		const result = await userServices.login(req.body);
+		return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.LOGIN);
+	} catch (error) {
+		console.log('🚀 ~ userRouter ~ /login ~ error:', error);
+		// Gọi hàm xử lý lỗi mặc định để gửi thông báo lỗi cho client
+		if (error instanceof ErrorWithStatus) {
+			return res.status(error.statusCode).json({
+				statusCode: error.statusCode,
+				message: error.message,
+			});
+		}
+		// Nếu không phải là lỗi tùy chỉnh, trả về lỗi chung
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.GENERAL.LOGIN,
+		});
+	}
 });
 
 // userRouter.post(
