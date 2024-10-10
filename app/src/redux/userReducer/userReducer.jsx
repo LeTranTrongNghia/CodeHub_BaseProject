@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
 	isAdmin: false,
 	isLoggedIn: false,
+	username: '',
 };
 
 const userReducer = createSlice({
@@ -15,9 +16,13 @@ const userReducer = createSlice({
 		setLoginStatus: (state, action) => {
 			state.isLoggedIn = action.payload;
 		},
+		setUsername: (state, action) => {
+			state.username = action.payload;
+		},
 	},
 });
 
-export const { setAdminStatus, setLoginStatus } = userReducer.actions;
+export const { setAdminStatus, setLoginStatus, setUsername } =
+	userReducer.actions;
 
 export default userReducer.reducer;

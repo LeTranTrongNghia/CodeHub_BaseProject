@@ -99,7 +99,6 @@ class UserService {
 				refresh_token,
 			};
 		} catch (error) {
-			console.log('🚀 ~ UserService ~ register ~ error:', error);
 			if (error instanceof ErrorWithStatus) {
 				throw error;
 			}
@@ -115,7 +114,7 @@ class UserService {
 		try {
 			const otp = await otpService.generateOTP(email);
 			const emailContent = await generateEmailContent(otp.code);
-			await emailService.sendMail(otp.email, 'Hutech Bug', emailContent);
+			await emailService.sendMail(otp.email, 'Code Hub', emailContent);
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -128,7 +127,7 @@ class UserService {
 		try {
 			const otp = await otpService.generateOTP(email);
 			const emailContent = await generateEmailContentPwd(otp.code);
-			await emailService.sendMail(otp.email, 'Hutech Bug', emailContent);
+			await emailService.sendMail(otp.email, 'Code Hub', emailContent);
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -199,7 +198,6 @@ class UserService {
 				refresh_token,
 			};
 		} catch (error) {
-			console.log('🚀 ~ UserService ~ login ~ error:', error);
 			if (error instanceof ErrorWithStatus) {
 				throw error;
 			}

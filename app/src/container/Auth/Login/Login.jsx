@@ -8,6 +8,7 @@ import SignInwithGithub from './SignInwithGithub';
 import {
 	setAdminStatus,
 	setLoginStatus,
+	setUsername,
 } from '@/redux/userReducer/userReducer';
 import { jwtDecode } from 'jwt-decode';
 
@@ -29,9 +30,10 @@ const Login = () => {
 			});
 			// Chuyển đổi response thành JSON
 			const data = await response.json();
-			const { access_token } = data.data;
+			const { access_token, username } = data.data;
 			const decodedData = jwtDecode(access_token);
 			const { role } = decodedData;
+			dispatch(setUsername(username));
 			if (role === 'Admin') {
 				dispatch(setAdminStatus(true));
 			}

@@ -6,6 +6,7 @@ const routes = {
 	resetPassword: '/reset-password',
 	changePassword: '/change-password',
 	forgotPassword: '/forgot-password',
+	otp: '/otp',
 	notFound: '*',
 	coding: '/coding',
 	indexHome: '/',

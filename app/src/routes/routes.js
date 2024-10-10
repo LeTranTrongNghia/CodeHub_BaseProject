@@ -52,6 +52,10 @@ const ContactPage = React.lazy(() =>
 	import('../container/Home/pages/MainHome/support.jsx'),
 );
 
+const OtpPage = React.lazy(() =>
+	import('../container/Auth/OTP-Verification/otp.jsx'),
+);
+
 const publicRoute = [
 	{
 		path: config.routes.contactPage,
@@ -76,6 +80,10 @@ const publicRoute = [
 	{
 		path: config.routes.indexHome,
 		component: IndexHomePage,
+	},
+	{
+		path: config.routes.otp,
+		component: OtpPage,
 	},
 ];
 

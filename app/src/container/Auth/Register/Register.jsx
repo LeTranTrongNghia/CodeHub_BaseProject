@@ -9,7 +9,7 @@ const Register = () => {
 	const handleSubmitForm = async values => {
 		try {
 			const { email, password, username, confirm_password } = values;
-			const response = await fetch(`http://localhost:5050/user/register`, {
+			await fetch(`http://localhost:5050/user/register`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -21,7 +21,6 @@ const Register = () => {
 					confirm_password,
 				}),
 			});
-			console.log('🚀 ~ handleSubmitForm ~ response:', response);
 
 			toast.success(
 				'Registered successfully. Check your email inbox to verify account!',
@@ -29,7 +28,6 @@ const Register = () => {
 			),
 				navigate('/otp');
 		} catch (error) {
-			console.log('🚀 ~ handleSubmitForm ~ error:', error);
 			toast.error(error.message);
 		}
 	};
