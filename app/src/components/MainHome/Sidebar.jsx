@@ -1,20 +1,19 @@
-import {
-    Book,
-    Bot,
-    Code2,
-    LifeBuoy,
-    Settings2,
-    SquareTerminal,
-    Triangle,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
-import React from 'react';
+} from "@/components/ui/tooltip";
+import {
+    Bomb,
+    Book,
+    Bot,
+    Code2,
+    LifeBuoy,
+    SquareTerminal,
+    Triangle
+} from "lucide-react";
 
 const Sidebar = () => {
     return < aside className="inset-y fixed left-0 z-20 flex h-full flex-col border-r" >
@@ -87,6 +86,25 @@ const Sidebar = () => {
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={5}>
                         Courses
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="rounded-lg"
+                            aria-label="Documentation"
+                        >
+                            <a href='/newcourses'>
+                                <Bomb className="size-5" />
+                            </a>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" sideOffset={5}>
+                        TestCourses
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
