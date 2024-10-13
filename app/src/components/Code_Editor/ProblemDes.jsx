@@ -2,6 +2,12 @@ import { BsCheck2Circle } from 'react-icons/bs';
 import { AiFillLike, AiFillDislike, AiFillStar } from 'react-icons/ai';
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import axios from 'axios'; // Add this import
+import ReactMarkdown from 'react-markdown'; // Ensure this import is present
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'; // Ensure these imports are present
+import { CircleAlert } from 'lucide-react';
 
 export default function ProblemDes() {
   const [form, setForm] = useState({
@@ -21,6 +27,8 @@ export default function ProblemDes() {
   const [isNew, setIsNew] = useState(true);
   const params = useParams();
   const navigate = useNavigate();
+  const [hints, setHints] = useState([]); // Add state for hints
+  const [generatingHints, setGeneratingHints] = useState(false); // Add state for loading hints
 
   useEffect(() => {
     async function fetchData() {
@@ -58,6 +66,38 @@ export default function ProblemDes() {
     }
   };
 
+  async function generateHints() {
+    setGeneratingHints(true);
+    try {
+      const response = await axios({
+        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
+        method: 'post',
+        data: {
+          contents: [
+            {
+              parts: [
+                {
+                  text:
+                    'Imagine you are a professor majoring in Information Technology. Give me 3 small hints for the following coding problem:\n' +
+                    'Title: ' + form.title + '\n' +
+                    'Statement: ' + form.statement + '\n' + 'Give precise hints to help user solve the problem on their own.',
+                },
+              ],
+            },
+          ],
+        },
+      });
+
+      // Extract hints from the API response
+      const generatedHints = response.data.candidates[0].content.parts[0].text.split('\n').filter(hint => hint.trim() !== '');
+      setHints(generatedHints);
+    } catch (error) {
+      console.error(error);
+      setHints(['Sorry - Could not generate hints at this time.']);
+    }
+    setGeneratingHints(false);
+  }
+
   return (
     <>
       <div className='relative flex-col items-start gap-8 md:flex ml-14' x-chunk='dashboard-03-chunk-0'>
@@ -66,8 +106,40 @@ export default function ProblemDes() {
             <legend className='-ml-1 px-1 text-lg font-medium'>Problem</legend>
             <div className='grid gap-3 w-full'>
               {/* Problem Title */}
-              <div className='mr-2 text-2xl font-medium'>
-                {form.title}
+              <div className='flex justify-between items-center'>
+                <div className='mr-2 text-2xl font-medium'>
+                  {form.title}
+                </div>
+
+                {/* Hint Button */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="w-10 h-10 flex items-center justify-center text-white" onClick={generateHints}>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <a variant="ghost" size="icon">
+                              <CircleAlert className="size-5" />
+                            </a>
+                          </TooltipTrigger>
+                          <TooltipContent side='bottom' sideOffset={5}>
+                            <p>Hint</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Hint</DialogTitle>
+                      <div>
+                        {generatingHints ? 'Thinking...' : hints.map((hint, index) => (
+                          <ReactMarkdown key={index} className="prose">{hint}</ReactMarkdown>
+                        ))}
+                      </div>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               {/* Problem Sub-bar */}

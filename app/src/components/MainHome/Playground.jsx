@@ -159,7 +159,7 @@ const FileUploadAndDisplay = () => {
             setLanguage(languageMap[extension] || 'unknown');
         }
     };
-    
+
     useEffect(() => {
         const requestRating = async () => {
             if (!selectedFile) {
@@ -455,7 +455,7 @@ const FileUploadAndDisplay = () => {
 
     return (
         <div className="grid h-screen w-full pl-[56px]">
-            <Sidebar/>
+            <Sidebar />
             <div className="flex flex-col">
                 <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
                     <h1 className="text-xl font-semibold">Playground</h1>
@@ -580,6 +580,7 @@ const FileUploadAndDisplay = () => {
                     </Button>
                 </header>
                 <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-3 lg:grid-cols-3" style={{ gridTemplateColumns: "20rem 0.8fr 1fr" }}>
+                    {/* Setting */}
                     <div className="relative hidden flex-col items-start gap-8 md:flex max-w-[20rem]">
                         <form className="grid w-full items-start gap-6">
                             <fieldset className="grid gap-6 rounded-lg border p-4">
@@ -741,6 +742,7 @@ const FileUploadAndDisplay = () => {
                         </form>
                     </div>
 
+                    {/* AI Chat */}
                     <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
                         <Badge variant="outline" className="absolute right-3 top-3">
                             Output
@@ -836,6 +838,7 @@ const FileUploadAndDisplay = () => {
                         </form>
                     </div>
 
+                    {/* Editor */}
                     <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1">
                         <Badge variant='outline' className='absolute right-3 top-3'>
                             Editor
