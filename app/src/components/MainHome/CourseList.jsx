@@ -87,12 +87,18 @@ const CourseList = () => {
                             <CardDescription><p>{course.author}</p></CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Link to={`/courses/${course._id}`}>
+                            {/* <Link to={`/courses/${course._id}`}>
                                 <div
                                     className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat"
                                     style={{ backgroundImage: `url(${course.image_cover})` }}
                                 ></div>
-                            </Link>
+                           </Link> */}
+                           <Link to={`/new-courses/${course._id}`}>
+                                <div
+                                    className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat"
+                                    style={{ backgroundImage: `url(${course.image_cover})` }}
+                                ></div>
+                           </Link>
                         </CardContent>
                     </Card>
                 ))}

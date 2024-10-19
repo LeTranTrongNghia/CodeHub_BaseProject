@@ -17,7 +17,7 @@ const routes = {
   },
   problemPage: "/problems",
   coursePage: "/courses",
-  newCourse: "/newcourses",
+  newCourse: "/new-courses",
   contactPage: "/contact",
 };
 

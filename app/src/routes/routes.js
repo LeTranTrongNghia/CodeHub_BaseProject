@@ -52,7 +52,7 @@ const ContactPage = React.lazy(() =>
   import("../container/Home/pages/MainHome/support.jsx")
 );
 const Newcourses = React.lazy(() => {
-  import("../container/Home/pages/MainHome/new");
+  import("../container/Home/pages/MainHome/");
 });
 
 const publicRoute = [
