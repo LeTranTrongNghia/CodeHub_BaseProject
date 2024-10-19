@@ -55,3 +55,84 @@
     --ring: 240 4.9% 83.9%;
   }
 }
+
+
+.course .video-title{
+  margin: 8px 0px 12px;
+  text-transform: uppercase;
+  line-height: 2.8rem;
+  font-size: 2rem;
+  white-space: normal;
+}
+
+.course .video-description p{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color:rgb(19, 19, 19);
+  font-size: 1rem;
+  line-height: 2rem;
+  font-weight: 400;
+}
+
+
+/* Ghi chú video */
+.course .video-comment textarea{
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+}
+
+.course .video-comment button{
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.course .video-comment button:hover{
+  background-color: #2563eb;
+}
+
+#savedNotes{
+  margin-top: 16px !important;
+}
+
+#savedNotes img{
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: cover !important;
+}
+
+#savedNotes .flex {
+  display: flex !important;
+  align-items: flex-start !important;
+}
+
+#savedNotes .flex-grow{
+  flex-grow: 1 !important;
+}
+
+#savedNotes .flex button{
+  cursor: pointer !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+}
+
+#savedNotes .flex button:hover{
+  text-decoration: none !important;
+}
+
+#savedNotes .text-gray-500{
+  font-size: 12px !important;
+}
+
+#savedNotes .text-sm{
+  font-size: 14px !important;
+}

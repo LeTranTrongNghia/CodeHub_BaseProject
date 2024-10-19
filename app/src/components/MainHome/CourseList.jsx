@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -89,7 +89,13 @@ const CourseList = () => {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<Link to={`/courses/${course._id}`}>
+							{/* <Link to={`/courses/${course._id}`}>
+                                <div
+                                    className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat"
+                                    style={{ backgroundImage: `url(${course.image_cover})` }}
+                                ></div>
+                           </Link> */}
+							<Link to={`/new-courses/${course._id}`}>
 								<div
 									className='grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat'
 									style={{ backgroundImage: `url(${course.image_cover})` }}

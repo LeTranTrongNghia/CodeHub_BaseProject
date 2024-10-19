@@ -36,9 +36,9 @@ const ProblemPage = React.lazy(() =>
 	import('../container/Home/pages/MainHome/ProblemsPage.jsx'),
 );
 
-// const CoursePage = React.lazy(() =>
-// 	import('../container/Home/pages/MainHome/CoursesPage.jsx'),
-// );
+const CoursePage = React.lazy(() =>
+	import('../container/Home/pages/MainHome/CoursesPage.jsx'),
+);
 
 const ProblemPageAdmin = React.lazy(() =>
 	import('../container/Admin/Admin.jsx'),
@@ -51,6 +51,9 @@ const CoursePageAdmin = React.lazy(() =>
 const ContactPage = React.lazy(() =>
 	import('../container/Home/pages/MainHome/support.jsx'),
 );
+const Newcourses = React.lazy(() => {
+	import('../container/Home/pages/MainHome/');
+});
 
 const OtpPage = React.lazy(() =>
 	import('../container/Auth/OTP-Verification/otp.jsx'),
@@ -81,10 +84,6 @@ const publicRoute = [
 		path: config.routes.indexHome,
 		component: IndexHomePage,
 	},
-	{
-		path: config.routes.otp,
-		component: OtpPage,
-	},
 ];
 
 const protectedRoute = [
@@ -92,10 +91,10 @@ const protectedRoute = [
 		path: config.routes.problemPage,
 		component: ProblemPage,
 	},
-	// {
-	// 	path: config.routes.coursePage,
-	// 	component: CoursePage,
-	// },
+	{
+		path: config.routes.coursePage,
+		component: CoursePage,
+	},
 	{
 		path: config.routes.home,
 		component: MainHomePage,
@@ -108,10 +107,6 @@ const protectedRoute = [
 		path: config.routes.coding,
 		component: CodingPage,
 	},
-	// {
-	// 	path: config.routes.AIassistant,
-	// 	component: AIPage,
-	// },
 	{
 		path: config.routes.changePassword,
 		component: ChangePasswordPage,
