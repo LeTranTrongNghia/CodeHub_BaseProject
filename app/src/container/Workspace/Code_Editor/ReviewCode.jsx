@@ -156,7 +156,7 @@ const ReviewCode = ({ userCode }) => {
 	}
 
 	return (
-		<section class='flex justify-center items-center p-3'>
+		<section className='flex justify-center items-center p-3'>
 			<Drawer>
 				<DrawerTrigger asChild size='sm'>
 					<Button asChild size='sm' className=''>

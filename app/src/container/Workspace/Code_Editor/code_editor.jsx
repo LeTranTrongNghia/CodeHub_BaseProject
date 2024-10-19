@@ -28,6 +28,9 @@ const CodeEditorWrapper = () => {
 	const editorRef = useRef(null);
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
 	const navigate = useNavigate();
+	const [iframeSrc, setIframeSrc] = useState('');
+	const [iframeVisible, setIframeVisible] = useState(false); 
+	const [isDialogOpen, setIsDialogOpen] = useState(false); 
 
 	useEffect(() => {
 		if (editorRef.current) {
@@ -53,6 +56,31 @@ const CodeEditorWrapper = () => {
 	// 		toast.error('Logout failed');
 	// 	}
 	// };
+
+	const handleEditorDidMount = (editor) => {
+		editorRef.current = editor;
+	};
+
+	const getCode = () => {
+		const code = editorRef.current.getValue();
+		const encodedCode = encodeURIComponent(code);
+		const tutorUrl = `https://pythontutor.com/visualize.html#code=${encodedCode}&origin=opt-frontend.js&cumulative=false&heapPrimitives=false&textReferences=false&py=${language}`;
+		setIframeSrc(tutorUrl);
+		setIframeVisible(true); // Show iframe when code is run
+	};
+
+	const handleIframeLoad = () => {
+		const iframe = document.getElementById('tutor-iframe');
+		const iframeWindow = iframe.contentWindow;
+
+		// Send a message to the iframe to set the language and trigger visualization
+		iframeWindow.postMessage({ language, action: 'visualize' }, '*');
+	};
+
+	const handleRunVisualize = () => {
+		getCode(); // Run the code visualization
+		setIsDialogOpen(true); // Open the dialog
+	};
 
 	return (
 		<div className='flex min-h-screen w-full flex-col'>
@@ -173,12 +201,42 @@ const CodeEditorWrapper = () => {
 							defaultLanguage={language}
 							defaultValue={CODE_SNIPPETS[language]}
 							theme='vs-dark'
-							onMount={(editor) => {
-								editorRef.current = editor;
-							}}
+							onMount={handleEditorDidMount}
 							value={value}
 							onChange={(newValue) => setValue(newValue)}
 						/>
+						<Button className='mt-5' onClick={handleRunVisualize}>Run Visualize</Button> {/* Combined button */}
+						
+						{isDialogOpen && (
+							<div
+								className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'
+								style={{ zIndex: 1000 }}
+							>
+								<div
+									className='bg-white p-4 rounded-lg'
+									style={{ width: '90%', height: '90%' }}
+								>
+									<h2 className='text-xl font-bold'>Visualization with PythonTutor</h2>
+									{iframeVisible && (
+										<div className='relative flex ml-[250px] justify-center items-center h-[85%]'>
+											<iframe
+												id="tutor-iframe"
+												src={iframeSrc}
+												width="100%"
+												height="99%"
+												title="Pythontutor Visualization"
+												onLoad={handleIframeLoad}
+												sandbox="allow-same-origin allow-scripts"
+												className='absolute'
+												style={{ overflowX: 'hidden' }} // Added overflow-x-hidden style
+											></iframe>
+											<div className='absolute inset-y-0 right-0 bg-white w-[290px] z-10' />
+										</div>
+									)}
+									<Button className='mt-4' onClick={() => setIsDialogOpen(false)}>Close Dialog</Button>
+								</div>
+							</div>
+						)}
 						<Output editorRef={editorRef} language={language} />
 					</div>
 				</div>
