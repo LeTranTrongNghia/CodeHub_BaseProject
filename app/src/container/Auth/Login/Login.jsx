@@ -9,13 +9,15 @@ import {
 	setAdminStatus,
 	setLoginStatus,
 	setUsername,
+	setEnrolledCourses, // Thêm action này để lưu danh sách khóa học đã đăng ký
+	setUserId,
 } from '@/redux/userReducer/userReducer';
-import { jwtDecode } from 'jwt-decode';
+import jwt_decode from 'jwt-decode';
 
 const Login = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const onFinish = async values => {
+	const onFinish = async (values) => {
 		const { email, password } = values;
 		try {
 			const response = await fetch(`http://localhost:5050/user/login`, {
@@ -28,24 +30,45 @@ const Login = () => {
 					password,
 				}),
 			});
-			// Chuyển đổi response thành JSON
 			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.message || 'An error occurred while logging in');
+			}
+
+			// Giải mã access token để lấy thông tin người dùng
 			const { access_token, username } = data.data;
-			const decodedData = jwtDecode(access_token);
-			const { role } = decodedData;
+			const decodedData = jwt_decode(access_token);
+			const { userId, role } = decodedData;
+
+			// Lưu access token vào localStorage
+			localStorage.setItem('authToken', access_token);
+
+			// Gọi API để lấy danh sách khóa học đã đăng ký
+			const enrolledResponse = await fetch(`http://localhost:5050/user/me`, {
+				headers: {
+					Authorization: `Bearer ${access_token}`,
+				},
+			});
+			const enrolledData = await enrolledResponse.json();
+			const { enrolledCourses } = enrolledData;
+
+			// Lưu thông tin vào Redux store
+			dispatch(setUserId(userId));
 			dispatch(setUsername(username));
+			dispatch(setEnrolledCourses(enrolledCourses)); // Lưu danh sách khóa học đã đăng ký
 			if (role === 'Admin') {
 				dispatch(setAdminStatus(true));
 			}
-			if (!response.ok) {
-				throw new Error(`An error occurred: ${response.statusText}`);
-			}
 			dispatch(setLoginStatus(true));
+
+			// Chuyển hướng người dùng đến trang chính
 			navigate('/main-home');
 		} catch (error) {
 			toast.error(error.message);
 		}
 	};
+
 	return (
 		<>
 			<div
@@ -54,7 +77,7 @@ const Login = () => {
 					backgroundImage: `url(https://images.pexels.com/photos/7134986/pexels-photo-7134986.jpeg)`,
 				}}
 			>
-				<div className='min-h-screen  flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
+				<div className='min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
 					<div className='sm:mx-auto sm:w-full sm:max-w-md'>
 						<h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>
 							Sign in to your account
@@ -73,6 +96,7 @@ const Login = () => {
 					<div className='mt-6 sm:mx-auto sm:w-full sm:max-w-md'>
 						<div className='bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10'>
 							<Form onFinish={onFinish}>
+								{/* Email Input */}
 								<div>
 									<label
 										htmlFor='email'
@@ -110,14 +134,12 @@ const Login = () => {
 									>
 										<Input
 											className='appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-											classNames={{
-												input: 'text-md font-normal',
-											}}
 											placeholder='Enter your email'
 										/>
 									</Form.Item>
 								</div>
 
+								{/* Password Input */}
 								<div>
 									<label
 										htmlFor='password'
@@ -129,17 +151,6 @@ const Login = () => {
 										name='password'
 										className='mt-1'
 										rules={[
-											{
-												type: 'password',
-												message: (
-													<Alert
-														className='ml-2 bg-transparent text-sm text-red-700'
-														message='invalid password'
-														banner
-														type='error'
-													/>
-												),
-											},
 											{
 												required: true,
 												message: (
@@ -154,41 +165,13 @@ const Login = () => {
 										]}
 									>
 										<Input.Password
-											className='flex appearance-none rounded-md relative  w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-											classNames={{
-												input: 'text-md font-normal',
-											}}
+											className='flex appearance-none rounded-md relative w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
 											placeholder='Enter your password'
 										/>
 									</Form.Item>
 								</div>
 
-								<div className='flex items-center justify-between '>
-									<div className='flex items-center mt-2'>
-										<input
-											id='remember_me'
-											name='remember_me'
-											type='checkbox'
-											className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'
-										/>
-										<label
-											htmlFor='remember_me'
-											className='ml-2 block text-sm text-gray-900'
-										>
-											Remember me
-										</label>
-									</div>
-
-									<div className='text-sm'>
-										<a
-											onClick={() => navigate('/forgot-password')}
-											className='font-medium text-blue-600 hover:text-blue-500'
-										>
-											Forgot your password?
-										</a>
-									</div>
-								</div>
-
+								{/* Submit Button */}
 								<Form.Item>
 									<Button
 										htmlType='submit'
@@ -198,23 +181,11 @@ const Login = () => {
 									</Button>
 								</Form.Item>
 							</Form>
-							<div className='mt-6 '>
-								<div className='relative'>
-									<div className='absolute inset-0 flex items-center'>
-										<div className='w-full border-t border-gray-300'></div>
-									</div>
-									<div className='relative flex justify-center text-sm'>
-										<span className='px-2 bg-white text-gray-500'>
-											Or continue with
-										</span>
-									</div>
-								</div>
 
-								<div className='mt-6 grid grid-cols-2 gap-3'>
-									{/* <SignInwithFacebook /> */}
-									<SignInwithGoogle />
-									<SignInwithGithub />
-								</div>
+							{/* Sign in with Google and Github */}
+							<div className='mt-6 grid grid-cols-2 gap-3'>
+								<SignInwithGoogle />
+								<SignInwithGithub />
 							</div>
 						</div>
 					</div>

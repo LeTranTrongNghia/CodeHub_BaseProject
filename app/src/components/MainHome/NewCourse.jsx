@@ -12,7 +12,11 @@ const NewCourse = () => {
   const { id } = useParams();
   const [course, setCourse] = useState(null);
   const [currentTime, setCurrentTime] = useState(0); // Track current video time
-  const [completedLectures, setCompletedLectures] = useState(0); // Track completed lectures
+  const [maxAllowedTime, setMaxAllowedTime] = useState(0); // Max time user is allowed to watch without skipping
+  const [completedLectures, setCompletedLectures] = useState(0); // Track completed lectures count
+  const [completedLectureIndexes, setCompletedLectureIndexes] = useState([]); // Track completed lecture indexes
+
+  let player;
 
   // Fetch course details from the backend
   useEffect(() => {
@@ -47,7 +51,7 @@ const NewCourse = () => {
     }
 
     function createPlayer() {
-      const player = new window.YT.Player('youtube-player', {
+      player = new window.YT.Player('youtube-player', {
         events: {
           onStateChange: onPlayerStateChange,
           onReady: onPlayerReady,
@@ -55,10 +59,17 @@ const NewCourse = () => {
       });
 
       function onPlayerReady(event) {
+        // Kiểm tra thời gian hiện tại của video mỗi giây và cập nhật maxAllowedTime
         setInterval(() => {
           const currentTime = event.target.getCurrentTime();
-          setCurrentTime(currentTime);
-          updateCompletedLectures(currentTime);
+          if (currentTime > maxAllowedTime) {
+            // Ngăn người dùng tua vượt qua thời gian được phép
+            event.target.seekTo(maxAllowedTime, true);
+          } else {
+            setCurrentTime(currentTime);
+            setMaxAllowedTime(currentTime);
+            updateCompletedLectures(currentTime);
+          }
         }, 1000);
       }
 
@@ -71,16 +82,31 @@ const NewCourse = () => {
 
     function updateCompletedLectures(currentTime) {
       if (course && course.lectures) {
-        const completed = course.lectures.filter((lecture) => {
+        let completed = 0;
+        const completedIndexes = [];
+
+        // Lặp qua từng bài giảng và xác định nếu bài giảng đã được hoàn thành
+        course.lectures.forEach((lecture, index) => {
           const [minutes, seconds] = lecture.time.split(':').map(Number);
           const lectureTimeInSeconds = minutes * 60 + seconds;
-          return currentTime >= lectureTimeInSeconds;
-        }).length;
-        setCompletedLectures(completed); // Update the completed lectures count
+
+          if (currentTime >= lectureTimeInSeconds && !completedLectureIndexes.includes(index)) {
+            completedIndexes.push(index);
+          }
+        });
+
+        const allCompletedIndexes = [...completedLectureIndexes, ...completedIndexes];
+        const uniqueCompletedIndexes = [...new Set(allCompletedIndexes)];
+
+        completed = uniqueCompletedIndexes.length;
+
+        // Cập nhật state của các bài giảng đã hoàn thành và số bài giảng hoàn thành
+        setCompletedLectureIndexes(uniqueCompletedIndexes);
+        setCompletedLectures(completed);
       }
     }
 
-  }, [course]);
+  }, [course, maxAllowedTime, completedLectureIndexes]);
 
   const handleSaveNotes = () => {
     if (notes) {
@@ -210,8 +236,8 @@ const NewCourse = () => {
                   <span className="truncate">{lecture.title_lecture}</span>
                 </div>
                 <div className="flex items-right w-1/3 justify-end">
-                  <span className="mr-2">{course.language_short}</span>
-                  <i className={`fas fa-check-circle ${completedLectures > index ? 'text-green-500' : 'text-red-500'}`}><CheckCircle /></i>
+                  <span className="mr-2">{lecture.time}</span>
+                  <i className={`fas fa-check-circle ${completedLectureIndexes.includes(index) ? 'text-green-500' : 'text-red-500'}`}><CheckCircle /></i>
                 </div>
               </li>
             ))}
