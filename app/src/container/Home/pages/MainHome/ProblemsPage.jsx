@@ -1,3 +1,5 @@
+import Sidebar from '@/components/MainHome/Sidebar';
+import Topbar from '@/components/MainHome/Topbar';
 import {
 	Card,
 	CardContent,
@@ -5,14 +7,7 @@ import {
 	CardFooter,
 	CardHeader,
 } from '@/components/ui/card';
-import {
-	Table,
-	TableBody,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
 import {
 	Pagination,
 	PaginationContent,
@@ -22,11 +17,22 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from '@/components/ui/pagination';
+
 import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '@/components/MainHome/Sidebar';
 import Topbar from '@/components/MainHome/Topbar';
+
+import {
+	Table,
+	TableBody,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
+
 
 const ProblemsPerPage = 7; // Number of problems displayed per page
 

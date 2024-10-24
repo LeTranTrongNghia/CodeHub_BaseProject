@@ -1,4 +1,5 @@
 const routes = {
+
 	home: '/main-home',
 	profile: '/Setting',
 	login: '/login',
@@ -18,7 +19,9 @@ const routes = {
 	},
 	problemPage: '/problems',
 	coursePage: '/courses',
+   newCourse: "/new-courses",
 	contactPage: '/contact',
+
 };
 
 export default routes;

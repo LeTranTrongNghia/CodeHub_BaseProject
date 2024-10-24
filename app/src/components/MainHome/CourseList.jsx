@@ -68,39 +68,44 @@ const CourseList = () => {
 										</TooltipProvider>
 									</div>
 
-									<div className='ml-2'>
-										<TooltipProvider>
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<Button variant='outline' size='icon'>
-														<p>{course.language_short}</p>
-													</Button>
-												</TooltipTrigger>
-												<TooltipContent side='bottom' sideOffset={5}>
-													<p>{course.language}</p>
-												</TooltipContent>
-											</Tooltip>
-										</TooltipProvider>
-									</div>
-								</div>
-							</CardTitle>
-							<CardDescription>
-								<p>{course.author}</p>
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<Link to={`/courses/${course._id}`}>
-								<div
-									className='grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat'
-									style={{ backgroundImage: `url(${course.image_cover})` }}
-								></div>
-							</Link>
-						</CardContent>
-					</Card>
-				))}
-			</div>
-		</div>
-	);
+
+                                    <div className="ml-2">
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button variant="outline" size="icon">
+                                                        <p>{course.language_short}</p>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent side="bottom" sideOffset={5}>
+                                                    <p>{course.language}</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
+                                </div>
+                            </CardTitle>
+                            <CardDescription><p>{course.author}</p></CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {/* <Link to={`/courses/${course._id}`}>
+                                <div
+                                    className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat"
+                                    style={{ backgroundImage: `url(${course.image_cover})` }}
+                                ></div>
+                           </Link> */}
+                           <Link to={`/new-courses/${course._id}`}>
+                                <div
+                                    className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat"
+                                    style={{ backgroundImage: `url(${course.image_cover})` }}
+                                ></div>
+                           </Link>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    );
 };
 
 export default CourseList;
