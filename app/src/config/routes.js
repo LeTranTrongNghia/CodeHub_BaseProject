@@ -19,7 +19,7 @@ const routes = {
 	},
 	problemPage: '/problems',
 	coursePage: '/courses',
-   newCourse: "/new-courses",
+	newCourse: "/new-courses",
 	contactPage: '/contact',
 
 };

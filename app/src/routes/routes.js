@@ -38,11 +38,9 @@ const ProblemPage = React.lazy(() =>
   import("../container/Home/pages/MainHome/ProblemsPage.jsx")
 );
 
-
 // const CoursePage = React.lazy(() =>
 // 	import('../container/Home/pages/MainHome/CoursesPage.jsx'),
 // );
-
 
 const ProblemPageAdmin = React.lazy(() =>
   import("../container/Admin/Admin.jsx")
@@ -55,76 +53,83 @@ const CoursePageAdmin = React.lazy(() =>
 const ContactPage = React.lazy(() =>
   import("../container/Home/pages/MainHome/support.jsx")
 );
-const Newcourses = React.lazy(() => {
-  import("../container/Home/pages/MainHome/");
-});
+// const Newcourses = React.lazy(() => {
+//   import("../container/Home/pages/MainHome/");
+// });
 
 const OtpPage = React.lazy(() =>
-	import('../container/Auth/OTP-Verification/otp.jsx'),
+  import("../container/Auth/OTP-Verification/otp.jsx")
+);
+
+const CoursePage = React.lazy(() =>
+  import("../components/MainHome/CourseList")
+);
+
+const CourseDetail = React.lazy(() =>
+  import("../components/MainHome/NewCourse")
 );
 
 const publicRoute = [
-
-	{
-		path: config.routes.contactPage,
-		component: ContactPage,
-	},
-	{
-		path: config.routes.login,
-		component: LoginPage,
-	},
-	{
-		path: config.routes.register,
-		component: RegisterPage,
-	},
-	{
-		path: config.routes.resetPassword,
-		component: ResetPasswordPage,
-	},
-	{
-		path: config.routes.forgotPassword,
-		component: ForgotPasswordPage,
-	},
-	{
-		path: config.routes.indexHome,
-		component: IndexHomePage,
-	},
-	{
-		path: config.routes.otp,
-		component: OtpPage,
-	},
+  {
+    path: config.routes.contactPage,
+    component: ContactPage,
+  },
+  {
+    path: config.routes.login,
+    component: LoginPage,
+  },
+  {
+    path: config.routes.register,
+    component: RegisterPage,
+  },
+  {
+    path: config.routes.resetPassword,
+    component: ResetPasswordPage,
+  },
+  {
+    path: config.routes.forgotPassword,
+    component: ForgotPasswordPage,
+  },
+  {
+    path: config.routes.indexHome,
+    component: IndexHomePage,
+  },
+  {
+    path: config.routes.otp,
+    component: OtpPage,
+  },
 ];
 
 const protectedRoute = [
-	{
-		path: config.routes.problemPage,
-		component: ProblemPage,
-	},
-	// {
-	// 	path: config.routes.coursePage,
-	// 	component: CoursePage,
-	// },
-	{
-		path: config.routes.home,
-		component: MainHomePage,
-	},
-	{
-		path: config.routes.profile,
-		component: ProfilePage,
-	},
-	{
-		path: config.routes.coding,
-		component: CodingPage,
-	},
-	// {
-	// 	path: config.routes.AIassistant,
-	// 	component: AIPage,
-	// },
-	{
-		path: config.routes.changePassword,
-		component: ChangePasswordPage,
-	},
-
+  {
+    path: config.routes.problemPage,
+    component: ProblemPage,
+  },
+  {
+    path: config.routes.coursePage,
+    component: CoursePage,
+  },
+  { path: config.routes.newCourse, component: CourseDetail },
+  {
+    path: config.routes.home,
+    component: MainHomePage,
+  },
+  {
+    path: config.routes.profile,
+    component: ProfilePage,
+  },
+  {
+    path: config.routes.coding,
+    component: CodingPage,
+  },
+  // {
+  // 	path: config.routes.AIassistant,
+  // 	component: AIPage,
+  // },
+  {
+    path: config.routes.changePassword,
+    component: ChangePasswordPage,
+  },
 ];
 
 const adminRoute = [
@@ -146,4 +151,4 @@ const adminRoute = [
   },
 ];
 
-export { publicRoute, adminRoute, protectedRoute };
+export { adminRoute, protectedRoute, publicRoute };
