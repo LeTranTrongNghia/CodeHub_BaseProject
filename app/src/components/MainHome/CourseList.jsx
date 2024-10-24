@@ -17,10 +17,17 @@ import {
 import Topbar from './Topbar';
 import Sidebar from './Sidebar';
 
+const getEnrolledCoursesById = (userData, courseId) => {
+	return userData.enrolledCourses.filter(
+		course => course.id_course === courseId,
+	);
+};
+
 const CourseList = () => {
 	const [courses, setCourses] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+	const [, setUserData] = useState(null); // State để lưu dữ liệu user từ API
 
 	useEffect(() => {
 		async function fetchCourses() {
@@ -30,7 +37,19 @@ const CourseList = () => {
 					throw new Error('Network response was not ok');
 				}
 				const data = await response.json();
-				setCourses(data);
+				setUserData(data); // Lưu dữ liệu user vào state
+
+				// Lọc các khóa học theo courseId
+				const enrolledCourses = getEnrolledCoursesById(
+					data,
+					'courseId truyền vào', //giả sử đây là course id muốn lấy
+				);
+
+				if (enrolledCourses.length === 0) {
+					throw new Error('Không tìm thấy khóa học nào với ID đã cung cấp.');
+				}
+
+				setCourses(enrolledCourses);
 			} catch (error) {
 				setError(error.message);
 			} finally {
