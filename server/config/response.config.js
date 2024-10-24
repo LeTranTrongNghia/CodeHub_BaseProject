@@ -92,9 +92,20 @@ export const sendResponse = {
 		});
 	},
 	error: (res, message, note) => {
-		res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-			message,
+		// Lấy statusCode từ đối tượng lỗi, nếu không có thì mặc định là 500
+		const statusCode = error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
+
+		// Lấy message từ đối tượng lỗi, nếu không có thì sử dụng message mặc định
+		const messageStr = error.message || 'Internal Server Error';
+		// res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+		// 	statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+		// 	message,
+		// 	dateTime: moment(new Date()).format('DD-MM-YYYY\\tHH:mm:ssSSS'),
+		// 	messageConstants: note,
+		// });
+		res.status(statusCode).json({
+			statusCode: statusCode,
+			message: messageStr,
 			dateTime: moment(new Date()).format('DD-MM-YYYY\\tHH:mm:ssSSS'),
 			messageConstants: note,
 		});

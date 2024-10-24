@@ -1,4 +1,4 @@
-class UserService{
+className UserService{
     constructor(realtimeDb, accessToken){
         this.collectionName = 'user.json';
         this.realtimeDb = realtimeDb;

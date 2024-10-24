@@ -70,6 +70,13 @@ class UserService {
 	async register(user) {
 		const { username, email, password } = user;
 		try {
+			const existingUser = await db.collection('users').findOne({ email });
+			// if (existingUser) {
+			// 	throw new ErrorWithStatus({
+			// 		statusCode: StatusCodes.CONFLICT,
+			// 		message: MESSAGES.ERROR_MESSAGES.GENERAL.EXISTED,
+			// 	});
+			// }
 			const hashPwd = bcrypt.hashSync(password, 10);
 			const user = new User({
 				username,
@@ -92,6 +99,9 @@ class UserService {
 				refresh_token,
 			};
 		} catch (error) {
+			if (error instanceof ErrorWithStatus) {
+				throw error;
+			}
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
 				message: MESSAGES.ERROR_MESSAGES.GENERAL.REGISTER,
@@ -104,7 +114,7 @@ class UserService {
 		try {
 			const otp = await otpService.generateOTP(email);
 			const emailContent = await generateEmailContent(otp.code);
-			await emailService.sendMail(otp.email, 'Hutech Bug', emailContent);
+			await emailService.sendMail(otp.email, 'Code Hub', emailContent);
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -117,7 +127,7 @@ class UserService {
 		try {
 			const otp = await otpService.generateOTP(email);
 			const emailContent = await generateEmailContentPwd(otp.code);
-			await emailService.sendMail(otp.email, 'Hutech Bug', emailContent);
+			await emailService.sendMail(otp.email, 'Code Hub', emailContent);
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -154,6 +164,12 @@ class UserService {
 					message: MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.EMAIL.NOT_REGISTER,
 				});
 			}
+			if (user.verify === 'Unverify') {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.FORBIDDEN,
+					message: MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.NOT_VERIFIED,
+				});
+			}
 			const isPasswordMatch = await bcrypt.compare(password, user.password);
 			if (!isPasswordMatch) {
 				throw new ErrorWithStatus({
@@ -182,7 +198,7 @@ class UserService {
 				refresh_token,
 			};
 		} catch (error) {
-			if (error instanceof ErrorWithStatus && error.statusCode) {
+			if (error instanceof ErrorWithStatus) {
 				throw error;
 			}
 			throw new ErrorWithStatus({
