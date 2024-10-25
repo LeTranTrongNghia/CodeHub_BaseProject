@@ -13,7 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { BookMarked, Bot, ChevronLeft, CircleUser, Search } from 'lucide-react';
-
+import { toast } from 'react-toastify';
 import ReviewCode from './ReviewCode';
 import { CODE_SNIPPETS } from './constant/constants';
 import LanguageSelector from '/src/components/Code_Editor/LanguageSelector';
@@ -29,8 +29,8 @@ const CodeEditorWrapper = () => {
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
 	const navigate = useNavigate();
 	const [iframeSrc, setIframeSrc] = useState('');
-	const [iframeVisible, setIframeVisible] = useState(false); 
-	const [isDialogOpen, setIsDialogOpen] = useState(false); 
+	const [iframeVisible, setIframeVisible] = useState(false);
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [overlayVisible, setOverlayVisible] = useState(false); // New state for overlay visibility
 
 	useEffect(() => {
@@ -72,7 +72,7 @@ const CodeEditorWrapper = () => {
 	const getCode = () => {
 		const code = editorRef.current.getValue();
 		const encodedCode = encodeURIComponent(code);
-		
+
 		// Count the number of lines in the code
 		const lineCount = code.split('\n').length;
 
@@ -87,7 +87,7 @@ const CodeEditorWrapper = () => {
 
 		const mappedLanguage = languageMapping[language] || language; // Use mapping or fallback to original
 		const tutorUrl = `https://pythontutor.com/render.html#code=${finalEncodedCode}&origin=opt-frontend.js&cumulative=false&heapPrimitives=false&mode=display&py=${mappedLanguage}&rawInputLstJSON=[]&textReferences=false`;
-		
+
 		setIframeSrc(tutorUrl);
 		setIframeVisible(true);
 	};
@@ -101,12 +101,24 @@ const CodeEditorWrapper = () => {
 	};
 
 	const handleRunVisualize = () => {
-		getCode();
-		setIsDialogOpen(true); // Open the dialog
-		setOverlayVisible(true); // Show the overlay
-		setTimeout(() => {
-			setOverlayVisible(false); // Hide the overlay after 3 seconds
-		}, 2000);
+		// Check if the browser window is at full width and height
+		if (window.innerWidth < window.screen.width || window.innerHeight < window.screen.height) {
+			toast.warn("Please maximize your browser window to full width and height before running the visualization.");
+			return; // Exit the function if the window is not maximized
+		}
+
+		// Check if the selected language is one of the allowed languages
+		if (['python', 'java', 'javascript'].includes(language)) {
+			getCode();
+			setIsDialogOpen(true); // Open the dialog
+			setOverlayVisible(true); // Show the overlay
+			setTimeout(() => {
+				setOverlayVisible(false); // Hide the overlay after 3 seconds
+			}, 2000);
+		} else {
+			// Show dialog with warning message for unsupported languages
+			alert("The visualize code feature only supports Python, Java, and JavaScript.");
+		}
 	};
 
 	return (
@@ -232,8 +244,18 @@ const CodeEditorWrapper = () => {
 							value={value}
 							onChange={(newValue) => setValue(newValue)}
 						/>
-						<Button className='mt-5' onClick={handleRunVisualize}>Run Visualize</Button> {/* Combined button */}
-						
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div className='w-full'>
+										<Button className='mt-5' onClick={handleRunVisualize} disabled={!['python', 'java', 'javascript'].includes(language)}>Run Visualize</Button>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>The visualize code feature only supports Python, Java, and JavaScript.</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
 						{isDialogOpen && (
 							<div
 								className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'
@@ -264,11 +286,11 @@ const CodeEditorWrapper = () => {
 												scrolling="no"
 											></iframe>
 											<div className='absolute inset-y-0 right-0 bg-white w-[250px] z-10' />
-											<div className='absolute left-[200px] bottom-[130px] bg-white w-[150px] h-[30px] z-10' />
+											<div className='absolute left-[20px] bottom-[10px] bg-white w-[500px] h-[150px] z-10' />
 											<Button className='absolute top-5 right-10 z-10 mb-4' onClick={() => setIsDialogOpen(false)}>Close</Button>
 										</div>
 									)}
-									
+
 								</div>
 							</div>
 						)}
