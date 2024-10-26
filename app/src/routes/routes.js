@@ -36,10 +36,6 @@ const ProblemPage = React.lazy(() =>
 	import('../container/Home/pages/MainHome/ProblemsPage.jsx'),
 );
 
-const CoursePage = React.lazy(() =>
-	import('../container/Home/pages/MainHome/CoursesPage.jsx'),
-);
-
 const ProblemPageAdmin = React.lazy(() =>
 	import('../container/Admin/Admin.jsx'),
 );
@@ -90,10 +86,6 @@ const protectedRoute = [
 	{
 		path: config.routes.problemPage,
 		component: ProblemPage,
-	},
-	{
-		path: config.routes.coursePage,
-		component: CoursePage,
 	},
 	{
 		path: config.routes.home,

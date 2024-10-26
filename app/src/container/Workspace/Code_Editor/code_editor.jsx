@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 // import { signOut } from 'firebase/auth';
@@ -39,7 +38,6 @@ const CodeEditorWrapper = () => {
 	const [option, setOption] = useState('1');
 	const editorRef = useRef(null);
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
-	const navigate = useNavigate();
 	const [iframeSrc, setIframeSrc] = useState('');
 	const [iframeVisible, setIframeVisible] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
