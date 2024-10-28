@@ -80,6 +80,10 @@ const publicRoute = [
 		path: config.routes.indexHome,
 		component: IndexHomePage,
 	},
+	{
+		path: config.routes.otp,
+		component: OtpPage,
+	},
 ];
 
 const protectedRoute = [
