@@ -6,6 +6,7 @@ const routes = {
 	resetPassword: '/reset-password',
 	changePassword: '/change-password',
 	forgotPassword: '/forgot-password',
+	otp: '/otp',
 	notFound: '*',
 	coding: '/coding',
 	indexHome: '/',
@@ -17,6 +18,7 @@ const routes = {
 	},
 	problemPage: '/problems',
 	coursePage: '/courses',
+	newCourse: '/new-courses',
 	contactPage: '/contact',
 };
 

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 // import { signOut } from 'firebase/auth';
@@ -9,9 +8,21 @@ import * as monaco from 'monaco-editor';
 import Sidebar from '@/components/MainHome/Sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { BookMarked, Bot, ChevronLeft, CircleUser, Search } from 'lucide-react';
 import { toast } from 'react-toastify';
 import ReviewCode from './ReviewCode';
@@ -27,7 +38,6 @@ const CodeEditorWrapper = () => {
 	const [option, setOption] = useState('1');
 	const editorRef = useRef(null);
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
-	const navigate = useNavigate();
 	const [iframeSrc, setIframeSrc] = useState('');
 	const [iframeVisible, setIframeVisible] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -53,17 +63,17 @@ const CodeEditorWrapper = () => {
 	// 	}
 	// };
 
-	const handleEditorDidMount = (editor) => {
+	const handleEditorDidMount = editor => {
 		editorRef.current = editor;
 	};
 
 	const languageMapping = {
 		python: '311', // Convert Python to 311
-		java: 'java',  // Keep Java as is
-		javascript: 'js' // Convert JavaScript to js
+		java: 'java', // Keep Java as is
+		javascript: 'js', // Convert JavaScript to js
 	};
 
-	const onSelect = (selectedLanguage) => {
+	const onSelect = selectedLanguage => {
 		setLanguage(selectedLanguage);
 		setValue(CODE_SNIPPETS[selectedLanguage]);
 		// No need to set iframeSrc here, it will be set in getCode
@@ -102,8 +112,13 @@ const CodeEditorWrapper = () => {
 
 	const handleRunVisualize = () => {
 		// Check if the browser window is at full width and height
-		if (window.innerWidth < window.screen.width || window.innerHeight < window.screen.height) {
-			toast.warn("Please maximize your browser window to full width and height before running the visualization.");
+		if (
+			window.innerWidth < window.screen.width ||
+			window.innerHeight < window.screen.height
+		) {
+			toast.warn(
+				'Please maximize your browser window to full width and height before running the visualization.',
+			);
 			return; // Exit the function if the window is not maximized
 		}
 
@@ -117,7 +132,9 @@ const CodeEditorWrapper = () => {
 			}, 2000);
 		} else {
 			// Show dialog with warning message for unsupported languages
-			alert("The visualize code feature only supports Python, Java, and JavaScript.");
+			alert(
+				'The visualize code feature only supports Python, Java, and JavaScript.',
+			);
 		}
 	};
 
@@ -147,7 +164,9 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${option === '1' ? 'selected' : ''} flex bg-white p-3 rounded-md text-left w-[120px]`}
+									className={`option ${
+										option === '1' ? 'selected' : ''
+									} flex bg-white p-3 rounded-md text-left w-[120px]`}
 									onClick={() => setOption('1')}
 								>
 									<BookMarked className='size-5 mr-4' />
@@ -164,7 +183,9 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${option === '2' ? 'selected' : ''} flex bg-white p-3 rounded-md text-left w-[150px]`}
+									className={`option ${
+										option === '2' ? 'selected' : ''
+									} flex bg-white p-3 rounded-md text-left w-[150px]`}
 									onClick={() => setOption('2')}
 								>
 									<Bot className='size-5 mr-4' />
@@ -242,17 +263,28 @@ const CodeEditorWrapper = () => {
 							theme='vs-dark'
 							onMount={handleEditorDidMount}
 							value={value}
-							onChange={(newValue) => setValue(newValue)}
+							onChange={newValue => setValue(newValue)}
 						/>
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<div className='w-full'>
-										<Button className='mt-5' onClick={handleRunVisualize} disabled={!['python', 'java', 'javascript'].includes(language)}>Run Visualize</Button>
+										<Button
+											className='mt-5'
+											onClick={handleRunVisualize}
+											disabled={
+												!['python', 'java', 'javascript'].includes(language)
+											}
+										>
+											Run Visualize
+										</Button>
 									</div>
 								</TooltipTrigger>
 								<TooltipContent>
-									<p>The visualize code feature only supports Python, Java, and JavaScript.</p>
+									<p>
+										The visualize code feature only supports Python, Java, and
+										JavaScript.
+									</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
@@ -267,30 +299,36 @@ const CodeEditorWrapper = () => {
 								>
 									{/* <h2 className='text-xl font-bold'>Visualization with PythonTutor</h2> */}
 									{iframeVisible && (
-										<div className='relative flex ml-[100px] justify-center items-center h-[95%] overflow-hidden'> {/* Added overflow-hidden */}
+										<div className='relative flex ml-[100px] justify-center items-center h-[95%] overflow-hidden'>
+											{' '}
+											{/* Added overflow-hidden */}
 											{overlayVisible && ( // Conditional rendering for the overlay inside the iframe's div
 												<div className='absolute inset-0 bg-white w-full h-full z-10' />
 											)}
 											<div className='absolute inset-y-0 top-0 bg-white w-full h-[30px] z-10' />
 											<div className='absolute left-[200px] top-[70px] bg-white w-[160px] h-[15px] z-10' />
 											<iframe
-												id="tutor-iframe"
+												id='tutor-iframe'
 												src={iframeSrc}
-												width="100%"
-												height="99%"
-												title="Pythontutor Visualization"
+												width='100%'
+												height='99%'
+												title='Pythontutor Visualization'
 												onLoad={handleIframeLoad}
-												sandbox="allow-same-origin allow-scripts"
+												sandbox='allow-same-origin allow-scripts'
 												className='absolute mb-10'
 												style={{ overflowX: 'hidden' }}
-												scrolling="no"
+												scrolling='no'
 											></iframe>
 											<div className='absolute inset-y-0 right-0 bg-white w-[250px] z-10' />
 											<div className='absolute left-[20px] bottom-[10px] bg-white w-[500px] h-[150px] z-10' />
-											<Button className='absolute top-5 right-10 z-10 mb-4' onClick={() => setIsDialogOpen(false)}>Close</Button>
+											<Button
+												className='absolute top-5 right-10 z-10 mb-4'
+												onClick={() => setIsDialogOpen(false)}
+											>
+												Close
+											</Button>
 										</div>
 									)}
-
 								</div>
 							</div>
 						)}
@@ -300,6 +338,6 @@ const CodeEditorWrapper = () => {
 			</main>
 		</div>
 	);
-}
+};
 
 export default CodeEditorWrapper;

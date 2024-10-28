@@ -24,12 +24,14 @@ import {
 	Code2,
 	CreditCard,
 } from 'lucide-react';
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const MainHome = () => {
 	const [problems, setProblems] = useState([]);
 	const [filteredProblems, setFilteredProblems] = useState([]);
+	const username = useSelector(state => state.user.username);
 
 	useEffect(() => {
 		async function getProblems() {
@@ -60,7 +62,7 @@ const MainHome = () => {
 							<div className='container relative w-full h-[200px]'>
 								<Spline scene='https://prod.spline.design/8rK8Mhnerno7UApB/scene.splinecode' />
 								<div className='text-layer absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full justify-between'>
-									<p className='text-4xl font-bold mb-6'>Welcome TrongNghia!</p>
+									<p className='text-4xl font-bold mb-6'>Welcome {username}!</p>
 									<div className='flex flex-row items-center justify-between text-white'>
 										<div className='text-xl'>
 											Track your progress, manage your courses activity and
@@ -173,17 +175,20 @@ const MainHome = () => {
 									<Table>
 										<TableHeader>
 											<TableRow>
-												<TableHead className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Title</TableHead>
-												<TableHead className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Type</TableHead>
-												<TableHead className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Difficulty</TableHead>
+												<TableHead className='h-12 px-4 text-left align-middle font-medium text-muted-foreground'>
+													Title
+												</TableHead>
+												<TableHead className='h-12 px-4 text-left align-middle font-medium text-muted-foreground'>
+													Type
+												</TableHead>
+												<TableHead className='h-12 px-4 text-left align-middle font-medium text-muted-foreground'>
+													Difficulty
+												</TableHead>
 											</TableRow>
 										</TableHeader>
 										<TableBody>
-											{filteredProblems.map((problem) => (
-												<Problem
-													problem={problem}
-													key={problem._id}
-												/>
+											{filteredProblems.map(problem => (
+												<Problem problem={problem} key={problem._id} />
 											))}
 										</TableBody>
 									</Table>
@@ -242,38 +247,41 @@ const MainHome = () => {
 export default MainHome;
 
 const Problem = ({ problem }) => {
-	// Function to determine difficulty color class based on the level
-	const getDifficultyColorClass = (difficulty) => {
+	// Function to determine difficulty color className based on the level
+	const getDifficultyColorclassName = difficulty => {
 		switch (difficulty) {
-			case "Easy":
-				return "text-green-600"; // Green color for Easy
-			case "Medium":
-				return "text-yellow-600"; // Yellow color for Medium
-			case "Hard":
-				return "text-red-600"; // Red color for Hard
+			case 'Easy':
+				return 'text-green-600'; // Green color for Easy
+			case 'Medium':
+				return 'text-yellow-600'; // Yellow color for Medium
+			case 'Hard':
+				return 'text-red-600'; // Red color for Hard
 			default:
-				return "text-gray-600"; // Default to gray if no match
+				return 'text-gray-600'; // Default to gray if no match
 		}
 	};
 
 	return (
-		<tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer">
-			<td className="p-4 align-middle">
-				<Link to={`/problems/solve/${problem._id}`} className="block">
+		<tr className='border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer'>
+			<td className='p-4 align-middle'>
+				<Link to={`/problems/solve/${problem._id}`} className='block'>
 					{problem.title}
 				</Link>
 			</td>
-			<td className="p-4 align-middle">
-				<Link to={`/problems/solve/${problem._id}`} className="block">
+			<td className='p-4 align-middle'>
+				<Link to={`/problems/solve/${problem._id}`} className='block'>
 					{problem.type}
 				</Link>
 			</td>
-			<td className={`p-4 align-middle ${getDifficultyColorClass(problem.difficulty)}`}>
-				<Link to={`/problems/solve/${problem._id}`} className="block">
+			<td
+				className={`p-4 align-middle ${getDifficultyColorclassName(
+					problem.difficulty,
+				)}`}
+			>
+				<Link to={`/problems/solve/${problem._id}`} className='block'>
 					{problem.difficulty}
 				</Link>
 			</td>
 		</tr>
 	);
 };
-

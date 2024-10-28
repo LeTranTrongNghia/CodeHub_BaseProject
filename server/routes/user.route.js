@@ -17,23 +17,48 @@ import db from '../db/connection.js';
 import userServices from '../services/user.service.js';
 import { sendResponse } from '../config/response.config.js';
 import { MESSAGES } from '../constants/message.js';
+import { ErrorWithStatus } from '../models/errors/Error.schema.js';
 
 const userRouter = express.Router();
 
 userRouter.post('/login', async (req, res) => {
-	const result = await userServices.login(req.body);
-	return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.LOGIN);
+	try {
+		const result = await userServices.login(req.body);
+		return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.LOGIN);
+	} catch (error) {
+		if (error instanceof ErrorWithStatus) {
+			return res.status(error.statusCode).json({
+				statusCode: error.statusCode,
+				message: error.message,
+			});
+		}
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.GENERAL.LOGIN,
+		});
+	}
 });
 
-// userRouter.post(
-// 	'/register',
-// 	registerValidator,
-// 	wrapRequestHandler(userController.register),
-// );
-
 userRouter.post('/register', async (req, res) => {
-	const result = await userServices.register(req.body);
-	return sendResponse.success(res, result, MESSAGES.SUCCESS_MESSAGES.REGISTER);
+	try {
+		const result = await userServices.register(req.body);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.REGISTER,
+		);
+	} catch (error) {
+		if (error instanceof ErrorWithStatus) {
+			return res.status(error.statusCode).json({
+				statusCode: error.statusCode,
+				message: error.message,
+			});
+		}
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.GENERAL.REGISTER,
+		});
+	}
 });
 
 userRouter.post(
@@ -50,12 +75,19 @@ userRouter.post(
 );
 
 userRouter.post('/otp/authenticate', async (req, res) => {
-	const result = await userServices.verifyAccount(req.body);
-	return sendResponse.success(
-		res,
-		result,
-		MESSAGES.SUCCESS_MESSAGES.OTP.VERIFY,
-	);
+	try {
+		const result = await userServices.verifyAccount(req.body);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.OTP.VERIFY,
+		);
+	} catch (error) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.GENERAL.VERIFY_OTP,
+		});
+	}
 });
 
 userRouter.post(

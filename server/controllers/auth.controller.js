@@ -1,5 +1,6 @@
 import { sendResponse } from '../config/response.config.js';
 import { MESSAGES } from '../constants/message.js';
+import authServices from '../services/auth.service.js';
 
 const authController = {
 	get: async (req, res, next) => {
@@ -56,6 +57,14 @@ const authController = {
 			'',
 			MESSAGES.SUCCESS_MESSAGES.AUTH.RESET_PASSWORD,
 		);
+	},
+	callback: provider => async (req, res, next) => {
+		try {
+			await authServices.callback(provider, req, res);
+		} catch (error) {
+			console.log(error);
+			next(error);
+		}
 	},
 };
 

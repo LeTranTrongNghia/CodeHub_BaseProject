@@ -1,10 +1,8 @@
-import {
-	Info,
-} from "lucide-react";
+import { Info } from 'lucide-react';
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
 	Dialog,
 	DialogContent,
@@ -12,17 +10,17 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
 	TooltipProvider,
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Label } from "@/components/ui/label";
-import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
-import { ChartContainer } from "@/components/ui/chart";
-import { Card, CardContent } from "@/components/ui/card";
+} from '@/components/ui/tooltip';
+import { Label } from '@/components/ui/label';
+import { PolarAngleAxis, RadialBar, RadialBarChart } from 'recharts';
+import { ChartContainer } from '@/components/ui/chart';
+import { Card, CardContent } from '@/components/ui/card';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -94,7 +92,9 @@ const Output = ({ editorRef, language }) => {
 			if (passed === form.testCases.length) {
 				toast.success(`Congratulations! All ${passed} test cases passed! 🎉`);
 			} else {
-				toast.error(`Your code passed ${passed} out of ${form.testCases.length} test cases.`);
+				toast.error(
+					`Your code passed ${passed} out of ${form.testCases.length} test cases.`,
+				);
 			}
 		} catch (error) {
 			console.error(error);
@@ -182,7 +182,9 @@ const Output = ({ editorRef, language }) => {
 
 		try {
 			const response = await axios({
-				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
+				url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${
+					import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT
+				}`,
 				method: 'post',
 				data: {
 					contents: [
@@ -197,7 +199,8 @@ const Output = ({ editorRef, language }) => {
 				},
 			});
 
-			const ratingsText = response.data.candidates[0]?.content?.parts[0]?.text?.trim();
+			const ratingsText =
+				response.data.candidates[0]?.content?.parts[0]?.text?.trim();
 			if (ratingsText) {
 				const ratings = ratingsText.split('\n');
 				if (ratings.length === 3) {
@@ -214,9 +217,21 @@ const Output = ({ editorRef, language }) => {
 
 					// Update chart data after delay
 					setData([
-						{ activity: "Correctness", value: Number(ratings[0]), fill: "var(--color-Correctness)" },
-						{ activity: "Performance", value: Number(ratings[1]), fill: "var(--color-Performance)" },
-						{ activity: "Clarity", value: Number(ratings[2]), fill: "var(--color-Clarity)" },
+						{
+							activity: 'Correctness',
+							value: Number(ratings[0]),
+							fill: 'var(--color-Correctness)',
+						},
+						{
+							activity: 'Performance',
+							value: Number(ratings[1]),
+							fill: 'var(--color-Performance)',
+						},
+						{
+							activity: 'Clarity',
+							value: Number(ratings[2]),
+							fill: 'var(--color-Clarity)',
+						},
 					]);
 				} else {
 					console.log('Unexpected response format:', ratingsText);
@@ -327,64 +342,109 @@ const Output = ({ editorRef, language }) => {
 							Submit ({passedTests}/{form.testCases.length})
 						</Button>
 					</DialogTrigger>
-					<DialogContent className="sm:max-w-[425px]">
+					<DialogContent className='sm:max-w-[425px]'>
 						<DialogHeader>
 							<DialogTitle>Good work!</DialogTitle>
 							<DialogDescription>
-								Congratulations on acing the test! Your hard work and dedication have paid off. 🎉🎉🎉
+								Congratulations on acing the test! Your hard work and dedication
+								have paid off. 🎉🎉🎉
 							</DialogDescription>
 						</DialogHeader>
 
-						<div className="grid gap-3">
-							<div className="flex justify-between items-center">
-								<Label htmlFor="content" className="flex-shrink-0">Overall Review</Label>
+						<div className='grid gap-3'>
+							<div className='flex justify-between items-center'>
+								<Label htmlFor='content' className='flex-shrink-0'>
+									Overall Review
+								</Label>
 								<TooltipProvider>
 									<Tooltip>
 										<TooltipTrigger asChild>
-											<Button variant="ghost" size="icon">
-												<Info className="size-4" />
+											<Button variant='ghost' size='icon'>
+												<Info className='size-4' />
 											</Button>
 										</TooltipTrigger>
-										<TooltipContent side="top">
-											{executionTime !== null ? `Run time: ${executionTime} ms` : 'No execution time yet'}
+										<TooltipContent side='top'>
+											{executionTime !== null
+												? `Run time: ${executionTime} ms`
+												: 'No execution time yet'}
 										</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
-
 							</div>
-							<Card className="max-w">
-								<CardContent className="flex gap-4 p-4">
-									<div className="grid items-center gap-2">
-										{['Correctness', 'Performance', 'Clarity'].map((criteria, idx) => (
-											<div key={idx} className="grid flex-1 auto-rows-min gap-0.5">
-												<div className="text-sm text-muted-foreground">{criteria}</div>
-												<div className={`flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none ${idx === 0 ? 'text-[#e88c30]' : idx === 1 ? 'text-[#2eb88a]' : 'text-[#2662d9]'}`}>
-													{criteria === 'Correctness' ? (correctnessRating !== null ? `${correctnessRating}/100` : 'N/A') :
-														criteria === 'Performance' ? (performanceRating !== null ? `${performanceRating}/100` : 'N/A') :
-															criteria === 'Clarity' ? (clarityRating !== null ? `${clarityRating}/100` : 'N/A') : 'N/A'}
-													<span className="text-sm font-normal text-muted-foreground">points</span>
+							<Card className='max-w'>
+								<CardContent className='flex gap-4 p-4'>
+									<div className='grid items-center gap-2'>
+										{['Correctness', 'Performance', 'Clarity'].map(
+											(criteria, idx) => (
+												<div
+													key={idx}
+													className='grid flex-1 auto-rows-min gap-0.5'
+												>
+													<div className='text-sm text-muted-foreground'>
+														{criteria}
+													</div>
+													<div
+														className={`flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none ${
+															idx === 0
+																? 'text-[#e88c30]'
+																: idx === 1
+																? 'text-[#2eb88a]'
+																: 'text-[#2662d9]'
+														}`}
+													>
+														{criteria === 'Correctness'
+															? correctnessRating !== null
+																? `${correctnessRating}/100`
+																: 'N/A'
+															: criteria === 'Performance'
+															? performanceRating !== null
+																? `${performanceRating}/100`
+																: 'N/A'
+															: criteria === 'Clarity'
+															? clarityRating !== null
+																? `${clarityRating}/100`
+																: 'N/A'
+															: 'N/A'}
+														<span className='text-sm font-normal text-muted-foreground'>
+															points
+														</span>
+													</div>
 												</div>
-											</div>
-										))}
+											),
+										)}
 									</div>
 									<ChartContainer
 										config={{
-											Correctness: { label: "Correctness", color: "hsl(var(--chart-3))" },
-											Performance: { label: "Performance", color: "hsl(var(--chart-2))" },
-											Clarity: { label: "Clarity", color: "hsl(var(--chart-1))" },
+											Correctness: {
+												label: 'Correctness',
+												color: 'hsl(var(--chart-3))',
+											},
+											Performance: {
+												label: 'Performance',
+												color: 'hsl(var(--chart-2))',
+											},
+											Clarity: {
+												label: 'Clarity',
+												color: 'hsl(var(--chart-1))',
+											},
 										}}
-										className="mx-auto aspect-square w-full max-w-[80%]"
+										className='mx-auto aspect-square w-full max-w-[80%]'
 									>
 										<RadialBarChart
 											margin={{ left: -10, right: -10, top: -10, bottom: -10 }}
 											data={data}
-											innerRadius="20%"
+											innerRadius='20%'
 											barSize={24}
 											startAngle={90}
 											endAngle={450}
 										>
-											<PolarAngleAxis type="number" domain={[0, 100]} dataKey="value" tick={false} />
-											<RadialBar dataKey="value" background cornerRadius={5} />
+											<PolarAngleAxis
+												type='number'
+												domain={[0, 100]}
+												dataKey='value'
+												tick={false}
+											/>
+											<RadialBar dataKey='value' background cornerRadius={5} />
 										</RadialBarChart>
 									</ChartContainer>
 								</CardContent>
@@ -399,7 +459,9 @@ const Output = ({ editorRef, language }) => {
 			)}
 
 			<div
-				className={`h-full p-2 rounded-md border-gray-300 border ${isError ? 'border-red-500 text-red-400' : ''}`}
+				className={`h-full p-2 rounded-md border-gray-300 border ${
+					isError ? 'border-red-500 text-red-400' : ''
+				}`}
 			>
 				{isLoading ? (
 					<div className='text-center mt-2'>

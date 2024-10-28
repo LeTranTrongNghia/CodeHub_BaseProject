@@ -1,18 +1,16 @@
 import { Alert, Button, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import './style.css';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { toast } from 'react-toastify';
-import { auth, firestore } from '@/firebase/firebase';
-import { doc, getDoc } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
+import SignInwithGoogle from './SignInwithGoogle';
+import SignInwithGithub from './SignInwithGithub';
 import {
 	setAdminStatus,
 	setLoginStatus,
+	setUsername,
 } from '@/redux/userReducer/userReducer';
-import SignInwithGoogle from './SignInwithGoogle';
-import SignInwithGithub from './SignInwithGithub';
-import SignInwithFacebook from './SignInwithFacebook';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -20,30 +18,29 @@ const Login = () => {
 	const onFinish = async values => {
 		const { email, password } = values;
 		try {
-			const existingUser = await signInWithEmailAndPassword(
-				auth,
-				email,
-				password,
-			);
-			const user = existingUser.user;
-
-			// Kiểm tra xem email đã được xác minh chưa
-			if (!user.emailVerified) {
-				toast.error('Please verify your email before logging in.');
-				// Đăng xuất người dùng nếu email chưa được xác minh
-				await auth.signOut();
-				return;
-			}
-
-			const userDoc = await getDoc(doc(firestore, 'Users', user.uid));
-			const userData = userDoc.data();
-			const role = userData.role;
-			dispatch(setLoginStatus(true));
-			dispatch(setAdminStatus(false));
+			const response = await fetch(`http://localhost:5050/user/login`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			});
+			// Chuyển đổi response thành JSON
+			const data = await response.json();
+			const { access_token, username } = data.data;
+			const decodedData = jwtDecode(access_token);
+			const { role } = decodedData;
+			dispatch(setUsername(username));
 			if (role === 'Admin') {
 				dispatch(setAdminStatus(true));
 			}
-			toast.success('Logged in Successfully');
+			if (!response.ok) {
+				throw new Error(`An error occurred: ${response.statusText}`);
+			}
+			dispatch(setLoginStatus(true));
 			navigate('/main-home');
 		} catch (error) {
 			toast.error(error.message);

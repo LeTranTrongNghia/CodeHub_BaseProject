@@ -80,6 +80,7 @@ export const MESSAGES = {
 			GET_USER_PROFILE: 'Failed to retrieve users profile',
 			UPDATE_USER: 'User update failed',
 			AVATAR: 'Upload avatar failed',
+			EXISTED: 'User had existed',
 
 			LOGOUT: 'Logout process failed',
 			CHANGE_PASSWORD: 'Password change failed',
@@ -312,6 +313,7 @@ export const MESSAGES = {
 				EMAIL_OR_PASSWORD_IS_INCORRECT: 'The email or password is incorrect.',
 				INVALID_BEARER_TOKEN: 'The bearer token is invalid.',
 				HEADER_AUTHORIZATION_IS_INVALID: 'Authorization header is invalid.',
+				NOT_VERIFIED: 'User has not verified yet',
 
 				EMAIL: {
 					IS_REQUIRED: 'Email is required.',

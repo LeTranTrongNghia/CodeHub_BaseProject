@@ -5,9 +5,7 @@ import { toast } from 'react-toastify';
 const AdminRoute = () => {
 	const isAdmin = useSelector(state => state.user.isAdmin);
 	!isAdmin
-		? toast('You do not have permission to access this resource', {
-				autoClose: 3000,
-		  })
+		? toast('You do not have permission to access', { autoClose: 3000 })
 		: null;
 	return isAdmin ? <Outlet /> : <Navigate to='/main-home' />;
 };
