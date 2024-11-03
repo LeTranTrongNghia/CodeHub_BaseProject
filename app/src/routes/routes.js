@@ -55,6 +55,22 @@ const OtpPage = React.lazy(() =>
 	import('../container/Auth/OTP-Verification/otp.jsx'),
 );
 
+const SolveProblemPage = React.lazy(() =>
+	import('../container/Workspace/Code_Editor/code_editor.jsx'),
+);
+
+const CommunityPage = React.lazy(() =>
+	import('../container/Community/main_feed.jsx'),
+);
+
+const PlayGroundPage = React.lazy(() =>
+	import('../components/MainHome/Playground.jsx'),
+);
+
+const PostDetailPage = React.lazy(() =>
+	import('../container/Community/PostDetail.jsx'),
+);
+
 const publicRoute = [
 	{
 		path: config.routes.contactPage,
@@ -84,6 +100,22 @@ const publicRoute = [
 		path: config.routes.otp,
 		component: OtpPage,
 	},
+	{
+		path: config.routes.communityPage,
+		component: CommunityPage,
+	},
+	{
+		path: config.routes.solveProblem,
+		component: SolveProblemPage,
+	},
+	{
+		path: config.routes.playgroundPage,
+		component: PlayGroundPage,
+	},
+	{
+		path: config.routes.detailPost,
+		component: PostDetailPage,
+	},
 ];
 
 const protectedRoute = [
@@ -107,6 +139,7 @@ const protectedRoute = [
 		path: config.routes.changePassword,
 		component: ChangePasswordPage,
 	},
+	
 ];
 
 const adminRoute = [
