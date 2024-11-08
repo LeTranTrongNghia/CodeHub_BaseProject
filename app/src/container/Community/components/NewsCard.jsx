@@ -1,11 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MoreHorizontal, ThumbsUp, MessageSquare, Bookmark, Link, Bell, EyeOff, Eye, AlertTriangle } from "lucide-react"
+import { MoreHorizontal, ThumbsUp, MessageSquare, Bookmark, Link, Bell, EyeOff, Eye, AlertTriangle, Trash, Pencil } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, likes, comments, poll, onClick }) => {
+const formatTimeAgo = (date) => {
+    const now = new Date();
+    const seconds = Math.floor((now - new Date(date)) / 1000);
+    let interval = Math.floor(seconds / 31536000);
+
+    if (interval > 1) return `${interval} years ago`;
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) return `${interval} months ago`;
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) return `${interval} days ago`;
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) return `${interval} hours ago`;
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) return `${interval} minutes ago`;
+    return "Just now";
+};
+
+const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, likes, comments, poll, userID, currentUserID, onClick, onDelete, onUpdate }) => {
     const contentLines = content.split('\n');
+    const [showConfirm, setShowConfirm] = useState(false); // State to control confirmation dialog
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false); // State to control update dialog
+    const [updatedContent, setUpdatedContent] = useState(content); // State for updated content
+
+    const handleDelete = async () => {
+        try {
+            await onDelete(); // Call the delete function passed as a prop
+            setShowConfirm(false); // Close the confirmation dialog
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        }
+    };
+
+    const handleUpdate = async () => {
+        try {
+            await onUpdate(updatedContent); // Call the update function passed as a prop
+            setShowUpdateDialog(false); // Close the update dialog
+        } catch (error) {
+            console.error('Error updating post:', error);
+        }
+    };
+
+    const handlePopoverClick = () => {
+        console.log('Current User ID:', currentUserID); // Log current user ID
+        console.log('Post User ID:', userID); // Log post user ID
+    };
 
     return (
         <Card className="mb-4 cursor-pointer">
@@ -15,12 +59,12 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                         <img src={avatarURL} className="rounded-full h-10 w-10" alt={author} />
                         <div>
                             <h3 className="font-semibold">{author}</h3>
-                            <p className="text-sm text-muted-foreground">@{username} • {timeAgo}</p>
+                            <p className="text-sm text-muted-foreground">@{username} • {formatTimeAgo(timeAgo)}</p>
                         </div>
                     </div>
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
+                            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handlePopoverClick(); }}>
                                 <MoreHorizontal className="h-4 w-4" />
                             </Button>
                         </PopoverTrigger>
@@ -44,6 +88,48 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                                 <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
                                     <AlertTriangle className="mr-2 h-4 w-4" /> Report
                                 </Button>
+                                {userID === currentUserID && (
+                                    <>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100" onClick={() => setShowUpdateDialog(true)}>
+                                                    <Pencil className="mr-2 h-4 w-4" /> Update
+                                                </Button>
+                                            </DialogTrigger> 
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Update Post</DialogTitle>
+                                                </DialogHeader>
+                                                <textarea
+                                                    value={updatedContent}
+                                                    onChange={(e) => setUpdatedContent(e.target.value)}
+                                                    className="w-full h-32 border p-2"
+                                                />
+                                                <div className="flex space-x-2 mt-4">
+                                                    <Button variant="secondary" onClick={() => setShowUpdateDialog(false)}>Cancel</Button>
+                                                    <Button variant="destructive" onClick={handleUpdate}>Update</Button>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100" onClick={() => setShowConfirm(true)}>
+                                                    <Trash className="mr-2 h-4 w-4" /> Delete
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Confirm Deletion</DialogTitle>
+                                                </DialogHeader>
+                                                <p>Are you sure you want to delete this post?</p>
+                                                <div className="flex space-x-2 mt-4">
+                                                    <Button variant="secondary" onClick={() => setShowConfirm(false)}>Cancel</Button>
+                                                    <Button variant="destructive" onClick={handleDelete}>Yes, Delete</Button>
+                                                </div>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </>
+                                )}
                             </div>
                         </PopoverContent>
                     </Popover>

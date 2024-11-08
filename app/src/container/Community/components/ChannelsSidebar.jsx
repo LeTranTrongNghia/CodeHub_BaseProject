@@ -1,23 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { User, MessageCircle } from "lucide-react";
 import { CreatePostDialog } from './createPost_btn';
 
-const ChannelsSidebar = () => {
-    // Fixed channels data
-    const channels = [
-        { name: "General", icon: "🌐" },
-        { name: "Introductions", icon: "👋" },
-        { name: "Python", icon: "🐍" },
-        { name: "JavaScript", icon: "🟨" },
-        { name: "Web Dev", icon: "🌐" },
-        { name: "Career", icon: "💼" },
-        { name: "Memes", icon: "😂" },
-        { name: "#30NitesOfCode", icon: "🌙" },
-        { name: "Pets", icon: "🐾" },
-        { name: "Checkpoint", icon: "🏁" },
-        { name: "Final Project", icon: "🏆" },
-    ];
+const ChannelsSidebar = ({ setSelectedChannel, setActiveChannelId, userData, defaultChannelId }) => {
+    const [channels, setChannels] = useState([]);
+    const [activeChannelId, setActiveChannelIdState] = useState(defaultChannelId);
+
+    useEffect(() => {
+        const fetchChannels = async () => {
+            try {
+                const response = await fetch(`http://localhost:5050/channels`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setChannels(data);
+            } catch (error) {
+                console.error('Error fetching channels:', error);
+            }
+        };
+
+        fetchChannels();
+    }, []);
+
+    const handleChannelClick = (channel) => {
+        setSelectedChannel({ name: channel.name, description: "Description for " + channel.name });
+        setActiveChannelIdState(channel._id);
+        setActiveChannelId(channel._id);
+    };
 
     return (
         <aside className="w-64 border-r p-4 hidden md:block">
@@ -34,12 +45,21 @@ const ChannelsSidebar = () => {
             <div className="mb-4">
                 <h3 className="font-semibold mb-2">Channels</h3>
                 {channels.map((channel) => (
-                    <Button key={channel.name} variant="ghost" className="w-full justify-start mb-1">
+                    <Button
+                        key={channel._id}
+                        variant={activeChannelId === channel._id ? "" : "ghost"}
+                        className={`w-full justify-start mb-1`}
+                        onClick={() => handleChannelClick(channel)}
+                    >
                         <span className="mr-2">{channel.icon}</span> {channel.name}
                     </Button>
                 ))}
             </div>
-            <CreatePostDialog trigger={<Button className="w-full">Create Post</Button>} />
+            {/* <CreatePostDialog
+                trigger={<Button className="w-full">Create Post</Button>}
+                userData={userData}
+                currentChannelId={activeChannelId || defaultChannelId}
+            /> */}
         </aside>
     );
 };
