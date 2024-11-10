@@ -45,12 +45,13 @@ router.post("/", async (req, res) => {
       content: req.body.content,
       avatarURL: req.body.avatarURL,
       imageUrl: req.body.imageUrl || null,
-      likes: req.body.likes || 0,
-      comments: req.body.comments || 0,
+      likes: [],
+      comments: [],
       poll: req.body.poll || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
     let collection = await db.collection("posts");
     let result = await collection.insertOne(newDocument);
     res.status(201).send(result);
@@ -96,6 +97,82 @@ router.delete("/:id", async (req, res) => {
     console.error(err);
     res.status(500).send("Error deleting post");
   }
+});
+
+// Update likes for a post by id
+router.patch("/:id/likes", async (req, res) => {
+    try {
+        const query = { _id: new ObjectId(req.params.id) };
+        const updates = {
+            $set: {
+                likes: req.body.likes, // Update likes array
+                updatedAt: new Date(),
+            },
+        };
+
+        let collection = await db.collection("posts");
+        let result = await collection.updateOne(query, updates);
+        
+        if (result.modifiedCount === 0) {
+            return res.status(404).send("Post not found or no changes made");
+        }
+
+        res.status(200).send(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error updating post likes");
+    }
+});
+
+// Update content for a post by id
+router.patch("/:id/content", async (req, res) => {
+    try {
+        const query = { _id: new ObjectId(req.params.id) };
+        const updates = {
+            $set: {
+                content: req.body.content, // Update content
+                updatedAt: new Date(),
+            },
+        };
+
+        let collection = await db.collection("posts");
+        let result = await collection.updateOne(query, updates);
+        
+        if (result.modifiedCount === 0) {
+            return res.status(404).send("Post not found or no changes made");
+        }
+
+        res.status(200).send(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error updating post content");
+    }
+});
+
+// Add this route to handle adding comments
+router.patch("/:id/comments", async (req, res) => {
+    try {
+        const query = { _id: new ObjectId(req.params.id) };
+        const updates = {
+            $push: {
+                comments: req.body.comment, // Add the new comment to the comments array
+            },
+        };
+
+        let collection = await db.collection("posts");
+        let result = await collection.updateOne(query, updates);
+        
+        if (result.modifiedCount === 0) {
+            return res.status(404).send("Post not found or no changes made");
+        }
+
+        // Fetch the updated post to return
+        const updatedPost = await collection.findOne(query);
+        res.status(200).send(updatedPost);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error adding comment");
+    }
 });
 
 export default router;

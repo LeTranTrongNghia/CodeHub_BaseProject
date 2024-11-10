@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { CreatePostDialog } from '@/container/Community/components/createPost_btn';
 import { useNavigate } from 'react-router-dom';
-import { Image} from "lucide-react"
+import { Image } from "lucide-react"
 import ChannelsSidebar from './components/ChannelsSidebar'
 import EventsSidebar from './components/EventsSidebar'
 import HeaderCommunity from './components/HeaderCommunity'
@@ -23,22 +23,8 @@ export default function MainFeed() {
 	const [activeChannelId, setActiveChannelId] = useState('672c2053df5ed078edd28a8b');
 	const [channels, setChannels] = useState([]);
 
-	const currentUserID = userData ? userData._id : null;
 
 	useEffect(() => {
-		const fetchPosts = async () => {
-			try {
-				const response = await fetch('http://localhost:5050/posts');
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}
-				const data = await response.json();
-				setPosts(data);
-			} catch (error) {
-				console.error('Error fetching posts:', error);
-			}
-		};
-
 		const fetchUserData = async () => {
 			const data = await fetchCurrentUserData(currentUser.username);
 			setUserData(data);
@@ -60,13 +46,26 @@ export default function MainFeed() {
 			}
 		};
 
-		fetchPosts();
 		fetchUserData();
 		fetchChannels();
 	}, [currentUser.username]);
 
-	// Filter posts based on the active channel ID
-	const filteredPosts = posts.filter(post => post.channelId === activeChannelId);
+	useEffect(() => {
+		const fetchPosts = async () => {
+			try {
+				const response = await fetch(`http://localhost:5050/posts?channelId=${activeChannelId}`);
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				const data = await response.json();
+				setPosts(data);
+			} catch (error) {
+				console.error('Error fetching posts:', error);
+			}
+		};
+
+		fetchPosts();
+	}, [activeChannelId]);
 
 	const handleDeletePost = async (postId) => {
 		try {
@@ -98,23 +97,37 @@ export default function MainFeed() {
 	};
 
 	// Function to update a post
-	const handleUpdatePost = async (postId, updatedContent) => {
+	const handleUpdatePost = async (postId, updatedData) => {
 		try {
 			const response = await fetch(`http://localhost:5050/posts/${postId}`, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ content: updatedContent }),
+				body: JSON.stringify(updatedData),
 			});
 			if (!response.ok) {
 				throw new Error('Failed to update post');
 			}
 			// Refresh posts after update
-			refreshPosts();
+			await refreshPosts();
 		} catch (error) {
 			console.error('Error updating post:', error);
 		}
+	};
+
+	// Filter posts based on the active channel ID
+	const filteredPosts = posts.filter(post => post.channelId === activeChannelId);
+
+	const handlePostClick = async (postId) => {
+		const data = await fetchCurrentUserData(currentUser.username);
+		setUserData(data);
+		navigate(`/community/post/detail/${postId}`, {
+			state: {
+				currentUserId: currentUser._id,
+				data: data
+			}
+		});
 	};
 
 	return (
@@ -141,9 +154,9 @@ export default function MainFeed() {
 								<CardContent className="p-4">
 									<div className="flex items-center space-x-2 mb-2">
 										<Avatar>
-											<AvatarImage 
-												src={userData ? userData.avatar : "https://default-avatar-url.com"}
-												alt="User" 
+											<AvatarImage
+												src={userData ? userData.avatar : "https://via.placeholder.com/150"}
+												alt="User"
 											/>
 											<AvatarFallback>U</AvatarFallback>
 										</Avatar>
@@ -169,6 +182,7 @@ export default function MainFeed() {
 					{filteredPosts.map(post => (
 						<NewsCard
 							key={post._id}
+							postId={post._id}
 							author={post.author}
 							username={post.userID}
 							timeAgo={post.timeAgo}
@@ -178,10 +192,10 @@ export default function MainFeed() {
 							likes={post.likes}
 							comments={post.comments}
 							userID={post.userID}
-							currentUserID={currentUserID}
-							onClick={() => navigate(`/community/post/detail/${post._id}`)}
+							currentUserID={currentUser._id}
+							onClick={() => handlePostClick(post._id)}
 							onDelete={() => handleDeletePost(post._id)}
-							onUpdate={(updatedContent) => handleUpdatePost(post._id, updatedContent)} // Pass update function
+							onUpdate={(updatedContent) => handleUpdatePost(post._id, { content: updatedContent })}
 						/>
 					))}
 				</main>

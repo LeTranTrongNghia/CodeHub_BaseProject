@@ -22,7 +22,7 @@ const routes = {
 	contactPage: '/contact',
 	solveProblem: '/problems/solve/:id',
 	communityPage: '/community',
-	detailPost: '/community/post/detail',
+	detailPost: '/community/post/detail/:id',
 	playgroundPage: '/playground',
 };
 

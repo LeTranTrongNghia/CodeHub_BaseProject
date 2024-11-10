@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { MoreHorizontal, ThumbsUp, MessageSquare, Bookmark, Link, Bell, EyeOff, Eye, AlertTriangle, Trash, Pencil } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useNavigate } from 'react-router-dom';
 
 const formatTimeAgo = (date) => {
     const now = new Date();
@@ -22,11 +23,32 @@ const formatTimeAgo = (date) => {
     return "Just now";
 };
 
-const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, likes, comments, poll, userID, currentUserID, onClick, onDelete, onUpdate }) => {
+const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, likes, comments, poll, userID, currentUserID, onClick, onDelete, onUpdate, postId }) => {
+    const navigate = useNavigate();
     const contentLines = content.split('\n');
     const [showConfirm, setShowConfirm] = useState(false); // State to control confirmation dialog
     const [showUpdateDialog, setShowUpdateDialog] = useState(false); // State to control update dialog
     const [updatedContent, setUpdatedContent] = useState(content); // State for updated content
+    const [userLikes, setUserLikes] = useState(likes); // Local state for likes
+
+    const hasLiked = userLikes.includes(currentUserID); // Check if current user has liked the post
+
+    const handleLikeToggle = async () => {
+        const updatedLikes = hasLiked
+            ? userLikes.filter(userId => userId !== currentUserID) // Remove like
+            : [...userLikes, currentUserID]; // Add like
+
+        setUserLikes(updatedLikes); // Update local state
+
+        // Call the new endpoint to update likes
+        await fetch(`http://localhost:5050/posts/${postId}/likes`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ likes: updatedLikes }),
+        });
+    };
 
     const handleDelete = async () => {
         try {
@@ -39,8 +61,16 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
 
     const handleUpdate = async () => {
         try {
-            await onUpdate(updatedContent); // Call the update function passed as a prop
-            setShowUpdateDialog(false); // Close the update dialog
+            // Call the new endpoint to update content
+            await fetch(`http://localhost:5050/posts/${postId}/content`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: updatedContent }),
+            });
+            setShowUpdateDialog(false);
+            onUpdate(updatedContent); // Call the onUpdate prop to refresh the posts
         } catch (error) {
             console.error('Error updating post:', error);
         }
@@ -52,7 +82,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
     };
 
     return (
-        <Card className="mb-4 cursor-pointer">
+        <Card className="mb-4 cursor-pointer" onClick={() => navigate(`/community/post/detail/${postId}`)}>
             <CardContent className="p-4">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center space-x-2">
@@ -158,13 +188,22 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                     </div>
                 )}
                 <div className="flex items-center mt-4 space-x-4">
-                    <Button variant="ghost" size="sm">
-                        <ThumbsUp className="mr-2 h-4 w-4" /> {likes} Likes
+                    <Button variant="ghost" size="sm" onClick={handleLikeToggle}>
+                        <ThumbsUp className="mr-2 h-4 w-4" /> {userLikes.length} Likes
                     </Button>
                     <Button variant="ghost" size="sm">
-                        <MessageSquare className="mr-2 h-4 w-4" /> {comments} Comments
+                        <MessageSquare className="mr-2 h-4 w-4" /> {comments.length} Comments
                     </Button>
                 </div>
+                {comments.length > 0 && (
+                    <div className="mt-2">
+                        {comments.map((comment, index) => (
+                            <div key={index} className="text-sm text-muted-foreground">
+                                <strong>{comment.username}</strong>: {comment.content}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

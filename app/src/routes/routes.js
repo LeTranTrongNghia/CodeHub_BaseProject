@@ -113,9 +113,9 @@ const publicRoute = [
 		component: PlayGroundPage,
 	},
 	{
-		path: config.routes.detailPost,
-		component: PostDetailPage,
-	},
+        path: config.routes.detailPost,
+        component: PostDetailPage,
+    },
 ];
 
 const protectedRoute = [
