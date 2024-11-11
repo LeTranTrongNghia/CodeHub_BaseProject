@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -30,24 +30,82 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
     const [showUpdateDialog, setShowUpdateDialog] = useState(false); // State to control update dialog
     const [updatedContent, setUpdatedContent] = useState(content); // State for updated content
     const [userLikes, setUserLikes] = useState(likes); // Local state for likes
+    const [users, setUsers] = useState([]); // State to hold users list
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch('http://localhost:5050/users'); // Adjust the URL as needed
+                const data = await response.json();
+                setUsers(data); // Set the users list
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+
+        fetchUsers();
+    }, []); // Run once on component mount
 
     const hasLiked = userLikes.includes(currentUserID); // Check if current user has liked the post
 
     const handleLikeToggle = async () => {
-        const updatedLikes = hasLiked
-            ? userLikes.filter(userId => userId !== currentUserID) // Remove like
-            : [...userLikes, currentUserID]; // Add like
+        if (!currentUserID) {
+            console.log('No user ID provided');
+            return;
+        }
 
-        setUserLikes(updatedLikes); // Update local state
+        try {
+            // console.log(currentUserID)
+            // Step 1: Verify user exists in users collection
+            const usersResponse = await fetch('http://localhost:5050/users');
+            if (!usersResponse.ok) {
+                throw new Error('Failed to fetch users');
+            }
+            const usersList = await usersResponse.json();
+            
+            const userExists = usersList.some(user => user._id === currentUserID);
+            if (!userExists) {
+                console.log('User not found in users collection');
+                return;
+            }
 
-        // Call the new endpoint to update likes
-        await fetch(`http://localhost:5050/posts/${postId}/likes`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ likes: updatedLikes }),
-        });
+            // Step 2: Check if user has already liked the post
+            const isLiked = userLikes.includes(currentUserID);
+
+            // Step 3: Update likes array based on current status
+            let newLikes;
+            let action;
+
+            if (isLiked) {
+                // User already liked - remove from likes (unlike)
+                newLikes = userLikes.filter(id => id !== currentUserID);
+                action = 'unlike';
+            } else {
+                // User hasn't liked - add to likes
+                newLikes = [...userLikes, currentUserID];
+                action = 'like';
+            }
+
+            // Step 4: Update backend
+            const response = await fetch(`http://localhost:5050/posts/${postId}/likes`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    userId: currentUserID,
+                    action: action
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update likes');
+            }
+
+            // Step 5: Update local state
+            setUserLikes(newLikes);
+            
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
     };
 
     const handleDelete = async () => {
@@ -82,7 +140,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
     };
 
     return (
-        <Card className="mb-4 cursor-pointer" onClick={() => navigate(`/community/post/detail/${postId}`)}>
+        <Card className="mb-4 cursor-pointer">
             <CardContent className="p-4">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex items-center space-x-2">

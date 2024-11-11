@@ -101,26 +101,41 @@ router.delete("/:id", async (req, res) => {
 
 // Update likes for a post by id
 router.patch("/:id/likes", async (req, res) => {
-    try {
-        const query = { _id: new ObjectId(req.params.id) };
-        const updates = {
-            $set: {
-                likes: req.body.likes, // Update likes array
-                updatedAt: new Date(),
-            },
-        };
+    const { userId, action } = req.body; // Get userId and action from request body
+    const postId = req.params.id; // Get postId from request parameters
 
-        let collection = await db.collection("posts");
-        let result = await collection.updateOne(query, updates);
-        
-        if (result.modifiedCount === 0) {
-            return res.status(404).send("Post not found or no changes made");
+    try {
+        const collection = db.collection("posts");
+        const post = await collection.findOne({ _id: new ObjectId(postId) });
+
+        if (!post) {
+            return res.status(404).send("Post not found");
         }
 
-        res.status(200).send(result);
+        if (action === 'like') {
+            // Add userId to likes if not already present
+            if (!post.likes.includes(userId)) {
+                await collection.updateOne(
+                    { _id: new ObjectId(postId) },
+                    { $addToSet: { likes: userId } } // Use $addToSet to avoid duplicates
+                );
+            }
+        } else if (action === 'unlike') {
+            // Remove userId from likes if present
+            await collection.updateOne(
+                { _id: new ObjectId(postId) },
+                { $pull: { likes: userId } } // Use $pull to remove the userId
+            );
+        } else {
+            return res.status(400).send("Invalid action");
+        }
+
+        // Fetch the updated post to return the new likes array
+        const updatedPost = await collection.findOne({ _id: new ObjectId(postId) });
+        res.status(200).send(updatedPost.likes); // Return the updated likes array
     } catch (err) {
         console.error(err);
-        res.status(500).send("Error updating post likes");
+        res.status(500).send("Error updating likes");
     }
 });
 

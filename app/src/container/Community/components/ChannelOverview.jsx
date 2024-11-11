@@ -7,7 +7,7 @@ const ChannelOverview = ({ title, description, onlineCount, imageUrl }) => {
                 <img
                     src={imageUrl}
                     alt="Channel Overview"
-                    className="w-full h-full object-cover"
+                    className="m-auto w-full h-full object-cover"
                 />
             </div>
             <div className="absolute bottom-4 left-4">

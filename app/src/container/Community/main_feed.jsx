@@ -19,10 +19,12 @@ export default function MainFeed() {
 	const [selectedChannel, setSelectedChannel] = useState({ name: "General", description: "Community-wide conversations" });
 	const [posts, setPosts] = useState([]);
 	const currentUser = useSelector(state => state.user);
-	const [userData, setUserData] = useState(null);
+	const [userData, setUserData] = useState();
 	const [activeChannelId, setActiveChannelId] = useState('672c2053df5ed078edd28a8b');
 	const [channels, setChannels] = useState([]);
+	const currentChannel = channels.find(channel => channel._id === activeChannelId);
 
+	// console.log(userData._id)
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -120,8 +122,15 @@ export default function MainFeed() {
 	const filteredPosts = posts.filter(post => post.channelId === activeChannelId);
 
 	const handlePostClick = async (postId) => {
+		if (!currentUser) {
+			console.error('Current user is not defined');
+			return;
+		}
+
 		const data = await fetchCurrentUserData(currentUser.username);
+		console.log(data);
 		setUserData(data);
+
 		navigate(`/community/post/detail/${postId}`, {
 			state: {
 				currentUserId: currentUser._id,
@@ -145,7 +154,7 @@ export default function MainFeed() {
 						title={selectedChannel.name}
 						description={selectedChannel.description}
 						onlineCount={250}
-						imageUrl="https://i.pinimg.com/originals/24/41/da/2441dacfd5703b140a2816f82bd0f9c7.gif"
+						imageUrl={currentChannel ? currentChannel.bg : ''}
 					/>
 
 					<CreatePostDialog
@@ -192,7 +201,7 @@ export default function MainFeed() {
 							likes={post.likes}
 							comments={post.comments}
 							userID={post.userID}
-							currentUserID={currentUser._id}
+							currentUserID={userData._id}
 							onClick={() => handlePostClick(post._id)}
 							onDelete={() => handleDeletePost(post._id)}
 							onUpdate={(updatedContent) => handleUpdatePost(post._id, { content: updatedContent })}
