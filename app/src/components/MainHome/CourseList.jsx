@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -14,22 +12,43 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
-import Topbar from './Topbar';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux'; // Sử dụng useSelector để lấy email từ Redux
+import { Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
-
-const getEnrolledCoursesById = (userData, courseId) => {
-	return userData.enrolledCourses.filter(
-		course => course.id_course === courseId,
-	);
-};
+import Topbar from './Topbar';
 
 const CourseList = () => {
 	const [courses, setCourses] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
-	const [, setUserData] = useState(null); // State để lưu dữ liệu user từ API
+	const [currentUser, setCurrentUser] = useState(null); // Thêm state để lưu thông tin người dùng hiện tại
+
+
+	
+	// Lấy email của người dùng hiện tại từ Redux
+	const userEmail = useSelector((state) => state.user.email);
 
 	useEffect(() => {
+		// Gửi yêu cầu lấy thông tin người dùng từ email
+		async function fetchUser() {
+			try {
+				const response = await fetch(`http://localhost:5050/users?email=${userEmail}`);
+				if (!response.ok) {
+					throw new Error('Failed to fetch user data');
+				}
+				const userData = await response.json();
+				setCurrentUser(userData); // Lưu thông tin người dùng hiện tại
+			} catch (error) {
+				console.error(error.message);
+			}
+		}
+
+		if (userEmail) {
+			fetchUser(); // Chỉ fetch nếu email người dùng có sẵn
+		}
+
+		// Gửi yêu cầu lấy danh sách khóa học
 		async function fetchCourses() {
 			try {
 				const response = await fetch('http://localhost:5050/course/');
@@ -37,19 +56,7 @@ const CourseList = () => {
 					throw new Error('Network response was not ok');
 				}
 				const data = await response.json();
-				setUserData(data); // Lưu dữ liệu user vào state
-
-				// Lọc các khóa học theo courseId
-				const enrolledCourses = getEnrolledCoursesById(
-					data,
-					'courseId truyền vào', //giả sử đây là course id muốn lấy
-				);
-
-				if (enrolledCourses.length === 0) {
-					throw new Error('Không tìm thấy khóa học nào với ID đã cung cấp.');
-				}
-
-				setCourses(enrolledCourses);
+				setCourses(data);
 			} catch (error) {
 				setError(error.message);
 			} finally {
@@ -57,7 +64,60 @@ const CourseList = () => {
 			}
 		}
 		fetchCourses();
-	}, []);
+	}, [userEmail]); // Thêm userEmail vào dependency để khi thay đổi email, useEffect sẽ chạy lại
+
+	const handleCourseClick = async (courseId) => {
+		// Kiểm tra xem người dùng đã đăng nhập hay chưa
+		if (!currentUser) {
+			console.error('User not logged in');
+			return;
+		}
+
+		// Kiểm tra nếu email người dùng có trong DB và lấy enrolledCourses
+		const enrolledCourses = currentUser.enrolledCourses || [];
+
+		// Kiểm tra xem khóa học đã tồn tại chưa
+		const isCourseEnrolled = enrolledCourses.some(
+			(course) => course.courseId === courseId
+		);
+
+		// Nếu chưa có khóa học, thêm mới vào enrolledCourses
+		if (!isCourseEnrolled) {
+			enrolledCourses.push({
+				courseId,
+				seen_time: '00:00',
+				notes: null,
+			});
+
+			// Log enrolledCourses và userId để kiểm tra
+			console.log('Enrolled Courses:', enrolledCourses);
+			console.log('User ID:', currentUser._id);
+
+			// Gửi yêu cầu cập nhật enrolledCourses của người dùng
+			try {
+				const updateResponse = await fetch(`http://localhost:5050/users/${currentUser._id}`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						enrolledCourses,
+					}),
+				});
+
+				if (!updateResponse.ok) {
+					const errorData = await updateResponse.json();
+					console.error('Error from server:', errorData);
+					throw new Error('Failed to update enrolled courses');
+				}
+
+				// Cập nhật lại state người dùng sau khi thêm khóa học thành công
+				setCurrentUser({ ...currentUser, enrolledCourses });
+			} catch (error) {
+				console.error('Error updating enrolled courses:', error.message);
+			}
+		}
+	};
 
 	if (loading) return <div className='container mx-auto p-4'>Loading...</div>;
 	if (error) return <div className='container mx-auto p-4'>Error: {error}</div>;
@@ -108,16 +168,11 @@ const CourseList = () => {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							{/* <Link to={`/courses/${course._id}`}>
-                                <div
-                                    className="grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat"
-                                    style={{ backgroundImage: `url(${course.image_cover})` }}
-                                ></div>
-                           </Link> */}
 							<Link to={`/new-courses/${course._id}`}>
 								<div
 									className='grid gap-2 w-full h-[170px] place-items-center rounded bg-cover bg-no-repeat'
 									style={{ backgroundImage: `url(${course.image_cover})` }}
+									onClick={() => handleCourseClick(course._id)}
 								></div>
 							</Link>
 						</CardContent>
