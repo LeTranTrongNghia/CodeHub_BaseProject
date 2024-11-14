@@ -5,31 +5,40 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { CreatePostDialog } from '@/container/Community/components/createPost_btn';
 import { useNavigate } from 'react-router-dom';
-import { Image } from "lucide-react"
+import { Image, Search, Timer, Flame } from "lucide-react"
 import ChannelsSidebar from './components/ChannelsSidebar'
 import EventsSidebar from './components/EventsSidebar'
 import HeaderCommunity from './components/HeaderCommunity'
 import ChannelOverview from './components/ChannelOverview';
 import NewsCard from './components/NewsCard';
 import { useSelector } from 'react-redux';
-import { fetchCurrentUserData } from '@/services/userService';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export default function MainFeed() {
 	const navigate = useNavigate();
 	const [selectedChannel, setSelectedChannel] = useState({ name: "General", description: "Community-wide conversations" });
 	const [posts, setPosts] = useState([]);
 	const currentUser = useSelector(state => state.user);
-	const [userData, setUserData] = useState();
+	const [userData, setUserData] = useState(null);
 	const [activeChannelId, setActiveChannelId] = useState('672c2053df5ed078edd28a8b');
 	const [channels, setChannels] = useState([]);
+	const [users, setUsers] = useState([]);
+	const [sortOption, setSortOption] = useState('newest');
+	const [searchTerm, setSearchTerm] = useState('');
 	const currentChannel = channels.find(channel => channel._id === activeChannelId);
 
-	// console.log(userData._id)
-
 	useEffect(() => {
-		const fetchUserData = async () => {
-			const data = await fetchCurrentUserData(currentUser.username);
-			setUserData(data);
+		const fetchUsers = async () => {
+			try {
+				const response = await fetch('http://localhost:5050/users');
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				const data = await response.json();
+				setUsers(data);
+			} catch (error) {
+				console.error('Error fetching users:', error);
+			}
 		};
 
 		const fetchChannels = async () => {
@@ -48,9 +57,20 @@ export default function MainFeed() {
 			}
 		};
 
-		fetchUserData();
+		fetchUsers();
 		fetchChannels();
-	}, [currentUser.username]);
+	}, []);
+
+	useEffect(() => {
+		const fetchUserData = () => {
+			if (users.length > 0) {
+				const foundUser = users.find(user => user._id === currentUser.id);
+				setUserData(foundUser || null);
+			}
+		};
+
+		fetchUserData();
+	}, [users, currentUser.id]);
 
 	useEffect(() => {
 		const fetchPosts = async () => {
@@ -77,14 +97,12 @@ export default function MainFeed() {
 			if (!response.ok) {
 				throw new Error('Failed to delete post');
 			}
-			// Refresh posts after deletion
 			setPosts(posts.filter(post => post._id !== postId));
 		} catch (error) {
 			console.error('Error deleting post:', error);
 		}
 	};
 
-	// Function to refresh posts
 	const refreshPosts = async () => {
 		try {
 			const response = await fetch('http://localhost:5050/posts');
@@ -98,7 +116,6 @@ export default function MainFeed() {
 		}
 	};
 
-	// Function to update a post
 	const handleUpdatePost = async (postId, updatedData) => {
 		try {
 			const response = await fetch(`http://localhost:5050/posts/${postId}`, {
@@ -111,15 +128,37 @@ export default function MainFeed() {
 			if (!response.ok) {
 				throw new Error('Failed to update post');
 			}
-			// Refresh posts after update
 			await refreshPosts();
 		} catch (error) {
 			console.error('Error updating post:', error);
 		}
 	};
 
-	// Filter posts based on the active channel ID
 	const filteredPosts = posts.filter(post => post.channelId === activeChannelId);
+
+	const sortedPosts = () => {
+		if (sortOption === 'newest') {
+			return [...filteredPosts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+		} else if (sortOption === 'mostLiked') {
+			return [...filteredPosts].sort((a, b) => {
+				if (b.likes.length === a.likes.length) {
+					return b.comments.length - a.comments.length;
+				}
+				return b.likes.length - a.likes.length;
+			});
+		}
+		return filteredPosts;
+	};
+
+	const searchedPosts = () => {
+		const trimmedSearchTerm = searchTerm.trim();
+		if (!trimmedSearchTerm) return sortedPosts();
+		return sortedPosts().filter(post => 
+			post.userID.includes(trimmedSearchTerm) || 
+			post.content.toLowerCase().includes(trimmedSearchTerm.toLowerCase()) ||
+			post.author.toLowerCase().includes(trimmedSearchTerm.toLowerCase())
+		);
+	};
 
 	const handlePostClick = async (postId) => {
 		if (!currentUser) {
@@ -127,14 +166,15 @@ export default function MainFeed() {
 			return;
 		}
 
-		const data = await fetchCurrentUserData(currentUser.username);
-		console.log(data);
-		setUserData(data);
+		if (!userData) {
+			console.error('User data is not available');
+			return;
+		}
 
 		navigate(`/community/post/detail/${postId}`, {
 			state: {
 				currentUserId: currentUser._id,
-				data: data
+				data: userData
 			}
 		});
 	};
@@ -184,11 +224,41 @@ export default function MainFeed() {
 							</Card>
 						}
 						userData={userData}
-						currentChannelId={activeChannelId || '672c2053df5ed078edd28a8b'} // Default channel ID
-						onPostCreated={refreshPosts} // Pass the refresh function
+						currentChannelId={activeChannelId || '672c2053df5ed078edd28a8b'}
+						onPostCreated={refreshPosts}
 					/>
 
-					{filteredPosts.map(post => (
+					<div className="flex items-center mb-4 justify-between">
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="outline" className="mr-2">
+									Sort Posts
+									{sortOption === 'newest' ? <Timer className="ml-2 h-4 w-4" /> : null}
+									{sortOption === 'mostLiked' ? <Flame className="ml-2 h-4 w-4" /> : null}
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem onClick={() => setSortOption('newest')}>
+									<Button variant={sortOption === 'newest' ? '' : 'ghost'}>Newest First <Timer className="ml-2 h-4 w-4" /></Button>
+								</DropdownMenuItem>
+								<DropdownMenuItem onClick={() => setSortOption('mostLiked')}>
+									<Button variant={sortOption === 'mostLiked' ? '' : 'ghost'}>Most Liked <Flame className="ml-2 h-4 w-4" /></Button>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+
+						<div className="relative flex items-center ml-auto w-full max-w-xs">
+							<Search className="absolute left-2 h-4 w-4 text-gray-400" />
+							<Input
+								className="pl-8 w-full"
+								placeholder="Search by User ID, Username, or Content"
+								value={searchTerm}
+								onChange={(e) => setSearchTerm(e.target.value)}
+							/>
+						</div>
+					</div>
+
+					{searchedPosts().map(post => (
 						<NewsCard
 							key={post._id}
 							postId={post._id}
@@ -201,7 +271,7 @@ export default function MainFeed() {
 							likes={post.likes}
 							comments={post.comments}
 							userID={post.userID}
-							currentUserID={userData._id}
+							currentUserID={userData ? userData._id : null}
 							onClick={() => handlePostClick(post._id)}
 							onDelete={() => handleDeletePost(post._id)}
 							onUpdate={(updatedContent) => handleUpdatePost(post._id, { content: updatedContent })}

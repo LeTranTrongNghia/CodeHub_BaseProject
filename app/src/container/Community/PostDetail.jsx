@@ -17,7 +17,7 @@ export default function PostDetail() {
     const [newComment, setNewComment] = useState("");
     const [comments, setComments] = useState([]);
 
-    console.log(data);
+    // console.log(data);
     
     useEffect(() => {
         const fetchPost = async () => {

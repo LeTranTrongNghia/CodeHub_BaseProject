@@ -1,14 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const EventsSidebar = () => {
-    // Fixed tech news data
-    const techNews = [
-        { title: "Google's AI going nuclear", date: "October 14", image: "https://i.cdn.newsbytesapp.com/images/l24720241015094856.jpeg" },
-        { title: "X is Back in Brazil 🇧🇷", date: "October 9", image: "https://media.wired.com/photos/66fc3d26968176ff6a71b810/master/w_2560%2Cc_limit/X-Back-in-Brazil-Business-2175241189.jpg" },
-        { title: "Satoshi Found? New Bitcoin Documentary", date: "October 4", image: "https://coincierge.de/wp-content/uploads/2024/09/Krypto-News-Irre-Analyse-Bitcoin-Erfinder-Satoshi-Nakamoto-%E2%80%93-in-Wirklichkeit-die-CIA-coincierge-696x392.jpg" },
-    ];
+    const [techNews, setTechNews] = useState([]);
+    const [allNews, setAllNews] = useState([]);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    useEffect(() => {
+        // Fetch news data when component mounts
+        const fetchNews = async () => {
+            try {
+                const response = await fetch('http://localhost:5050/news');
+                const data = await response.json();
+                // Lấy 3 tin tức mới nhất
+                const latestNews = data.slice(0, 3).map(news => ({
+                    title: news.title,
+                    date: new Date(news.date).toLocaleDateString('en-US', { 
+                        month: 'long', 
+                        day: 'numeric' 
+                    }),
+                    image: news.imageURL,
+                    url: news.newsURL
+                }));
+                setTechNews(latestNews);
+            } catch (error) {
+                console.error('Error fetching news:', error);
+            }
+        };
+
+        fetchNews();
+    }, []);
+
+    const fetchAllNews = async () => {
+        try {
+            const response = await fetch('http://localhost:5050/news');
+            const data = await response.json();
+            setAllNews(data);
+        } catch (error) {
+            console.error('Error fetching all news:', error);
+        }
+    };
+
+    const handleSeeAllClick = () => {
+        fetchAllNews();
+        setIsDialogOpen(true);
+    };
 
     // Fixed upcoming events data
     const events = [
@@ -22,18 +60,28 @@ const EventsSidebar = () => {
                 <CardHeader>
                     <CardTitle className="flex justify-between items-center">
                         <span>Tech News</span>
-                        <Button variant="link" size="sm">See all</Button>
+                        <Button variant="link" size="sm" onClick={handleSeeAllClick}>See all</Button>
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     {techNews.map((news, index) => (
-                        <div key={index} className="flex items-center space-x-2 mb-2">
-                            <img src={news.image} alt={news.title} className="w-12 h-12 rounded object-cover" />
+                        <a 
+                            key={index} 
+                            href={news.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center space-x-2 mb-2 hover:bg-gray-50 p-2 rounded transition-colors"
+                        >
+                            <img 
+                                src={news.image || 'default-news-image.jpg'} 
+                                alt={news.title} 
+                                className="w-12 h-12 rounded object-cover"
+                            />
                             <div>
-                                <h4 className="font-semibold">{news.title}</h4>
+                                <h4 className="font-semibold line-clamp-2">{news.title}</h4>
                                 <p className="text-sm text-muted-foreground">{news.date}</p>
                             </div>
-                        </div>
+                        </a>
                     ))}
                 </CardContent>
             </Card>
@@ -65,6 +113,34 @@ const EventsSidebar = () => {
                     ))}
                 </CardContent>
             </Card>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>All Tech News</DialogTitle>
+                    </DialogHeader>
+                    <div>
+                        {allNews.map((news, index) => (
+                            <a 
+                                key={index} 
+                                href={news.newsURL} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center space-x-2 mb-2 hover:bg-gray-50 p-2 rounded transition-colors"
+                            >
+                                <img 
+                                    src={news.imageURL || 'default-news-image.jpg'} 
+                                    alt={news.title} 
+                                    className="w-12 h-12 rounded object-cover"
+                                />
+                                <div>
+                                    <h4 className="font-semibold line-clamp-2">{news.title}</h4>
+                                    <p className="text-sm text-muted-foreground">{new Date(news.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</p>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </DialogContent>
+            </Dialog>
         </aside>
     );
 };

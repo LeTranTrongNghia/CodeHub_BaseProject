@@ -87,4 +87,21 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
+// Update savedPost for a user
+router.patch("/:id/savedPost", async (req, res) => {
+    try {
+        const query = { _id: new ObjectId(req.params.id) };
+        const updates = req.body.action === 'remove' 
+            ? { $pull: { savedPost: req.body.postId } } // Xóa postId khỏi savedPost
+            : { $addToSet: { savedPost: req.body.postId } }; // Thêm postId vào savedPost
+
+        let collection = await db.collection("users");
+        let result = await collection.updateOne(query, updates);
+        res.status(200).send(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error updating savedPost");
+    }
+});
+
 export default router;

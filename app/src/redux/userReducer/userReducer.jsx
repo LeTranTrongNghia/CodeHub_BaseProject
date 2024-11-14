@@ -4,6 +4,7 @@ const initialState = {
 	isAdmin: false,
 	isLoggedIn: false,
 	username: '',
+	id:'',
 };
 
 const userReducer = createSlice({
@@ -19,10 +20,13 @@ const userReducer = createSlice({
 		setUsername: (state, action) => {
 			state.username = action.payload;
 		},
+		setId: (state, action) => {
+			state.id = action.payload;
+		},
 	},
 });
 
-export const { setAdminStatus, setLoginStatus, setUsername } =
+export const { setAdminStatus, setLoginStatus, setUsername, setId } =
 	userReducer.actions;
 
 export default userReducer.reducer;

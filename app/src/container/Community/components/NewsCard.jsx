@@ -2,15 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MoreHorizontal, ThumbsUp, MessageSquare, Bookmark, Link, Bell, EyeOff, Eye, AlertTriangle, Trash, Pencil } from "lucide-react"
+import { MoreHorizontal, ThumbsUp, MessageSquare, Bookmark, Link, AlertTriangle, Trash, Pencil } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const formatTimeAgo = (date) => {
     const now = new Date();
-    const seconds = Math.floor((now - new Date(date)) / 1000);
-    let interval = Math.floor(seconds / 31536000);
+    const createdAt = new Date(date);
+    const seconds = Math.floor((now - createdAt) / 1000);
+    
+    // Kiểm tra nếu thời gian tạo bài viết lớn hơn 24 giờ
+    if (seconds > 86400) { // 86400 giây = 24 giờ
+        return createdAt.toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+    }
 
+    let interval = Math.floor(seconds / 31536000);
     if (interval > 1) return `${interval} years ago`;
     interval = Math.floor(seconds / 2592000);
     if (interval > 1) return `${interval} months ago`;
@@ -26,27 +41,32 @@ const formatTimeAgo = (date) => {
 const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, likes, comments, poll, userID, currentUserID, onClick, onDelete, onUpdate, postId }) => {
     const navigate = useNavigate();
     const contentLines = content.split('\n');
-    const [showConfirm, setShowConfirm] = useState(false); // State to control confirmation dialog
-    const [showUpdateDialog, setShowUpdateDialog] = useState(false); // State to control update dialog
-    const [updatedContent, setUpdatedContent] = useState(content); // State for updated content
-    const [userLikes, setUserLikes] = useState(likes); // Local state for likes
-    const [users, setUsers] = useState([]); // State to hold users list
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+    const [updatedContent, setUpdatedContent] = useState(content);
+    const [userLikes, setUserLikes] = useState(likes);
+    const [users, setUsers] = useState([]);
+    const [savedPosts, setSavedPosts] = useState([]);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch('http://localhost:5050/users'); // Adjust the URL as needed
+                const response = await fetch('http://localhost:5050/users');
                 const data = await response.json();
-                setUsers(data); // Set the users list
+                setUsers(data);
+                const currentUser = data.find(user => user._id === currentUserID);
+                if (currentUser) {
+                    setSavedPosts(currentUser.savedPost);
+                }
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
         };
 
         fetchUsers();
-    }, []); // Run once on component mount
+    }, [currentUserID]);
 
-    const hasLiked = userLikes.includes(currentUserID); // Check if current user has liked the post
+    const hasLiked = userLikes.includes(currentUserID);
 
     const handleLikeToggle = async () => {
         if (!currentUserID) {
@@ -110,8 +130,8 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
 
     const handleDelete = async () => {
         try {
-            await onDelete(); // Call the delete function passed as a prop
-            setShowConfirm(false); // Close the confirmation dialog
+            await onDelete();
+            setShowConfirm(false);
         } catch (error) {
             console.error('Error deleting post:', error);
         }
@@ -128,15 +148,57 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                 body: JSON.stringify({ content: updatedContent }),
             });
             setShowUpdateDialog(false);
-            onUpdate(updatedContent); // Call the onUpdate prop to refresh the posts
+            onUpdate(updatedContent);
         } catch (error) {
             console.error('Error updating post:', error);
         }
     };
 
     const handlePopoverClick = () => {
-        console.log('Current User ID:', currentUserID); // Log current user ID
-        console.log('Post User ID:', userID); // Log post user ID
+        console.log('Current User ID:', currentUserID);
+        console.log('Post User ID:', userID);
+    };
+
+    const handleSavePost = async () => {
+        if (!currentUserID) {
+            console.log('No user ID provided');
+            return;
+        }
+
+        try {
+            const isSaved = savedPosts.includes(postId);
+            const response = await fetch(`http://localhost:5050/users/${currentUserID}/savedPost`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ postId, action: isSaved ? 'remove' : 'add' }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save post');
+            }
+
+            if (isSaved) {
+                setSavedPosts(savedPosts.filter(id => id !== postId));
+                toast.success('Post unsaved successfully!');
+            } else {
+                setSavedPosts([...savedPosts, postId]);
+                toast.success('Post saved successfully!');
+            }
+        } catch (error) {
+            console.error('Error saving post:', error);
+            toast.error('Error saving post!');
+        }
+    };
+
+    const handleCopyLink = async () => {
+        const link = `http://localhost:5173/community/post/detail/${postId}`; // Tạo liên kết
+        try {
+            await navigator.clipboard.writeText(link); // Sao chép liên kết vào clipboard
+            toast.success('Link copied to clipboard!'); // Thông báo thành công
+        } catch (error) {
+            console.error('Failed to copy link:', error);
+            toast.error('Failed to copy link!'); // Thông báo lỗi
+        }
     };
 
     return (
@@ -158,20 +220,11 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                         </PopoverTrigger>
                         <PopoverContent className="w-60 bg-white text-black border border-gray-200 shadow-lg" align="end">
                             <div className="space-y-2">
-                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
-                                    <Bookmark className="mr-2 h-4 w-4" /> Save
+                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100" onClick={handleSavePost}>
+                                    <Bookmark className="mr-2 h-4 w-4" /> {savedPosts.includes(postId) ? 'Unsave' : 'Save'}
                                 </Button>
-                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
+                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100" onClick={handleCopyLink}>
                                     <Link className="mr-2 h-4 w-4" /> Copy link
-                                </Button>
-                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
-                                    <Bell className="mr-2 h-4 w-4" /> Turn on notifications
-                                </Button>
-                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
-                                    <EyeOff className="mr-2 h-4 w-4" /> Hide post
-                                </Button>
-                                <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
-                                    <Eye className="mr-2 h-4 w-4" /> Hide all user's post
                                 </Button>
                                 <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
                                     <AlertTriangle className="mr-2 h-4 w-4" /> Report
@@ -183,7 +236,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                                                 <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100" onClick={() => setShowUpdateDialog(true)}>
                                                     <Pencil className="mr-2 h-4 w-4" /> Update
                                                 </Button>
-                                            </DialogTrigger> 
+                                            </DialogTrigger>
                                             <DialogContent>
                                                 <DialogHeader>
                                                     <DialogTitle>Update Post</DialogTitle>
@@ -222,7 +275,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                         </PopoverContent>
                     </Popover>
                 </div>
-                <div onClick={onClick} className="cursor-pointer">
+                <div className="cursor-pointer">
                     {contentLines.map((line, index) => (
                         <p key={index} className="mb-2">
                             {line.includes('http') ? (
@@ -249,19 +302,10 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                     <Button variant="ghost" size="sm" onClick={handleLikeToggle}>
                         <ThumbsUp className="mr-2 h-4 w-4" /> {userLikes.length} Likes
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={onClick}>
                         <MessageSquare className="mr-2 h-4 w-4" /> {comments.length} Comments
                     </Button>
                 </div>
-                {comments.length > 0 && (
-                    <div className="mt-2">
-                        {comments.map((comment, index) => (
-                            <div key={index} className="text-sm text-muted-foreground">
-                                <strong>{comment.username}</strong>: {comment.content}
-                            </div>
-                        ))}
-                    </div>
-                )}
             </CardContent>
         </Card>
     );

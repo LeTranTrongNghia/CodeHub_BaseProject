@@ -8,6 +8,7 @@ import userRouter from './routes/user.route.js';
 import channelsRouter from './routes/channels.js';
 import postsRouter from './routes/posts.js';
 import userInfoRouter from './routes/userInfo.route.js';
+import newsRouter from './routes/news.route.js';
 import dotenv from 'dotenv';
 import { defaultErrorHandler } from './middlewares/error.middleware.js';
 dotenv.config();
@@ -27,6 +28,7 @@ app.use('/user', userRouter);
 app.use('/channels', channelsRouter);
 app.use('/posts', postsRouter);
 app.use('/users', userInfoRouter);
+app.use('/news', newsRouter);
 
 app.use(defaultErrorHandler);
 
