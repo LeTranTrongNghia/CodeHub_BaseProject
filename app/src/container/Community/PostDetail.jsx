@@ -7,6 +7,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import HeaderCommunity from './components/HeaderCommunity';
 import EventsSidebar from './components/EventsSidebar';
+import { useSelector } from 'react-redux';
 
 export default function PostDetail() {
     const navigate = useNavigate();
@@ -16,9 +17,11 @@ export default function PostDetail() {
     const [post, setPost] = useState(null);
     const [newComment, setNewComment] = useState("");
     const [comments, setComments] = useState([]);
+    const currentUserId = useSelector(state => state.user);
+    const [currentUserData, setCurrentUserData] = useState(null);
 
-    // console.log(data);
-    
+    // console.log(currentUserId.id);
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -37,14 +40,33 @@ export default function PostDetail() {
         fetchPost();
     }, [id]);
 
+    const fetchCurrentUserData = async () => {
+        try {
+            const response = await fetch('http://localhost:5050/users');
+            if (!response.ok) {
+                throw new Error('Failed to fetch users');
+            }
+            const users = await response.json();
+            const currentUser = users.find(user => user._id === currentUserId.id);
+            setCurrentUserData(currentUser);
+            // console.log(currentUser);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCurrentUserData();
+    }, [currentUserId.id]);
+
     const handleAddComment = async () => {
-        if (newComment.trim()) {
+        if (newComment.trim() && currentUserData) {
             const commentData = {
-                userId: data._id,
-                username: data.username,
-                avatar: data.avatar,
+                userId: currentUserData._id,
+                username: currentUserData.username,
+                avatar: currentUserData.avatar || "https://via.placeholder.com/150",
                 content: newComment,
-                createdAt: new Date().toLocaleString(), 
+                createdAt: new Date().toLocaleString(),
             };
 
             try {
@@ -117,6 +139,30 @@ export default function PostDetail() {
                         </CardContent>
                     </Card>
 
+                    <div className="pt-4">
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="flex items-start space-x-4">
+                                    <Avatar>
+                                        <AvatarImage
+                                            src={currentUserData ? currentUserData.avatar : "https://via.placeholder.com/150"}
+                                            alt="User"
+                                        />
+                                        <AvatarFallback>{currentUserData ? currentUserData.username[0] : 'U'}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <Input
+                                            placeholder={`Type here to reply to ${post.author}...`}
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                        />
+                                        <Button className="mt-2" size="sm" onClick={handleAddComment}>Post comment</Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
                     <div className="space-y-4">
                         <h3 className="font-semibold pt-4">{comments.length} comments</h3>
                         {comments.map((comment, index) => (
@@ -145,29 +191,7 @@ export default function PostDetail() {
                         ))}
                     </div>
 
-                    <div className="pt-4">
-                        <Card>
-                            <CardContent className="p-4">
-                                <div className="flex items-start space-x-4">
-                                    <Avatar>
-                                        <AvatarImage
-                                            src={data ? data.avatar : "https://via.placeholder.com/150"}
-                                            alt="User"
-                                        />
-                                        <AvatarFallback>{data ? data.username[0] : 'U'}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="flex-1">
-                                        <Input
-                                            placeholder={`Type here to reply to ${post.author}...`}
-                                            value={newComment}
-                                            onChange={(e) => setNewComment(e.target.value)}
-                                        />
-                                        <Button className="mt-2" size="sm" onClick={handleAddComment}>Post comment</Button>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
+
                 </main>
                 <EventsSidebar />
             </div>
