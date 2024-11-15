@@ -50,12 +50,12 @@ const EventsSidebar = () => {
 
     // Fixed upcoming events data
     const events = [
-        { title: "Club Exclusive LinkedIn Review", date: "Wed Oct 23rd @ 3:00pm ET", month: "OCT", day: "23", color: "#0c417b" },
-        { title: "Hacker House Office Hours w/ Team", date: "Tue Oct 29th @ 2:00pm ET", month: "OCT", day: "29", color: "#047d4c" },
+        { title: "Club Exclusive LinkedIn Review", date: "Wed Nov 23rd • 3:00pm ET", month: "Nov", day: "23", color: "#0c417b" },
+        { title: "Hacker House Office Hours w/ Team", date: "Tue Nov 29th • 2:00pm ET", month: "Nov", day: "29", color: "#047d4c" },
     ];
 
     return (
-        <aside className="w-80 p-4 hidden lg:block border-l">
+        <aside className="w-80 p-4 hidden lg:block">
             <Card className="mb-4">
                 <CardHeader>
                     <CardTitle className="flex justify-between items-center">

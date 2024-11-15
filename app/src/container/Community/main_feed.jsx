@@ -13,6 +13,7 @@ import ChannelOverview from './components/ChannelOverview';
 import NewsCard from './components/NewsCard';
 import { useSelector } from 'react-redux';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import ActivitySidebar from './components/ActivitySidebar';
 
 export default function MainFeed() {
 	const navigate = useNavigate();
@@ -279,6 +280,7 @@ export default function MainFeed() {
 					))}
 				</main>
 				<EventsSidebar />
+				<ActivitySidebar />
 			</div>
 		</div>
 	)
