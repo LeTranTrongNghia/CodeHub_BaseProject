@@ -58,6 +58,7 @@
 		"react-split": "^2.0.14",
 		"react-syntax-highlighter": "^15.5.0",
 		"react-toastify": "^10.0.5",
+		"react-youtube": "^10.1.0",
 		"recharts": "^2.12.7",
 		"redux-persist": "^6.0.0",
 		"tailwind-merge": "^2.3.0",

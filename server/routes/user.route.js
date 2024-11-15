@@ -19,25 +19,24 @@ import { wrapRequestHandler } from "../utils/handler.js";
 const userRouter = express.Router();
 
 // routes/user.route.js
-router.get("/me", authMiddleware, async (req, res) => {
-  const userId = req.user.userId; // Được lấy từ middleware sau khi giải mã token
+// router.get("/me", authMiddleware, async (req, res) => {
+//   const userId = req.user.userId; // Được lấy từ middleware sau khi giải mã token
 
-  try {
-    const user = await User.findById(userId).populate("enrolledCourses");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//   try {
+//     const user = await User.findById(userId).populate("enrolledCourses");
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    res.status(200).json({
-      userId: user._id,
-      username: user.username,
-      enrolledCourses: user.enrolledCourses, // Trả về danh sách các khóa học đã đăng ký
-    });
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
+//     res.status(200).json({
+//       userId: user._id,
+//       username: user.username,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching user data:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// });
 
 userRouter.post("/login", async (req, res) => {
   try {
