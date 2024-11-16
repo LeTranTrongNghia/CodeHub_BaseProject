@@ -19,7 +19,7 @@ import { ChevronLeft, CircleUser } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import YouTube from "react-youtube";
-import Sidebar from "./Sidebar";
+import Sidebar from "../MainHome/Sidebar";
 
 const CourseDetails = () => {
   const { id } = useParams();
@@ -32,7 +32,7 @@ const CourseDetails = () => {
   const [isCorrect, setIsCorrect] = useState(null);
   const [selectedLectureIndex, setSelectedLectureIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   // const handleQuizClick = async () => {
   //   // setShowModal(true);
   //   if (!course || !course.lectures[selectedLectureIndex]) {
@@ -53,59 +53,88 @@ const CourseDetails = () => {
   // };
 
   const handleQuizClick = async () => {
+    setIsLoading(true);
+    setShowModal(true);
     try {
-      // Kiểm tra nếu không có khóa học hoặc bài giảng
       if (!course || !course.lectures || selectedLectureIndex === undefined) {
         console.error("Course or lecture not found");
+        setIsLoading(false);
         return;
       }
 
-      // Lấy bài giảng đã chọn
       const selectedLecture = course.lectures[selectedLectureIndex];
       if (!selectedLecture) {
         console.error("Selected lecture is invalid");
+        setIsLoading(false);
         return;
       }
 
-      // Gọi hàm để tạo câu hỏi quiz
       const questionObj = await generateQuizQuestion(
         selectedLecture.title_lecture,
         course.title
       );
 
-      // Nếu câu hỏi được tạo thành công, đặt trạng thái hiển thị modal và câu hỏi
       if (questionObj) {
-        setQuiz(questionObj); // Lưu câu hỏi quiz
-        setShowModal(true); // Hiển thị modal
+        setQuiz(questionObj);
+        // setShowModal(true);
       } else {
         console.error("Failed to generate quiz question");
       }
     } catch (error) {
       console.error("An error occurred while generating quiz question:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleAnswerSelect = (option) => {
     setSelectedAnswer(option);
-    setIsCorrect(option === quiz.answer);
+    const correct = option === quiz.answer;
+    setIsCorrect(correct);
+
+    if (correct) {
+      setTimeout(() => {
+        setShowModal(false);
+        setSelectedAnswer(null);
+        setIsCorrect(null);
+      });
+
+      if (videoRef.current) {
+        const player = videoRef.current.getInternalPlayer();
+        player.playVideo();
+      }
+    }
   };
 
   const handleNextClick = async () => {
     // Reset the state for the next question
+    setIsLoading(true);
     setSelectedAnswer(null);
     setIsCorrect(null);
-    if (!course || !course.lectures[selectedLectureIndex]) {
-      console.error("Lecture not found");
-      return;
-    }
-    const selectedLecture = course.lectures[selectedLectureIndex];
+    try {
+      if (!course || !course.lectures[selectedLectureIndex]) {
+        console.error("Lecture not found");
+        setIsLoading(false);
+        return;
+      }
+      const selectedLecture = course.lectures[selectedLectureIndex];
 
-    // Fetch a new quiz question (replace this with your actual fetching logic)
-    const newQuiz = await generateQuizQuestion(
-      selectedLecture.title_lecture,
-      course.title
-    ); // You should implement this function
-    setQuiz(newQuiz);
+      // Fetch a new quiz question (replace this with your actual fetching logic)
+      const newQuiz = await generateQuizQuestion(
+        selectedLecture.title_lecture,
+        course.title
+      ); // You should implement this function
+      if (newQuiz) {
+        setQuiz(newQuiz);
+      }
+    } catch (error) {
+      console.error(
+        "An error occurred while fetching the next question:",
+        error
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const generateQuizQuestion = async (lectureTitle, courseTitle) => {
@@ -232,13 +261,21 @@ const CourseDetails = () => {
 
   // SIu
   const playLecture = (time) => {
+    // const [minutes, seconds] = time.split(":").map(Number);
+    // const startTime = minutes * 60 + seconds;
+    // if (videoRef.current) {
+    //   const videoSrc = new URL(videoRef.current.src);
+    //   videoSrc.searchParams.set("start", startTime);
+    //   videoRef.current.src = videoSrc.toString();
+    //   videoRef.current.play();
+    // }
     const [minutes, seconds] = time.split(":").map(Number);
     const startTime = minutes * 60 + seconds;
+
     if (videoRef.current) {
-      const videoSrc = new URL(videoRef.current.src);
-      videoSrc.searchParams.set("start", startTime);
-      videoRef.current.src = videoSrc.toString();
-      videoRef.current.play();
+      const player = videoRef.current.getInternalPlayer();
+      player.seekTo(startTime, true);
+      player.playVideo();
     }
   };
 
@@ -297,7 +334,7 @@ const CourseDetails = () => {
                 allowFullScreen
               ></iframe> */}
               <YouTube
-                videoId={"zOjov-2OZ0E"}
+                videoId={course.video_id}
                 ref={videoRef}
                 className="rounded-lg"
                 opts={opts}
@@ -306,52 +343,75 @@ const CourseDetails = () => {
               />
               ;{/* <YoutubePlayer videoId={"zOjov-2OZ0E"} /> */}
             </div>
-            <div className="float-end">
+            {/* <div className="float-end">
               <button
                 onClick={handleQuizClick}
                 className="mt-4 bg-slate-800 h-12 w-20 mr-auto rounded-lg text-gray-300 font-bold"
               >
                 Quiz
               </button>
-            </div>
+            </div> */}
           </div>
 
           {showModal && (
             <Modal
               title="Quiz"
               visible={showModal}
-              onCancel={() => setShowModal(false)}
+              onCancel={() => {
+                if (isCorrect) {
+                  setShowModal(false);
+                } else {
+                  alert(
+                    "You must answer correctly before closing the question."
+                  );
+                }
+              }}
               footer={null}
             >
-              <h2 className="text-xl font-bold mb-4">{quiz.question}</h2>
-              <div className="space-y-2">
-                {["A", "B", "C", "D"].map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => handleAnswerSelect(option)}
-                    disabled={!!selectedAnswer}
-                    className={`p-2 rounded-lg w-full text-left ${
-                      selectedAnswer
-                        ? option === quiz.answer
-                          ? "bg-green-500"
-                          : selectedAnswer === option
-                          ? "bg-red-500"
-                          : "bg-gray-200"
-                        : "bg-gray-200"
-                    }`}
-                  >
-                    {option}: {quiz[option]}
-                  </button>
-                ))}
-              </div>
-              <div className="text-end">
-                <button
-                  onClick={handleNextClick}
-                  className="bg-gray-600 text-gray-200 mt-8 rounded-md h-10 w-20 "
-                >
-                  Next
-                </button>
-              </div>
+              {isLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" />
+                  <p className="ml-4 text-lg font-medium">Loading...</p>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-xl font-bold mb-4">{quiz.question}</h2>
+                  <div className="space-y-2">
+                    {["A", "B", "C", "D"].map((option) => (
+                      <button
+                        key={option}
+                        onClick={() => handleAnswerSelect(option)}
+                        disabled={!!selectedAnswer}
+                        className={`p-2 rounded-lg w-full text-left ${
+                          selectedAnswer
+                            ? option === quiz.answer
+                              ? "bg-green-500"
+                              : selectedAnswer === option
+                              ? "bg-red-500"
+                              : "bg-gray-200"
+                            : "bg-gray-200"
+                        }`}
+                      >
+                        {option}: {quiz[option]}
+                      </button>
+                    ))}
+                  </div>
+                  {isCorrect === false && (
+                    <p className="text-red-500 text-center mt-4">
+                      Câu trả lời sai, vui lòng thử lại.
+                    </p>
+                  )}
+                  {/* } */}
+                  <div className="text-end">
+                    <button
+                      onClick={handleNextClick}
+                      className="bg-gray-600 text-gray-200 mt-8 rounded-md h-10 w-20 "
+                    >
+                      Next
+                    </button>
+                  </div>
+                </>
+              )}
             </Modal>
           )}
 

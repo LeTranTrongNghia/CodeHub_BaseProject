@@ -66,7 +66,7 @@ const CoursePage = React.lazy(() =>
 );
 
 const CourseDetail = React.lazy(() =>
-  import("../components/MainHome/CourseDetails")
+  import("../components/Course/CourseDetails")
 );
 
 const publicRoute = [
