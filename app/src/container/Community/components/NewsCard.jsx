@@ -6,6 +6,7 @@ import { MoreHorizontal, ThumbsUp, MessageSquare, Bookmark, Link, AlertTriangle,
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 const formatTimeAgo = (date) => {
     const now = new Date();
@@ -38,8 +39,9 @@ const formatTimeAgo = (date) => {
     return "Just now";
 };
 
-const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, likes, comments, poll, userID, currentUserID, onClick, onDelete, onUpdate, postId }) => {
+const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, likes, comments, poll, userID, onClick, onDelete, onUpdate, postId }) => {
     const navigate = useNavigate();
+    const currentUser = useSelector(state => state.user);
     const contentLines = content.split('\n');
     const [showConfirm, setShowConfirm] = useState(false);
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
@@ -54,9 +56,9 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                 const response = await fetch('http://localhost:5050/users');
                 const data = await response.json();
                 setUsers(data);
-                const currentUser = data.find(user => user._id === currentUserID);
-                if (currentUser) {
-                    setSavedPosts(currentUser.savedPost);
+                const user = data.find(user => user._id === currentUser.id);
+                if (user) {
+                    setSavedPosts(user.savedPost);
                 }
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -64,54 +66,47 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
         };
 
         fetchUsers();
-    }, [currentUserID]);
+    }, [currentUser.id]);
 
-    const hasLiked = userLikes.includes(currentUserID);
+    const hasLiked = userLikes.includes(currentUser.id);
 
     const handleLikeToggle = async () => {
-        if (!currentUserID) {
+        if (!currentUser.id) {
             console.log('No user ID provided');
             return;
         }
 
         try {
-            // console.log(currentUserID)
-            // Step 1: Verify user exists in users collection
             const usersResponse = await fetch('http://localhost:5050/users');
             if (!usersResponse.ok) {
                 throw new Error('Failed to fetch users');
             }
             const usersList = await usersResponse.json();
             
-            const userExists = usersList.some(user => user._id === currentUserID);
+            const userExists = usersList.some(user => user._id === currentUser.id);
             if (!userExists) {
                 console.log('User not found in users collection');
                 return;
             }
 
-            // Step 2: Check if user has already liked the post
-            const isLiked = userLikes.includes(currentUserID);
+            const isLiked = userLikes.includes(currentUser.id);
 
-            // Step 3: Update likes array based on current status
             let newLikes;
             let action;
 
             if (isLiked) {
-                // User already liked - remove from likes (unlike)
-                newLikes = userLikes.filter(id => id !== currentUserID);
+                newLikes = userLikes.filter(id => id !== currentUser.id);
                 action = 'unlike';
             } else {
-                // User hasn't liked - add to likes
-                newLikes = [...userLikes, currentUserID];
+                newLikes = [...userLikes, currentUser.id];
                 action = 'like';
             }
 
-            // Step 4: Update backend
             const response = await fetch(`http://localhost:5050/posts/${postId}/likes`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    userId: currentUserID,
+                    userId: currentUser.id,
                     action: action
                 }),
             });
@@ -120,7 +115,6 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                 throw new Error('Failed to update likes');
             }
 
-            // Step 5: Update local state
             setUserLikes(newLikes);
             
         } catch (error) {
@@ -155,19 +149,19 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
     };
 
     const handlePopoverClick = () => {
-        console.log('Current User ID:', currentUserID);
+        console.log('Current User ID:', currentUser.id);
         console.log('Post User ID:', userID);
     };
 
     const handleSavePost = async () => {
-        if (!currentUserID) {
+        if (!currentUser.id) {
             console.log('No user ID provided');
             return;
         }
 
         try {
             const isSaved = savedPosts.includes(postId);
-            const response = await fetch(`http://localhost:5050/users/${currentUserID}/savedPost`, {
+            const response = await fetch(`http://localhost:5050/users/${currentUser.id}/savedPost`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ postId, action: isSaved ? 'remove' : 'add' }),
@@ -201,6 +195,14 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
         }
     };
 
+    useEffect(() => {
+        console.log('Current User ID:', currentUser.id);
+        console.log('Post User ID:', userID);
+    }, [currentUser.id, userID]);
+
+    // Check if current user is the post owner
+    const isPostOwner = currentUser.id === userID;
+
     return (
         <Card className="mb-4 cursor-pointer">
             <CardContent className="p-4">
@@ -229,7 +231,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
                                 <Button variant="ghost" className="w-full justify-start text-black hover:text-black hover:bg-gray-100">
                                     <AlertTriangle className="mr-2 h-4 w-4" /> Report
                                 </Button>
-                                {userID === currentUserID && (
+                                {isPostOwner && (
                                     <>
                                         <Dialog>
                                             <DialogTrigger asChild>

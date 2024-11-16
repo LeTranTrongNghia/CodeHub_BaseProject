@@ -24,6 +24,7 @@ const routes = {
 	communityPage: '/community',
 	detailPost: '/community/post/detail/:id',
 	playgroundPage: '/playground',
+	myPosts: '/community/profile/:userId',
 };
 
 export default routes;

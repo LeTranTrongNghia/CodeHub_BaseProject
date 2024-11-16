@@ -71,6 +71,10 @@ const PostDetailPage = React.lazy(() =>
 	import('../container/Community/PostDetail.jsx'),
 );
 
+const MyPostsPage = React.lazy(() =>
+	import('../container/Community/my_posts.jsx'),
+);
+
 const publicRoute = [
 	{
 		path: config.routes.contactPage,
@@ -116,6 +120,10 @@ const publicRoute = [
         path: config.routes.detailPost,
         component: PostDetailPage,
     },
+	{
+		path: config.routes.myPosts,
+		component: MyPostsPage,
+	},
 ];
 
 const protectedRoute = [

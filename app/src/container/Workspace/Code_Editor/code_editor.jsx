@@ -52,6 +52,21 @@ const CodeEditorWrapper = () => {
 		}
 	}, [editorRef]);
 
+	useEffect(() => {
+		const handleResize = () => {
+			if (window.innerWidth < 1400 || window.innerHeight < 700) {
+				setIsDialogOpen(false); // Đóng dialog nếu kích thước cửa sổ nhỏ hơn yêu cầu
+			}
+		};
+		// Thêm listener cho sự kiện resize
+		window.addEventListener('resize', handleResize);
+
+		// Cleanup listener khi component unmount
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
 	// const handleLogout = async () => {
 	// 	try {
 	// 		await signOut(auth);
@@ -111,27 +126,28 @@ const CodeEditorWrapper = () => {
 	};
 
 	const handleRunVisualize = () => {
-		// Check if the browser window is at full width and height
+		// Kiểm tra nếu kích thước cửa sổ trình duyệt nhỏ hơn yêu cầu
 		if (
-			window.innerWidth < window.screen.width ||
-			window.innerHeight < window.screen.height
+			window.innerWidth < 1400 ||
+			window.innerHeight < 700
 		) {
+			setIsDialogOpen(false); // Đóng dialog nếu kích thước cửa sổ nhỏ hơn yêu cầu
 			toast.warn(
-				'Please maximize your browser window to full width and height before running the visualization.',
+				'Please maximize your browser window to full width (>1400) and height(>700) before running the visualization.',
 			);
-			return; // Exit the function if the window is not maximized
+			return; // Thoát hàm nếu cửa sổ không được tối đa hóa
 		}
 
-		// Check if the selected language is one of the allowed languages
+		// Kiểm tra nếu ngôn ngữ đã chọn là một trong những ngôn ngữ được phép
 		if (['python', 'java', 'javascript'].includes(language)) {
 			getCode();
-			setIsDialogOpen(true); // Open the dialog
-			setOverlayVisible(true); // Show the overlay
+			setIsDialogOpen(true); // Mở dialog
+			setOverlayVisible(true); // Hiện overlay
 			setTimeout(() => {
-				setOverlayVisible(false); // Hide the overlay after 3 seconds
+				setOverlayVisible(false); // Ẩn overlay sau 3 giây
 			}, 2000);
 		} else {
-			// Show dialog with warning message for unsupported languages
+			// Hiện dialog với thông báo cảnh báo cho các ngôn ngữ không được hỗ trợ
 			alert(
 				'The visualize code feature only supports Python, Java, and JavaScript.',
 			);
@@ -164,9 +180,8 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${
-										option === '1' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[120px]`}
+									className={`option ${option === '1' ? 'selected' : ''
+										} flex bg-white p-3 rounded-md text-left w-[120px]`}
 									onClick={() => setOption('1')}
 								>
 									<BookMarked className='size-5 mr-4' />
@@ -183,9 +198,8 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${
-										option === '2' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[150px]`}
+									className={`option ${option === '2' ? 'selected' : ''
+										} flex bg-white p-3 rounded-md text-left w-[150px]`}
 									onClick={() => setOption('2')}
 								>
 									<Bot className='size-5 mr-4' />
@@ -296,11 +310,9 @@ const CodeEditorWrapper = () => {
 								<div
 									className='bg-white pl-5 pr-5 pb-5 rounded-lg'
 									style={{ width: '80%', height: '95%' }}
-								>
-									{/* <h2 className='text-xl font-bold'>Visualization with PythonTutor</h2> */}
+								>	
 									{iframeVisible && (
-										<div className='relative flex ml-[100px] justify-center items-center h-[95%] overflow-hidden'>
-											{' '}
+										<div className='relative flex ml-[100px] justify-center items-center w-[950px] h-[690px] bg-white overflow-hidden'>
 											{/* Added overflow-hidden */}
 											{overlayVisible && ( // Conditional rendering for the overlay inside the iframe's div
 												<div className='absolute inset-0 bg-white w-full h-full z-10' />
@@ -319,10 +331,8 @@ const CodeEditorWrapper = () => {
 												style={{ overflowX: 'hidden' }}
 												scrolling='no'
 											></iframe>
-											<div className='absolute inset-y-0 right-0 bg-white w-[250px] z-10' />
-											<div className='absolute left-[20px] bottom-[10px] bg-white w-[500px] h-[150px] z-10' />
 											<Button
-												className='absolute top-5 right-10 z-10 mb-4'
+												className='absolute top-5 right-2 z-10 mb-4'
 												onClick={() => setIsDialogOpen(false)}
 											>
 												Close

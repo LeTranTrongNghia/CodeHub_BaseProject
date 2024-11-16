@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { User, MessageCircle } from "lucide-react";
 import { CreatePostDialog } from './createPost_btn';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const ChannelsSidebar = ({ setSelectedChannel, setActiveChannelId, userData, defaultChannelId }) => {
+    const navigate = useNavigate();
+    const currentUser = useSelector(state => state.user);
     const [channels, setChannels] = useState([]);
     const [activeChannelId, setActiveChannelIdState] = useState(defaultChannelId);
 
@@ -28,12 +32,17 @@ const ChannelsSidebar = ({ setSelectedChannel, setActiveChannelId, userData, def
         setSelectedChannel({ name: channel.name, description: "Description for " + channel.name });
         setActiveChannelIdState(channel._id);
         setActiveChannelId(channel._id);
+        navigate(`/community?channelId=${channel._id}`);
+    };
+
+    const handleMyPostsClick = () => {
+        navigate(`/community/profile/${currentUser.id}`);
     };
 
     return (
         <aside className="w-64 border-r p-4 hidden md:block">
             <div className="mb-4">
-                <Button variant="ghost" className="w-full justify-start">
+                <Button variant="ghost" className="w-full justify-start" onClick={handleMyPostsClick}>
                     <User className="mr-2 h-4 w-4" /> My Posts
                 </Button>
             </div>
