@@ -24,10 +24,8 @@ authRouter.get(
 
 	async (req, res, next) => {
 		try {
-			console.log('Google Callback Response:', req.user); // Kiểm tra thông tin người dùng
-			await authController.callback('google', req, res); // Call callback logic
+			authController.callback('google')(req, res, next); // Call callback logic
 		} catch (error) {
-			console.error('Error in callback handling:', error); // Log lỗi ở đây để dễ debug
 			next(error); // Call error handler
 		}
 	},
