@@ -188,21 +188,32 @@ const CourseDetails = () => {
 
   // Siu
 
-  let pause = false;
-
   const onPlayerStateChange = (event) => {
     // access to player in all event handlers via event.target
     const player = event.target;
-    let lastTime = 0;
+    // let isFirstCheck = false;
     const intervalId = setInterval(() => {
       const currentTimeVideo = Math.floor(player.getCurrentTime());
       // if (Math.abs(currentTimeVideo - lastTime) > 1) {
       //   player.seekTo(lastTime, true);
       // }
+      const firstLectureTime = course?.lectures[0]
+        ? convertTimeToSeconds(course.lectures[0].time)
+        : null;
+      // const shouldPause = course?.lectures.some((lecture) => {
+      //   return currentTimeVideo === convertTimeToSeconds(lecture.time);
+      // });
       const shouldPause = course?.lectures.some((lecture) => {
-        return currentTimeVideo === convertTimeToSeconds(lecture.time);
+        const lectureTimeInSeconds = convertTimeToSeconds(lecture.time);
+
+        if (lectureTimeInSeconds === firstLectureTime) {
+          return false;
+        }
+
+        return currentTimeVideo === lectureTimeInSeconds;
       });
       // console.log(lastTime);
+      console.log(player);
       console.log(shouldPause);
       if (shouldPause) {
         player.pauseVideo();
