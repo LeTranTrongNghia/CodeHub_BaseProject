@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// Khởi tạo state ban đầu
 const initialState = {
+
 	isAdmin: false,
 	isLoggedIn: false,
 	username: '',
 	email: '',
 	id: '',
 };
-
-const userReducer = createSlice({
 	name: 'userReducer',
 	initialState,
 	reducers: {
@@ -33,4 +33,5 @@ const userReducer = createSlice({
 export const { setAdminStatus, setLoginStatus, setUsername, setEmail, setId } =
 	userReducer.actions;
 
+// Xuất reducer để sử dụng trong store
 export default userReducer.reducer;

@@ -1,6 +1,6 @@
 import express from "express";
-import db from "../db/connection.js";
 import { ObjectId } from "mongodb";
+import db from "../db/connection.js";
 
 const router = express.Router();
 
@@ -44,6 +44,7 @@ router.post("/", async (req, res) => {
       language_short: req.body.language_short,
       title: req.body.title,
       video_link: req.body.video_link,
+      video_id: req.body.video_id,
       lectures: req.body.lectures,
     };
     let collection = await db.collection("courses");
@@ -67,6 +68,7 @@ router.patch("/:id", async (req, res) => {
         language_short: req.body.language_short,
         title: req.body.title,
         video_link: req.body.video_link,
+        video_id: req.body.video_id,
         lectures: req.body.lectures,
       },
     };
