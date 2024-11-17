@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 // import { signOut } from 'firebase/auth';
@@ -25,7 +24,7 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { BookMarked, Bot, ChevronLeft, CircleUser, Search } from 'lucide-react';
-
+import { toast } from 'react-toastify';
 import ReviewCode from './ReviewCode';
 import { CODE_SNIPPETS } from './constant/constants';
 import LanguageSelector from '/src/components/Code_Editor/LanguageSelector';
@@ -39,7 +38,10 @@ const CodeEditorWrapper = () => {
 	const [option, setOption] = useState('1');
 	const editorRef = useRef(null);
 	const renderProblem = useSelector(state => state.problem.selectedProblem);
-	const navigate = useNavigate();
+	const [iframeSrc, setIframeSrc] = useState('');
+	const [iframeVisible, setIframeVisible] = useState(false);
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [overlayVisible, setOverlayVisible] = useState(false); // New state for overlay visibility
 
 	useEffect(() => {
 		if (editorRef.current) {
@@ -50,10 +52,20 @@ const CodeEditorWrapper = () => {
 		}
 	}, [editorRef]);
 
-	const onSelect = selectedLanguage => {
-		setLanguage(selectedLanguage);
-		setValue(CODE_SNIPPETS[selectedLanguage]);
-	};
+	useEffect(() => {
+		const handleResize = () => {
+			if (window.innerWidth < 1400 || window.innerHeight < 700) {
+				setIsDialogOpen(false); // Đóng dialog nếu kích thước cửa sổ nhỏ hơn yêu cầu
+			}
+		};
+		// Thêm listener cho sự kiện resize
+		window.addEventListener('resize', handleResize);
+
+		// Cleanup listener khi component unmount
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
 
 	// const handleLogout = async () => {
 	// 	try {
@@ -65,6 +77,82 @@ const CodeEditorWrapper = () => {
 	// 		toast.error('Logout failed');
 	// 	}
 	// };
+
+	const handleEditorDidMount = editor => {
+		editorRef.current = editor;
+	};
+
+	const languageMapping = {
+		python: '311', // Convert Python to 311
+		java: 'java', // Keep Java as is
+		javascript: 'js', // Convert JavaScript to js
+	};
+
+	const onSelect = selectedLanguage => {
+		setLanguage(selectedLanguage);
+		setValue(CODE_SNIPPETS[selectedLanguage]);
+		// No need to set iframeSrc here, it will be set in getCode
+	};
+
+	const getCode = () => {
+		const code = editorRef.current.getValue();
+		const encodedCode = encodeURIComponent(code);
+
+		// Count the number of lines in the code
+		const lineCount = code.split('\n').length;
+
+		// If there are less than 20 lines, calculate how many %0A to add
+		let additionalNewLines = 0;
+		if (lineCount < 21) {
+			additionalNewLines = 21 - lineCount; // Calculate how many %0A to add
+		}
+
+		// Append the necessary %0A to the encodedCode
+		const finalEncodedCode = '%0A'.repeat(additionalNewLines) + encodedCode;
+
+		const mappedLanguage = languageMapping[language] || language; // Use mapping or fallback to original
+		const tutorUrl = `https://pythontutor.com/render.html#code=${finalEncodedCode}&origin=opt-frontend.js&cumulative=false&heapPrimitives=false&mode=display&py=${mappedLanguage}&rawInputLstJSON=[]&textReferences=false`;
+
+		setIframeSrc(tutorUrl);
+		setIframeVisible(true);
+	};
+
+	const handleIframeLoad = () => {
+		const iframe = document.getElementById('tutor-iframe');
+		const iframeWindow = iframe.contentWindow;
+
+		// Send a message to the iframe to set the language and trigger visualization
+		iframeWindow.postMessage({ language, action: 'visualize' }, '*');
+	};
+
+	const handleRunVisualize = () => {
+		// Kiểm tra nếu kích thước cửa sổ trình duyệt nhỏ hơn yêu cầu
+		if (
+			window.innerWidth < 1400 ||
+			window.innerHeight < 700
+		) {
+			setIsDialogOpen(false); // Đóng dialog nếu kích thước cửa sổ nhỏ hơn yêu cầu
+			toast.warn(
+				'Please maximize your browser window to full width (>1400) and height(>700) before running the visualization.',
+			);
+			return; // Thoát hàm nếu cửa sổ không được tối đa hóa
+		}
+
+		// Kiểm tra nếu ngôn ngữ đã chọn là một trong những ngôn ngữ được phép
+		if (['python', 'java', 'javascript'].includes(language)) {
+			getCode();
+			setIsDialogOpen(true); // Mở dialog
+			setOverlayVisible(true); // Hiện overlay
+			setTimeout(() => {
+				setOverlayVisible(false); // Ẩn overlay sau 3 giây
+			}, 2000);
+		} else {
+			// Hiện dialog với thông báo cảnh báo cho các ngôn ngữ không được hỗ trợ
+			alert(
+				'The visualize code feature only supports Python, Java, and JavaScript.',
+			);
+		}
+	};
 
 	return (
 		<div className='flex min-h-screen w-full flex-col'>
@@ -92,9 +180,8 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${
-										option === '1' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[120px]`}
+									className={`option ${option === '1' ? 'selected' : ''
+										} flex bg-white p-3 rounded-md text-left w-[120px]`}
 									onClick={() => setOption('1')}
 								>
 									<BookMarked className='size-5 mr-4' />
@@ -111,9 +198,8 @@ const CodeEditorWrapper = () => {
 							<TooltipTrigger asChild>
 								<button
 									type='button'
-									className={`option ${
-										option === '2' ? 'selected' : ''
-									} flex bg-white p-3 rounded-md text-left w-[150px]`}
+									className={`option ${option === '2' ? 'selected' : ''
+										} flex bg-white p-3 rounded-md text-left w-[150px]`}
 									onClick={() => setOption('2')}
 								>
 									<Bot className='size-5 mr-4' />
@@ -189,12 +275,73 @@ const CodeEditorWrapper = () => {
 							defaultLanguage={language}
 							defaultValue={CODE_SNIPPETS[language]}
 							theme='vs-dark'
-							onMount={editor => {
-								editorRef.current = editor;
-							}}
+							onMount={handleEditorDidMount}
 							value={value}
 							onChange={newValue => setValue(newValue)}
 						/>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div className='w-full'>
+										<Button
+											className='mt-5'
+											onClick={handleRunVisualize}
+											disabled={
+												!['python', 'java', 'javascript'].includes(language)
+											}
+										>
+											Run Visualize
+										</Button>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>
+										The visualize code feature only supports Python, Java, and
+										JavaScript.
+									</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+						{isDialogOpen && (
+							<div
+								className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'
+								style={{ zIndex: 1000 }}
+							>
+								<div
+									className='bg-white pl-5 pr-5 pb-5 rounded-lg'
+									style={{ width: '80%', height: '95%' }}
+								>	
+									{iframeVisible && (
+										<div className='relative flex ml-[100px] justify-center items-center w-[950px] h-[690px] bg-white overflow-hidden'>
+											{/* Added overflow-hidden */}
+											{overlayVisible && ( // Conditional rendering for the overlay inside the iframe's div
+												<div className='absolute inset-0 bg-white w-full h-full z-10' />
+											)}
+											<div className='absolute inset-y-0 top-0 bg-white w-full h-[30px] z-10' />
+											<div className='absolute left-[200px] top-[70px] bg-white w-[160px] h-[15px] z-10' />
+											<iframe
+												id='tutor-iframe'
+												src={iframeSrc}
+												width='100%'
+												height='99%'
+												title='Pythontutor Visualization'
+												onLoad={handleIframeLoad}
+												sandbox='allow-same-origin allow-scripts'
+												className='absolute mb-10'
+												style={{ overflowX: 'hidden' }}
+												scrolling='no'
+											></iframe>
+											<Button
+												className='absolute top-5 right-2 z-10 mb-4'
+												onClick={() => setIsDialogOpen(false)}
+											>
+												Close
+											</Button>
+										</div>
+									)}
+								</div>
+							</div>
+						)}
 						<Output editorRef={editorRef} language={language} />
 					</div>
 				</div>

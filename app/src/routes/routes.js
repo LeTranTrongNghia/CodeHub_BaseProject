@@ -16,11 +16,9 @@ const ProfilePage = React.lazy(() => import("../container/Profile/Profile"));
 const CodingPage = React.lazy(() =>
   import("../container/Workspace/Code_Editor/code_editor.jsx")
 );
-
 // const AIPage = React.lazy(() =>
 // 	import('../container/Workspace/AI_chat/AI_chat.jsx'),
 // );
-
 const ForgotPasswordPage = React.lazy(() =>
   import("../container/Auth/ForgotPassword/ForgotPassword.jsx")
 );
@@ -55,7 +53,6 @@ const ContactPage = React.lazy(() =>
 );
 // const Newcourses = React.lazy(() => {
 //   import("../container/Home/pages/MainHome/");
-// });
 
 const OtpPage = React.lazy(() =>
   import("../container/Auth/OTP-Verification/otp.jsx")
@@ -67,6 +64,26 @@ const CoursePage = React.lazy(() =>
 
 const CourseDetail = React.lazy(() =>
   import("../components/Course/CourseDetails")
+);
+
+const SolveProblemPage = React.lazy(() =>
+  import("../container/Workspace/Code_Editor/code_editor.jsx")
+);
+
+const CommunityPage = React.lazy(() =>
+  import("../container/Community/main_feed.jsx")
+);
+
+const PlayGroundPage = React.lazy(() =>
+  import("../components/MainHome/Playground.jsx")
+);
+
+const PostDetailPage = React.lazy(() =>
+  import("../container/Community/PostDetail.jsx")
+);
+
+const MyPostsPage = React.lazy(() =>
+  import("../container/Community/my_posts.jsx")
 );
 
 const publicRoute = [
@@ -98,18 +115,38 @@ const publicRoute = [
     path: config.routes.otp,
     component: OtpPage,
   },
+  {
+    path: config.routes.communityPage,
+    component: CommunityPage,
+  },
+  {
+    path: config.routes.solveProblem,
+    component: SolveProblemPage,
+  },
+  {
+    path: config.routes.playgroundPage,
+    component: PlayGroundPage,
+  },
+  {
+    path: config.routes.detailPost,
+    component: PostDetailPage,
+  },
+  {
+    path: config.routes.myPosts,
+    component: MyPostsPage,
+  },
 ];
 
 const protectedRoute = [
-  {
-    path: config.routes.problemPage,
-    component: ProblemPage,
-  },
   {
     path: config.routes.coursePage,
     component: CoursePage,
   },
   { path: config.routes.newCourse, component: CourseDetail },
+  {
+    path: config.routes.problemPage,
+    component: ProblemPage,
+  },
   {
     path: config.routes.home,
     component: MainHomePage,
@@ -122,10 +159,6 @@ const protectedRoute = [
     path: config.routes.coding,
     component: CodingPage,
   },
-  // {
-  // 	path: config.routes.AIassistant,
-  // 	component: AIPage,
-  // },
   {
     path: config.routes.changePassword,
     component: ChangePasswordPage,

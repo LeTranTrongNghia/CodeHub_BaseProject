@@ -18,11 +18,8 @@ import {
 	PaginationPrevious,
 } from '@/components/ui/pagination';
 
-import { Input } from '@/components/ui/input';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Sidebar from '@/components/MainHome/Sidebar';
-import Topbar from '@/components/MainHome/Topbar';
 
 import {
 	Table,
@@ -32,7 +29,6 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-
 
 const ProblemsPerPage = 7; // Number of problems displayed per page
 

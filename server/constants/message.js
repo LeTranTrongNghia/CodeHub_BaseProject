@@ -81,6 +81,7 @@ export const MESSAGES = {
 			UPDATE_USER: 'User update failed',
 			AVATAR: 'Upload avatar failed',
 			EXISTED: 'User had existed',
+			GET_A_TOKEN_FROM_R_TOKEN: 'Cannot get access token',
 
 			LOGOUT: 'Logout process failed',
 			CHANGE_PASSWORD: 'Password change failed',
@@ -96,6 +97,7 @@ export const MESSAGES = {
 			UNLIKE_PRODUCT: 'Product unliking failed',
 			GET_ALL_PRODUCT_FAVORITE:
 				'Failed to retrieve all favorite products by user',
+			TOKEN: 'Token is invalid',
 		},
 		USER_SPECIFIC: {
 			NOT_FOUND: 'User not found.',
@@ -245,6 +247,10 @@ export const MESSAGES = {
 				ITEMS_OUT_OF_RANGE: 'Items per page out of valid range.',
 			},
 		},
+		TOKEN: {
+			INVALID: 'Invalid token',
+			EXPIRED_TIME: 'Token has expired',
+		},
 		ID_INVALID: 'Id is unvalid',
 		ID_IS_REQUIRED: 'Id is required',
 		ID_MUST_BE_STRING: 'Id must be string',
@@ -314,7 +320,7 @@ export const MESSAGES = {
 				INVALID_BEARER_TOKEN: 'The bearer token is invalid.',
 				HEADER_AUTHORIZATION_IS_INVALID: 'Authorization header is invalid.',
 				NOT_VERIFIED: 'User has not verified yet',
-
+				LOGIN_OAUTH2: 'Login oauth2 fail',
 				EMAIL: {
 					IS_REQUIRED: 'Email is required.',
 					MUST_BE_A_STRING: 'Email must be a string.',

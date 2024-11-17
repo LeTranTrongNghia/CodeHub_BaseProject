@@ -6,15 +6,20 @@ import { requireLoginMiddleware } from "../middlewares/auth.middleware.js";
 import {
   ChangePwdValidator,
   forgotPwdValidator,
+  loginValidator,
   refreshTokenValidator,
+  registerValidator,
   resendOTPValidator,
   resetPwdValidator,
   updateProfileValidator,
   verifyValidator,
 } from "../middlewares/user.middleware.js";
-import { ErrorWithStatus } from "../models/errors/Error.schema.js";
-import userServices from "../services/user.service.js";
 import { wrapRequestHandler } from "../utils/handler.js";
+import db from "../db/connection.js";
+import userServices from "../services/user.service.js";
+import { sendResponse } from "../config/response.config.js";
+import { MESSAGES } from "../constants/message.js";
+import { ErrorWithStatus } from "../models/errors/Error.schema.js";
 
 const userRouter = express.Router();
 
@@ -79,6 +84,22 @@ userRouter.post("/register", async (req, res) => {
   }
 });
 
+userRouter.post("/token/refresh", refreshTokenValidator, async (req, res) => {
+  try {
+    const result = await userServices.refreshtoken(req.body);
+    return sendResponse.success(
+      res,
+      result,
+      MESSAGES.SUCCESS_MESSAGES.USER.REFRESH_TOKEN
+    );
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: MESSAGES.ERROR_MESSAGES.GENERAL.GET_A_TOKEN_FROM_R_TOKEN,
+    });
+  }
+});
+
 userRouter.post(
   "/logout",
   wrapRequestHandler(requireLoginMiddleware),
@@ -104,6 +125,17 @@ userRouter.post("/otp/authenticate", async (req, res) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       message: MESSAGES.ERROR_MESSAGES.GENERAL.VERIFY_OTP,
+    });
+  }
+});
+
+userRouter.post("/token/check", async (req, res) => {
+  try {
+    await userController.checkToken(req, res);
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: MESSAGES.ERROR_MESSAGES.GENERAL.TOKEN,
     });
   }
 });

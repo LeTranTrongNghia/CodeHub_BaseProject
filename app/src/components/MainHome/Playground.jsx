@@ -334,7 +334,7 @@ const FileUploadAndDisplay = () => {
 		return text
 			.replace(
 				/Code:\n([\s\S]*?)(?=<br \/>)?/g,
-				'<pre className="bg-gray-200 p-2 rounded">$1</pre>',
+				'<pre class="bg-gray-200 p-2 rounded">$1</pre>',
 			) // Handle code blocks
 			.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Handle bold text
 	};
@@ -468,13 +468,13 @@ const FileUploadAndDisplay = () => {
 			.replace(/\n/g, '<br />') // Replace newlines with <br />
 			.replace(
 				/Code:\n([\s\S]*?)(?=<br \/>)?/g,
-				'<pre className="bg-gray-200 p-2 rounded">$1</pre>',
+				'<pre class="bg-gray-200 p-2 rounded">$1</pre>',
 			) // Handle code blocks
 			.replace(
 				/(\b(?:Syntax analysis|Function definition check|Logic analysis|Efficiency|Readability|Recommendations):\s*[\s\S]*?)(?=<br \/>)?/g,
-				'<div className="mb-2 font-bold">$1</div>',
+				'<div class="mb-2 font-bold">$1</div>',
 			) // Handle sections
-			.replace(/\*\*(.*?)\*\*/g, '<div className="mb-2 font-bold">$1</div>'); // Handle bold text
+			.replace(/\*\*(.*?)\*\*/g, '<div class="mb-2 font-bold">$1</div>'); // Handle bold text
 	};
 
 	const [data, setData] = useState([]);
@@ -644,6 +644,7 @@ const FileUploadAndDisplay = () => {
 					className='grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-3 lg:grid-cols-3'
 					style={{ gridTemplateColumns: '20rem 0.8fr 1fr' }}
 				>
+					{/* Setting */}
 					<div className='relative hidden flex-col items-start gap-8 md:flex max-w-[20rem]'>
 						<form className='grid w-full items-start gap-6'>
 							<fieldset className='grid gap-6 rounded-lg border p-4'>
@@ -866,6 +867,7 @@ const FileUploadAndDisplay = () => {
 						</form>
 					</div>
 
+					{/* AI Chat */}
 					<div className='relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1'>
 						<Badge variant='outline' className='absolute right-3 top-3'>
 							Output
@@ -976,6 +978,7 @@ const FileUploadAndDisplay = () => {
 						</form>
 					</div>
 
+					{/* Editor */}
 					<div className='relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1'>
 						<Badge variant='outline' className='absolute right-3 top-3'>
 							Editor
@@ -1025,6 +1028,7 @@ const FileUploadAndDisplay = () => {
 												</div>
 											))
 										) : (
+											// eslint-disable-next-line react/no-unescaped-entities
 											<div>Click "Run Code" to see the output here</div>
 										)}
 									</div>

@@ -8,7 +8,6 @@ import App from './App';
 import './index.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { createBrowserHistory } from 'history';
 export const history = createBrowserHistory();
 
@@ -65,62 +64,6 @@ export const history = createBrowserHistory();
 // 		],
 // 	},
 // ]);
-
-//import MainHome from "./container/Home/pages/MainHome/MainHome.jsx";
-//import ContactPage from "./container/Home/pages/MainHome/support.jsx";
-// import OTPVerification from "./container/Auth/OTP-Verification/otp.jsx";
-// import NewCourse from "./components/MainHome/NewCourse.jsx";
-
-// Create router
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <App />,
-//     children: [
-//       {
-//         path: "/",
-//         element: <IndexHome />,
-//       },
-//       {
-//         path: "/main-home",
-//         element: <MainHome />,
-//       },
-//       {
-//         path: "/problems",
-//         element: <ProblemsPage />,
-//       },
-//       {
-//         path: "/problems/solve/:id",
-//         element: <CodeEditorWrapper />,
-//       },
-//       {
-//         path: "/courses",
-//         element: <CourseList />,
-//       },
-//       {
-//         path: "/new-courses/:id",
-//         element: <NewCourse />,
-//       },
-//       {
-//         path: "/courses/:id",
-//         element: <CourseDetails />,
-//       },
-//       {
-//         path: "/playground",
-//         element: <FileUploadAndDisplay />,
-//       },
-//       {
-//         path: "/contact",
-//         element: <ContactPage />,
-//       },
-//       {
-//         path: "/otp",
-//         element: <OTPVerification />,
-//       }
-//     ],
-//   },
-// ]);
-
 
 // Render the app
 ReactDOM.createRoot(document.getElementById('root')).render(

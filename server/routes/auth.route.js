@@ -2,8 +2,52 @@ import { Router } from 'express';
 import { requireRoleMiddleware } from '../middlewares/auth.middleware.js';
 import { wrapRequestHandler } from '../utils/handler.js';
 import authController from '../controllers/auth.controller.js';
+import passport from 'passport';
+import authServices from '../services/auth.service.js';
 
+authServices.init();
 const authRouter = Router();
+
+authRouter.get(
+	'/google',
+	passport.authenticate('google', {
+		session: false,
+		scope: ['profile', 'email'],
+	}),
+);
+
+authRouter.get(
+	'/google/callback',
+	passport.authenticate('google', {
+		session: false,
+	}),
+
+	async (req, res, next) => {
+		try {
+			authController.callback('google')(req, res, next); // Call callback logic
+		} catch (error) {
+			next(error); // Call error handler
+		}
+	},
+);
+
+authRouter.get('/github', passport.authenticate('github', { session: false }));
+
+authRouter.get(
+	'/github/callback',
+
+	passport.authenticate('github', {
+		session: false,
+	}),
+
+	async (req, res, next) => {
+		try {
+			authController.callback('github')(req, res, next);
+		} catch (error) {
+			next(error);
+		}
+	},
+);
 
 authRouter.get(
 	'/users',
