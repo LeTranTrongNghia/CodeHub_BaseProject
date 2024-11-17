@@ -1,17 +1,9 @@
 import { HOST_DOMAIN_BE } from '@/helpers/domain';
 const SignInwithGithub = () => {
 	const gihubLogin = async () => {
-		try {
-			console.log('đổi domain');
-
-			window.location.href = `${HOST_DOMAIN_BE}/auth/github`;
-			// await axios.get(`${HOST_DOMAIN_BE}/auth/github`);
-
-			console.log('đổi xong');
-		} catch (error) {
-			console.log('🚀 ~ gihubLogin ~ error:', error);
-		}
+		window.location.href = `${HOST_DOMAIN_BE}/auth/github`;
 	};
+
 	return (
 		<div onClick={gihubLogin}>
 			<a
