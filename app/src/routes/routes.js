@@ -128,4 +128,4 @@ const adminRoute = [
 	},
 ];
 
-export { publicRoute, adminRoute, protectedRoute };
+export { adminRoute, protectedRoute, publicRoute };

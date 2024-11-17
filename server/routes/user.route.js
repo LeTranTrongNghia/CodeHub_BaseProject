@@ -77,9 +77,23 @@ userRouter.post('/token/refresh', refreshTokenValidator, async (req, res) => {
 
 userRouter.post(
 	'/logout',
-	wrapRequestHandler(requireLoginMiddleware),
+	requireLoginMiddleware,
 	refreshTokenValidator,
-	wrapRequestHandler(userController.logout),
+	async (req, res) => {
+		try {
+			const result = await userServices.logout(req.body);
+			return sendResponse.success(
+				res,
+				result,
+				MESSAGES.SUCCESS_MESSAGES.LOGOUT,
+			);
+		} catch (error) {
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+				message: MESSAGES.ERROR_MESSAGES.GENERAL.LOGOUT,
+			});
+		}
+	},
 );
 
 userRouter.post('/otp/authenticate', async (req, res) => {

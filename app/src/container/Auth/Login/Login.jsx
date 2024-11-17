@@ -1,16 +1,17 @@
-import { Alert, Button, Form, Input } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import './style.css';
-import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import SignInwithGoogle from './SignInwithGoogle';
-import SignInwithGithub from './SignInwithGithub';
 import {
 	setAdminStatus,
+	setEmail,
 	setLoginStatus,
 	setUsername,
 } from '@/redux/userReducer/userReducer';
+import { Alert, Button, Form, Input } from 'antd';
 import { jwtDecode } from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import SignInwithGithub from './SignInwithGithub';
+import SignInwithGoogle from './SignInwithGoogle';
+import './style.css';
 import { HOST_DOMAIN_BE } from '@/helpers/domain';
 
 const Login = () => {
@@ -31,10 +32,11 @@ const Login = () => {
 			});
 			// Chuyển đổi response thành JSON
 			const data = await response.json();
-			const { access_token, username } = data.data;
+			const { access_token, username, email2 } = data.data;
 			const decodedData = jwtDecode(access_token);
 			const { role } = decodedData;
 			dispatch(setUsername(username));
+			dispatch(setEmail(email2));
 			if (role === 'Admin') {
 				dispatch(setAdminStatus(true));
 			}
