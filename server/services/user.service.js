@@ -14,6 +14,7 @@ import { ObjectId } from 'mongodb';
 import db from '../db/connection.js';
 import dotenv from 'dotenv';
 import User from '../models/schemas/User.schema.js';
+import moment from 'moment';
 dotenv.config();
 class UserService {
 	// Generate accesstoken
@@ -210,7 +211,7 @@ class UserService {
 
 	async refreshtoken(payload) {
 		try {
-			const secretKey = env.jwt.refresh_token_key;
+			const secretKey = process.env.JWT_REFRESH_TOKEN_SECRET;
 			const data = await verifyToken({
 				token: payload.refresh_token,
 				secretOrPublicKey: secretKey,
@@ -386,6 +387,46 @@ class UserService {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
 				message: MESSAGES.ERROR_MESSAGES.GENERAL.UPDATE_USER,
+			});
+		}
+	}
+
+	async checkToken(payload) {
+		try {
+			// Lấy các trường từ payload
+			const { iat, exp, ...otherProperties } = payload;
+
+			// Kiểm tra xem token có thông tin thời gian không
+			if (!iat || !exp) {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.UNAUTHORIZED,
+					message: MESSAGES.VALIDATION_MESSAGES.TOKEN.INVALID,
+				});
+			}
+
+			// Lấy thời gian hiện tại
+			const currentTime = moment().unix();
+
+			// Kiểm tra token đã hết hạn chưa
+			if (exp < currentTime) {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.UNAUTHORIZED,
+					message: MESSAGES.VALIDATION_MESSAGES.TOKEN.EXPIRED_TIME,
+				});
+			}
+
+			// Trả về thông tin người dùng (bao gồm thời gian tạo và hết hạn đã được format)
+			const userInfo = {
+				...otherProperties,
+				iat: moment(iat * 1000).format(),
+				exp: moment(exp * 1000).format(),
+			};
+
+			return userInfo;
+		} catch (error) {
+			throw new ErrorWithStatus({
+				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+				message: error.message || 'Error in checking token',
 			});
 		}
 	}

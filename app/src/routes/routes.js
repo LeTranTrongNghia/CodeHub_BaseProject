@@ -47,9 +47,9 @@ const CoursePageAdmin = React.lazy(() =>
 const ContactPage = React.lazy(() =>
 	import('../container/Home/pages/MainHome/support.jsx'),
 );
-const Newcourses = React.lazy(() => {
-	import('../container/Home/pages/MainHome/');
-});
+// const Newcourses = React.lazy(() => {
+// 	import('../container/Home/pages/MainHome/');
+// });
 
 const OtpPage = React.lazy(() =>
 	import('../container/Auth/OTP-Verification/otp.jsx'),
@@ -169,4 +169,4 @@ const adminRoute = [
 	},
 ];
 
-export { publicRoute, adminRoute, protectedRoute };
+export { adminRoute, protectedRoute, publicRoute };

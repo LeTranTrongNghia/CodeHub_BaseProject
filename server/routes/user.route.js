@@ -4,20 +4,18 @@ import { requireLoginMiddleware } from '../middlewares/auth.middleware.js';
 import {
 	ChangePwdValidator,
 	forgotPwdValidator,
-	loginValidator,
 	refreshTokenValidator,
-	registerValidator,
 	resendOTPValidator,
 	resetPwdValidator,
 	updateProfileValidator,
 	verifyValidator,
 } from '../middlewares/user.middleware.js';
 import { wrapRequestHandler } from '../utils/handler.js';
-import db from '../db/connection.js';
 import userServices from '../services/user.service.js';
 import { sendResponse } from '../config/response.config.js';
 import { MESSAGES } from '../constants/message.js';
 import { ErrorWithStatus } from '../models/errors/Error.schema.js';
+import { StatusCodes } from 'http-status-codes';
 
 const userRouter = express.Router();
 
@@ -61,17 +59,41 @@ userRouter.post('/register', async (req, res) => {
 	}
 });
 
-userRouter.post(
-	'/logout',
-	wrapRequestHandler(requireLoginMiddleware),
-	refreshTokenValidator,
-	wrapRequestHandler(userController.logout),
-);
+userRouter.post('/token/refresh', refreshTokenValidator, async (req, res) => {
+	try {
+		const result = await userServices.refreshtoken(req.body);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.USER.REFRESH_TOKEN,
+		);
+	} catch (error) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.GENERAL.GET_A_TOKEN_FROM_R_TOKEN,
+		});
+	}
+});
 
 userRouter.post(
-	'/token/refresh',
+	'/logout',
+	requireLoginMiddleware,
 	refreshTokenValidator,
-	wrapRequestHandler(userController.refreshToken),
+	async (req, res) => {
+		try {
+			const result = await userServices.logout(req.body);
+			return sendResponse.success(
+				res,
+				result,
+				MESSAGES.SUCCESS_MESSAGES.LOGOUT,
+			);
+		} catch (error) {
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+				message: MESSAGES.ERROR_MESSAGES.GENERAL.LOGOUT,
+			});
+		}
+	},
 );
 
 userRouter.post('/otp/authenticate', async (req, res) => {
@@ -86,6 +108,17 @@ userRouter.post('/otp/authenticate', async (req, res) => {
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
 			message: MESSAGES.ERROR_MESSAGES.GENERAL.VERIFY_OTP,
+		});
+	}
+});
+
+userRouter.post('/token/check', async (req, res) => {
+	try {
+		await userController.checkToken(req, res);
+	} catch (error) {
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.GENERAL.TOKEN,
 		});
 	}
 });
@@ -133,7 +166,5 @@ userRouter.put(
 	updateProfileValidator,
 	wrapRequestHandler(userController.updateProfile),
 );
-
-userRouter.post('/token/check');
 
 export default userRouter;

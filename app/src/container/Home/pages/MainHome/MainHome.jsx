@@ -16,7 +16,13 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
+import {
+	setAdminStatus,
+	setLoginStatus,
+	setUsername,
+} from '@/redux/userReducer/userReducer';
 import Spline from '@splinetool/react-spline';
+import { jwtDecode } from 'jwt-decode';
 import {
 	Activity,
 	ArrowUpRight,
@@ -25,13 +31,46 @@ import {
 	CreditCard,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const MainHome = () => {
+	const dispatch = useDispatch();
 	const [problems, setProblems] = useState([]);
 	const [filteredProblems, setFilteredProblems] = useState([]);
 	const username = useSelector(state => state.user.username);
+
+	const processTokenFromURL = () => {
+		console.log('vào hàm xử lý param');
+
+		const currentUrl = new URL(window.location.href);
+		const token = currentUrl.searchParams.get('token');
+		if (token) {
+			// Lưu token vào localStorage hoặc xử lý logic khác
+			localStorage.setItem('access_stoken', token); // Hoặc xử lý token theo nhu cầu của bạn
+
+			// Xóa tham số 'token' khỏi URL
+			currentUrl.searchParams.delete('token');
+
+			// Cập nhật URL trên thanh trình duyệt mà không tải lại trang
+			window.history.replaceState(null, '', currentUrl.toString());
+		}
+		try {
+			const decodedData = jwtDecode(token);
+			const { role, username } = decodedData;
+			if (role === 'Admin') {
+				dispatch(setAdminStatus(true));
+			}
+			dispatch(setUsername(username));
+			dispatch(setLoginStatus(true));
+		} catch (error) {
+			console.log('🚀 ~ processTokenFromURL ~ error:', error);
+		}
+	};
+
+	useEffect(() => {
+		processTokenFromURL();
+	}, []);
 
 	useEffect(() => {
 		async function getProblems() {

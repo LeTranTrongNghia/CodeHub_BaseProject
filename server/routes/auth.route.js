@@ -8,33 +8,48 @@ import authServices from '../services/auth.service.js';
 authServices.init();
 const authRouter = Router();
 
-authRouter.get('/google', async (req, res) => {
-	try {
-		passport.authenticate('google', { session: false, scope: ['email'] });
-	} catch (error) {
-		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-			message: 'Login google failed',
-		});
-	}
-});
+authRouter.get(
+	'/google',
+	passport.authenticate('google', {
+		session: false,
+		scope: ['profile', 'email'],
+	}),
+);
 
-authRouter.get('/google/callback', async (req, res) => {
-	try {
-		console.log('at callback');
+authRouter.get(
+	'/google/callback',
+	passport.authenticate('google', {
+		session: false,
+	}),
 
-		passport.authenticate('google', {
-			session: false,
-			successRedirect: 'http://localhost:5713/',
-			failureRedirect: '/login',
-		});
-	} catch (error) {
-		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-			message: 'Login google failed',
-		});
-	}
-});
+	async (req, res, next) => {
+		try {
+			console.log('Google Callback Response:', req.user); // Kiểm tra thông tin người dùng
+			await authController.callback('google', req, res); // Call callback logic
+		} catch (error) {
+			console.error('Error in callback handling:', error); // Log lỗi ở đây để dễ debug
+			next(error); // Call error handler
+		}
+	},
+);
+
+authRouter.get('/github', passport.authenticate('github', { session: false }));
+
+authRouter.get(
+	'/github/callback',
+
+	passport.authenticate('github', {
+		session: false,
+	}),
+
+	async (req, res, next) => {
+		try {
+			authController.callback('github')(req, res, next);
+		} catch (error) {
+			next(error);
+		}
+	},
+);
 
 authRouter.get(
 	'/users',

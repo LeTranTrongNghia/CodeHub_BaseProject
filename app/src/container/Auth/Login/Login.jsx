@@ -1,17 +1,19 @@
-import { Alert, Button, Form, Input } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import './style.css';
-import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import SignInwithGoogle from './SignInwithGoogle';
-import SignInwithGithub from './SignInwithGithub';
 import {
 	setAdminStatus,
+	setEmail,
 	setId,
 	setLoginStatus,
 	setUsername,
 } from '@/redux/userReducer/userReducer';
+import { Alert, Button, Form, Input } from 'antd';
 import { jwtDecode } from 'jwt-decode';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import SignInwithGithub from './SignInwithGithub';
+import SignInwithGoogle from './SignInwithGoogle';
+import './style.css';
+import { HOST_DOMAIN_BE } from '@/helpers/domain';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -19,7 +21,7 @@ const Login = () => {
 	const onFinish = async values => {
 		const { email, password } = values;
 		try {
-			const response = await fetch(`http://localhost:5050/user/login`, {
+			const response = await fetch(`${HOST_DOMAIN_BE}/user/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -32,11 +34,12 @@ const Login = () => {
 			// Chuyển đổi response thành JSON
 			const data = await response.json();
 			// console.log(data)
-			const { access_token, username, _id } = data.data;
-			dispatch(setId(_id))
+			const { access_token, username, _id, email2 } = data.data;
+			dispatch(setId(_id));
 			const decodedData = jwtDecode(access_token);
 			const { role } = decodedData;
 			dispatch(setUsername(username));
+			dispatch(setEmail(email2));
 			if (role === 'Admin') {
 				dispatch(setAdminStatus(true));
 			}

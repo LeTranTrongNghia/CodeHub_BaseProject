@@ -109,6 +109,15 @@ const userController = {
 			MESSAGES.SUCCESS_MESSAGES.USER.UPLOAD_AVATAR,
 		);
 	},
+	checkToken: async (req, res) => {
+		console.log('🚀 ~ checkToken: ~ req.body:', req.body);
+		const result = await userServices.checkToken(req.body);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.USER.TEST_TOKEN,
+		);
+	},
 };
 
 export default userController;
