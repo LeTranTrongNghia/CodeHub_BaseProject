@@ -16,6 +16,7 @@ export default class User {
 	password_change_at;
 	created_at;
 	updated_at;
+	savedPost;
 
 	constructor(user) {
 		this._id = user._id;
@@ -35,5 +36,6 @@ export default class User {
 		this.password_change_at = user.password_change_at || null;
 		this.created_at = user.created_at || new Date();
 		this.updated_at = user.updated_at || null;
+		this.savedPost = user.savedPost || [];
 	}
 }

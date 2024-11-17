@@ -9,18 +9,32 @@ const client = new MongoClient(uri, {
   },
 });
 
-try {
-  // Connect the client to the server
-  await client.connect();
-  // Send a ping to confirm a successful connection
-  await client.db("admin").command({ ping: 1 });
-  console.log(
-   "Pinged your deployment. You successfully connected to MongoDB!"
-  );
-} catch(err) {
-  console.error(err);
+async function createCollections() {
+  try {
+    const db = client.db("CodeHub");
+    const collections = await db.listCollections().toArray();
+    const collectionNames = collections.map(col => col.name);
+
+    if (!collectionNames.includes("posts")) {
+      await db.createCollection("posts");
+      console.log("Created 'posts' collection.");
+    }
+  } catch (err) {
+    console.error("Error creating collections:", err);
+  }
 }
 
-let db = client.db("CodeHub");
+async function connectToDatabase() {
+  try {
+    await client.connect();
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    await createCollections(); // Ensure the posts collection is created
+  } catch (err) {
+    console.error(err);
+  }
+}
 
-export default db;
+connectToDatabase();
+
+export default client.db("CodeHub");

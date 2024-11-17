@@ -20,6 +20,11 @@ const routes = {
 	coursePage: '/courses',
 	newCourse: '/new-courses',
 	contactPage: '/contact',
+	solveProblem: '/problems/solve/:id',
+	communityPage: '/community',
+	detailPost: '/community/post/detail/:id',
+	playgroundPage: '/playground',
+	myPosts: '/community/profile/:userId',
 };
 
 export default routes;

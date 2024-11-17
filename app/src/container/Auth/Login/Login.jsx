@@ -7,6 +7,7 @@ import SignInwithGoogle from './SignInwithGoogle';
 import SignInwithGithub from './SignInwithGithub';
 import {
 	setAdminStatus,
+	setId,
 	setLoginStatus,
 	setUsername,
 } from '@/redux/userReducer/userReducer';
@@ -30,7 +31,9 @@ const Login = () => {
 			});
 			// Chuyển đổi response thành JSON
 			const data = await response.json();
-			const { access_token, username } = data.data;
+			// console.log(data)
+			const { access_token, username, _id } = data.data;
+			dispatch(setId(_id))
 			const decodedData = jwtDecode(access_token);
 			const { role } = decodedData;
 			dispatch(setUsername(username));

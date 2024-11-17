@@ -4,10 +4,52 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { X, ChevronDown, Image, Users, Smile, MapPin, Gift, MoreHorizontal } from "lucide-react"
+import { Image, Users, Smile, MapPin, Gift, MoreHorizontal } from "lucide-react"
 
-export function CreatePostDialog({ trigger }) {
+export function CreatePostDialog({ trigger, userData, currentChannelId, onPostCreated }) {
     const [postContent, setPostContent] = useState('')
+
+    const handlePostSubmit = async () => {
+        if (!postContent) return; // Prevent empty posts
+
+        const newPost = {
+            author: userData.username,
+            userID: userData._id,
+            channelId: currentChannelId,
+            timeAgo: new Date().toLocaleString(),
+            content: postContent,
+            avatarURL: userData.avatar || '',
+            imageUrl: null,
+            likes: [],
+            comments: [],
+            poll: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        };
+
+        try {
+            const response = await fetch('http://localhost:5050/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newPost),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create post');
+            }
+
+            setPostContent(''); // Clear the textarea after submission
+            onPostCreated(); // Call the refresh function
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
+    };
+
+    if (!userData) {
+        return null;
+    }
 
     return (
         <Dialog>
@@ -21,19 +63,17 @@ export function CreatePostDialog({ trigger }) {
                 <div className="px-4">
                     <div className="flex items-center space-x-2 mb-4">
                         <Avatar>
-                            <AvatarImage src="https://avatars.githubusercontent.com/u/133557378?v=4" className="rounded-full h-10 w-10" />
-                            <AvatarFallback>TN</AvatarFallback>
+                            <AvatarImage src={userData.avatar} className="rounded-full h-10 w-10" />
+                            <AvatarFallback>{userData.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <div className="font-semibold">Trong Nghia</div>
+                            <div className="font-semibold">{userData.username}</div>
                             <Select defaultValue="public">
                                 <SelectTrigger className="w-[110px] h-6 text-xs bg-muted border-none">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="public">Public</SelectItem>
-                                    <SelectItem value="friends">Friends</SelectItem>
-                                    <SelectItem value="private">Only me</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -69,7 +109,7 @@ export function CreatePostDialog({ trigger }) {
                             </Button>
                         </div>
                     </div>
-                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" onClick={handlePostSubmit}>
                         Post
                     </Button>
                 </div>
