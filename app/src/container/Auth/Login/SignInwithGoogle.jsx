@@ -1,46 +1,15 @@
-import { auth, firestore } from '@/firebase/firebase';
-import User from '@/model/User';
-import { setLoginStatus } from '@/redux/userReducer/userReducer';
-import {
-	getRedirectResult,
-	GoogleAuthProvider,
-	signInWithPopup,
-	signInWithRedirect,
-} from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { HOST_DOMAIN_BE } from '@/helpers/domain';
 
 const SignInwithGoogle = () => {
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
-	const googleLogin = () => {
-		const provider = new GoogleAuthProvider();
-		signInWithPopup(auth, provider)
-			.then(async result => {
-				const user = result.user;
-				if (result.user) {
-					const googleUser = new User(
-						user.uid,
-						user.email,
-						'',
-						user.displayName,
-						user.photoURL,
-					).toPlainObject();
-					await setDoc(doc(firestore, 'Users', user.uid), googleUser);
-					toast.success('User logged in Successfully', {
-						position: 'top-center',
-					});
-					navigate('/main-home');
-				}
-				dispatch(setLoginStatus(true));
-			})
-			.catch(error => {
-				toast.error('Failed to log in. Please try again.');
-			});
+	// const navigate = useNavigate();
+	const googleLogin = async () => {
+		try {
+			window.location.href = `${HOST_DOMAIN_BE}/auth/google`;
+		} catch (error) {
+			console.log('🚀 ~ googleLogin ~ error:', error);
+		}
 	};
+
 	return (
 		<div onClick={googleLogin}>
 			<a

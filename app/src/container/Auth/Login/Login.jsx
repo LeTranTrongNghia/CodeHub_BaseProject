@@ -11,6 +11,7 @@ import {
 	setUsername,
 } from '@/redux/userReducer/userReducer';
 import { jwtDecode } from 'jwt-decode';
+import { HOST_DOMAIN_BE } from '@/helpers/domain';
 
 const Login = () => {
 	const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const Login = () => {
 	const onFinish = async values => {
 		const { email, password } = values;
 		try {
-			const response = await fetch(`http://localhost:5050/user/login`, {
+			const response = await fetch(`${HOST_DOMAIN_BE}/user/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

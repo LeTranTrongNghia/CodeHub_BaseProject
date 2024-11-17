@@ -1,41 +1,16 @@
-import { auth, firestore } from '@/firebase/firebase';
-import User from '@/model/User';
-import { setLoginStatus } from '@/redux/userReducer/userReducer';
-import { GithubAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-
+import { HOST_DOMAIN_BE } from '@/helpers/domain';
 const SignInwithGithub = () => {
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
+	const gihubLogin = async () => {
+		try {
+			console.log('đổi domain');
 
-	const gihubLogin = () => {
-		const provider = new GithubAuthProvider();
-		signInWithPopup(auth, provider)
-			.then(async result => {
-				const user = result.user;
-				if (result.user) {
-					const githubUser = new User(
-						user.uid,
-						user.email,
-						'',
-						user.displayName,
-						user.photoURL,
-					).toPlainObject();
-					await setDoc(doc(firestore, 'Users', user.uid), githubUser);
-					toast.success('User logged in Successfully', {
-						position: 'top-center',
-					});
-					navigate('/main-home');
-				}
-				dispatch(setLoginStatus(true));
-			})
-			.catch(error => {
-				console.log('🚀 ~ gihubLogin ~ error:', error);
-				toast.error('Failed to log in. Please try again.');
-			});
+			window.location.href = `${HOST_DOMAIN_BE}/auth/github`;
+			// await axios.get(`${HOST_DOMAIN_BE}/auth/github`);
+
+			console.log('đổi xong');
+		} catch (error) {
+			console.log('🚀 ~ gihubLogin ~ error:', error);
+		}
 	};
 	return (
 		<div onClick={gihubLogin}>
