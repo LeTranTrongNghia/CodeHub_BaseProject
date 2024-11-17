@@ -1,6 +1,7 @@
 import {
 	setAdminStatus,
 	setEmail,
+	setId,
 	setLoginStatus,
 	setUsername,
 } from '@/redux/userReducer/userReducer';
@@ -32,7 +33,9 @@ const Login = () => {
 			});
 			// Chuyển đổi response thành JSON
 			const data = await response.json();
-			const { access_token, username, email2 } = data.data;
+			// console.log(data)
+			const { access_token, username, _id, email2 } = data.data;
+			dispatch(setId(_id));
 			const decodedData = jwtDecode(access_token);
 			const { role } = decodedData;
 			dispatch(setUsername(username));
