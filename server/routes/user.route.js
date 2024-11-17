@@ -6,19 +6,15 @@ import { requireLoginMiddleware } from "../middlewares/auth.middleware.js";
 import {
   ChangePwdValidator,
   forgotPwdValidator,
-  loginValidator,
   refreshTokenValidator,
-  registerValidator,
   resendOTPValidator,
   resetPwdValidator,
   updateProfileValidator,
   verifyValidator,
 } from "../middlewares/user.middleware.js";
-import { wrapRequestHandler } from "../utils/handler.js";
-import db from "../db/connection.js";
 import userServices from "../services/user.service.js";
-import { sendResponse } from "../config/response.config.js";
-import { MESSAGES } from "../constants/message.js";
+import { wrapRequestHandler } from "../utils/handler.js";
+// import { sendResponse } from "../config/response.config.js";
 import { ErrorWithStatus } from "../models/errors/Error.schema.js";
 
 const userRouter = express.Router();
