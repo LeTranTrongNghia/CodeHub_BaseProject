@@ -304,6 +304,8 @@ export const MESSAGES = {
 				INVALID_IMAGE_EXTENSION: 'Image extension is invalid.',
 				INVALID_IMAGE_SIZE: 'Image size is too large.',
 				MAX_IMAGE_UPLOAD: 'A maximum of 4 images can be uploaded.',
+				INVALID_IMAGE_FILE_TYPE: 'File type invalid',
+				FILE_NOT_FOUND: 'File not found',
 			},
 		},
 		USER: {

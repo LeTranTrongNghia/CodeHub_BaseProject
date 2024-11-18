@@ -164,7 +164,6 @@ export const registerValidator = validate(
 							});
 						}
 
-						console.log('🚀 ~ req.body.password:', req.body.password);
 						if (value !== req.body.password) {
 							throw new Error(
 								MESSAGES.VALIDATION_MESSAGES.USER.COMMONS.CONFIRM_PASSWORD.MUST_BE_THE_SAME_AS_PASSWORD,
@@ -350,9 +349,7 @@ export const resendOTPValidator = validate(
 				trim: true,
 				custom: {
 					options: async value => {
-						console.log('🚀 ~ options: ~ value:', value);
 						const validEmail = isValidEmail(value);
-						console.log('🚀 ~ options: ~ validEmail:', validEmail);
 						if (!validEmail) {
 							throw new ErrorWithStatus({
 								statusCode: StatusCodes.BAD_REQUEST,

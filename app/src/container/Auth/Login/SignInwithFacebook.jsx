@@ -1,8 +1,6 @@
 import { auth } from '@/firebase/firebase';
 import User from '@/model/User';
 import { FacebookAuthProvider, signInWithPopup } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -13,7 +11,6 @@ const SignInwithFacebook = () => {
 		signInWithPopup(auth, provider)
 			.then(async result => {
 				const user = result.user;
-				console.log('🚀 ~ facebookLogin ~ user:', user);
 				if (result.user) {
 					const facebookUser = new User(
 						user.uid,
