@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import EditProfileDialog from './components/EditProfileDialog';
 
 export default function MyPosts() {
     const navigate = useNavigate();
@@ -21,8 +22,6 @@ export default function MyPosts() {
     const isOwnProfile = currentUser.id === userId;
     const [sortOption, setSortOption] = useState('newest');
     const [searchTerm, setSearchTerm] = useState('');
-
-    // console.log(userData)
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -66,7 +65,7 @@ export default function MyPosts() {
     const handleUpdatePost = async (postId, updatedData) => {
         try {
             const response = await fetch(`http://localhost:5050/posts/${postId}`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedData),
             });
@@ -144,12 +143,16 @@ export default function MyPosts() {
                                 </div>
                                 <div className="flex-grow mt-4">
                                     <h1 className="text-3xl font-bold mb-1">{userData?.username || "Loading..."}</h1>
-                                    <p className="text-lg text-muted-foreground mb-1">{userData?.role || "Role not set"}</p>
-                                    <p className="text-muted-foreground mb-4">{userData?.location || "Location"}</p>
+                                    <p className="text-sm text-muted-foreground mb-1">@{userData?._id || "Loading..."}</p>
+                                    <p className="text-muted-foreground mb-4">{userData?.address || "Location"}</p>
                                     {isOwnProfile && (
                                         <div className="flex gap-3">
-                                            <Button className="bg-primary text-primary-foreground">Edit Profile</Button>
-                                            <Button variant="outline">Settings</Button>
+                                            <EditProfileDialog 
+                                                userData={userData}
+                                                onProfileUpdate={(updatedUser) => {
+                                                    setUserData(updatedUser);
+                                                }}
+                                            />
                                         </div>
                                     )}
                                 </div>

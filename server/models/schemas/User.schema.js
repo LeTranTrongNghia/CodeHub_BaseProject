@@ -17,6 +17,8 @@ export default class User {
   created_at;
   updated_at;
   savedPost;
+  position;
+  skills;
 
   constructor(user) {
     this._id = user._id;
@@ -37,5 +39,7 @@ export default class User {
     this.created_at = user.created_at || new Date();
     this.updated_at = user.updated_at || null;
     this.savedPost = user.savedPost || [];
+    this.position = user.position || "";
+    this.skills = user.skills || [];
   }
 }

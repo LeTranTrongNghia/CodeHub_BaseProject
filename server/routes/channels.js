@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update a channel by id
-router.patch("/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
     const updates = {
