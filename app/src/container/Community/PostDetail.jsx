@@ -71,7 +71,7 @@ export default function PostDetail() {
 
             try {
                 const response = await fetch(`http://localhost:5050/posts/${id}/comments`, {
-                    method: 'PATCH',
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },

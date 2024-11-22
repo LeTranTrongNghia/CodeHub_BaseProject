@@ -103,7 +103,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
             }
 
             const response = await fetch(`http://localhost:5050/posts/${postId}/likes`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     userId: currentUser.id,
@@ -135,7 +135,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
         try {
             // Call the new endpoint to update content
             await fetch(`http://localhost:5050/posts/${postId}/content`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -149,8 +149,8 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
     };
 
     const handlePopoverClick = () => {
-        console.log('Current User ID:', currentUser.id);
-        console.log('Post User ID:', userID);
+        // console.log('Current User ID:', currentUser.id);
+        // console.log('Post User ID:', userID);
     };
 
     const handleSavePost = async () => {
@@ -162,7 +162,7 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
         try {
             const isSaved = savedPosts.includes(postId);
             const response = await fetch(`http://localhost:5050/users/${currentUser.id}/savedPost`, {
-                method: 'PATCH',
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ postId, action: isSaved ? 'remove' : 'add' }),
             });
@@ -195,10 +195,10 @@ const NewsCard = ({ author, username, timeAgo, content, avatarURL, imageUrl, lik
         }
     };
 
-    useEffect(() => {
-        console.log('Current User ID:', currentUser.id);
-        console.log('Post User ID:', userID);
-    }, [currentUser.id, userID]);
+    // useEffect(() => {
+    //     console.log('Current User ID:', currentUser.id);
+    //     console.log('Post User ID:', userID);
+    // }, [currentUser.id, userID]);
 
     // Check if current user is the post owner
     const isPostOwner = currentUser.id === userID;

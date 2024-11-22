@@ -62,7 +62,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update a post by id
-router.patch("/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const query = { _id: new ObjectId(req.params.id) };
     const updates = {
@@ -100,7 +100,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Update likes for a post by id
-router.patch("/:id/likes", async (req, res) => {
+router.put("/:id/likes", async (req, res) => {
     const { userId, action } = req.body; // Get userId and action from request body
     const postId = req.params.id; // Get postId from request parameters
 
@@ -140,7 +140,7 @@ router.patch("/:id/likes", async (req, res) => {
 });
 
 // Update content for a post by id
-router.patch("/:id/content", async (req, res) => {
+router.put("/:id/content", async (req, res) => {
     try {
         const query = { _id: new ObjectId(req.params.id) };
         const updates = {
@@ -165,7 +165,7 @@ router.patch("/:id/content", async (req, res) => {
 });
 
 // Add this route to handle adding comments
-router.patch("/:id/comments", async (req, res) => {
+router.put("/:id/comments", async (req, res) => {
     try {
         const query = { _id: new ObjectId(req.params.id) };
         const updates = {

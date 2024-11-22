@@ -120,7 +120,7 @@ export default function MainFeed() {
 	const handleUpdatePost = async (postId, updatedData) => {
 		try {
 			const response = await fetch(`http://localhost:5050/posts/${postId}`, {
-				method: 'PATCH',
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
