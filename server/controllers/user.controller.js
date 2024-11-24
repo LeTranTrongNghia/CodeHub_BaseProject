@@ -3,7 +3,31 @@ import { MESSAGES } from "../constants/message.js";
 import userServices from "../services/user.service.js";
 
 const userController = {
-  const 
+  updateCourses: async (req, res) => {
+    const { userId, courseId, time, note } = req.body;
+
+    try {
+      const result = await userServices.updateCourses(
+        userId,
+        courseId,
+        time,
+        note
+      );
+      return sendResponse.success(
+        res,
+        result,
+        MESSAGES.SUCCESS_MESSAGES.COURSE.UPDATE_SUCCESS
+      );
+    } catch (error) {
+      console.error("🚀 ~ updateCourses: ~ error:", error);
+      return res
+        .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          message:
+            error.message || MESSAGES.ERROR_MESSAGES.COURSES.UPDATE_FAILED,
+        });
+    }
+  },
   register: async (req, res, next) => {
     try {
       const result = await userServices.register(req.body);

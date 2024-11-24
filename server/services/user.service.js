@@ -430,6 +430,44 @@ class UserService {
       });
     }
   }
+  async updateCourses(userId, courseId, time, note) {
+    try {
+      const query = { _id: new ObjectId(userId) };
+      const updates = {
+        $set: {
+          [`courses.${courseId}`]: {
+            id: courseId,
+            time: time,
+            note: note,
+          },
+        },
+      };
+      const options = { upsert: true };
+
+      const result = await db
+        .collection("users")
+        .updateOne(query, updates, options);
+
+      if (result.matchedCount === 0 && result.upsertedCount === 0) {
+        throw new ErrorWithStatus({
+          statusCode: StatusCodes.NOT_FOUND,
+          message: MESSAGES.ERROR_MESSAGES.GENERAL.USER_NOT_FOUND,
+        });
+      }
+
+      return {
+        message: MESSAGES.SUCCESS_MESSAGES.COURSES.UPDATE_SUCCESS,
+      };
+    } catch (error) {
+      if (error instanceof ErrorWithStatus) {
+        throw error;
+      }
+      throw new ErrorWithStatus({
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: MESSAGES.ERROR_MESSAGES.COURSES.UPDATE_FAILED,
+      });
+    }
+  }
 }
 
 const userServices = new UserService();

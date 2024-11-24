@@ -270,6 +270,25 @@ const CourseDetails = () => {
   //   return () => clearInterval(interval);
   // }, [course, currentTime]);
 
+  const updateCourseProgress = async (userId, courseId, time) => {
+    try {
+      const response = await axios.patch(
+        "http://localhost:5050/api/users/courses",
+        {
+          userId,
+          courseId,
+          time,
+        }
+      );
+      console.log("Courses updated successfully:", response.data);
+    } catch (error) {
+      console.error(
+        "Error updating courses:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   // SIu
   const playLecture = (time) => {
     // const [minutes, seconds] = time.split(":").map(Number);

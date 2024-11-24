@@ -105,4 +105,19 @@ router.patch("/:id/savedPost", async (req, res) => {
   }
 });
 
+router.patch(
+  "/courses",
+  wrapRequestHandler(requireLoginMiddleware), // Middleware xác thực người dùng
+  async (req, res) => {
+    try {
+      await userController.updateCourses(req, res);
+    } catch (error) {
+      console.error("Error in courses route:", error);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: MESSAGES.ERROR_MESSAGES.COURSES.UPDATE_FAILED,
+      });
+    }
+  }
+);
+
 export default router;
