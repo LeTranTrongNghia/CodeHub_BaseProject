@@ -32,7 +32,7 @@
 		"@splinetool/react-spline": "^2.2.6",
 		"ace-builds": "^1.33.0",
 		"antd": "^5.16.5",
-		"apexcharts": "^3.49.0",
+		"apexcharts": "^4.0.0",
 		"axios": "^1.7.2",
 		"bcryptjs": "^2.4.3",
 		"chart.js": "^4.4.2",
