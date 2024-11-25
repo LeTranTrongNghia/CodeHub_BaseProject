@@ -17,6 +17,7 @@ import { Modal } from "antd";
 import axios from "axios";
 import { ChevronLeft, CircleUser } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import YouTube from "react-youtube";
 import Sidebar from "../MainHome/Sidebar";
@@ -33,6 +34,7 @@ const CourseDetails = () => {
   const [selectedLectureIndex, setSelectedLectureIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const userId = useSelector((state) => state.user.id);
   // const handleQuizClick = async () => {
   //   // setShowModal(true);
   //   if (!course || !course.lectures[selectedLectureIndex]) {
@@ -173,24 +175,58 @@ const CourseDetails = () => {
     }
   };
 
+  // useEffect(() => {
+  //   async function fetchCourseDetails() {
+  //     try {
+  //       const response = await fetch(`http://localhost:5050/course/${id}`);
+  //       const data = await response.json();
+  //       setCourse(data);
+  //     } catch (error) {
+  //       console.error("Error fetching course details:", error);
+  //     }
+  //   }
+  //   fetchCourseDetails();
+  // }, [id]);
+
+  // Siu
   useEffect(() => {
     async function fetchCourseDetails() {
       try {
-        const response = await fetch(`http://localhost:5050/course/${id}`);
-        const data = await response.json();
-        setCourse(data);
+        const response = await axios.get(`http://localhost:5050/course/${id}`);
+        const courseData = response.data;
+
+        const userResponse = await axios.get(
+          `http://localhost:5050/users/${userId}`
+        );
+        const userData = userResponse.data;
+
+        const savedCourse = userData.courses.find((c) => c.id === id);
+        if (savedCourse) {
+          setCurrentTime(parseInt(savedCourse.time, 10));
+        }
+
+        setCourse(courseData);
       } catch (error) {
         console.error("Error fetching course details:", error);
       }
     }
     fetchCourseDetails();
-  }, [id]);
+  }, [id, userId]);
 
-  // Siu
+  const onPlayerReady = (event) => {
+    if (currentTime && videoRef.current) {
+      const player = videoRef.current.getInternalPlayer();
+      player.seekTo(currentTime - 5, true);
+    }
+  };
 
   const onPlayerStateChange = (event) => {
     // access to player in all event handlers via event.target
     const player = event.target;
+    const courseId = id;
+    const note = "Note";
+    // const userId = user;
+
     // let isFirstCheck = false;
     const intervalId = setInterval(() => {
       const currentTimeVideo = Math.floor(player.getCurrentTime());
@@ -215,6 +251,10 @@ const CourseDetails = () => {
       // console.log(lastTime);
       console.log(player);
       console.log(shouldPause);
+      console.log(userId);
+      //save time
+      updateUserCourses(courseId, currentTimeVideo, note);
+      console.log("Da luu");
       if (shouldPause) {
         player.pauseVideo();
         handleQuizClick();
@@ -251,41 +291,21 @@ const CourseDetails = () => {
     const [minutes, seconds] = time.split(":").map(Number);
     return minutes * 60 + seconds;
   };
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (videoRef.current) {
-  //       videoRef.current.pause();
-  //       const videoCurrentTime = Math.floor(videoRef.current.currentTime);
-  //       setCurrentTime(videoCurrentTime);
-  //       console.log(videoRef);
-  //       const shouldPause = course?.lectures.some((lecture) => {
-  //         // console.log(convertTimeToSeconds(lecture.time));
-  //         return videoCurrentTime === convertTimeToSeconds(lecture.time);
-  //       });
-  //       if (shouldPause) {
-  //         console.log("a");
-  //       }
-  //     }
-  //   }, 500);
-  //   return () => clearInterval(interval);
-  // }, [course, currentTime]);
 
-  const updateCourseProgress = async (userId, courseId, time) => {
+  const updateUserCourses = async (courseId, currentTime, note) => {
     try {
+      // console.log(userId);
       const response = await axios.patch(
-        "http://localhost:5050/api/users/courses",
+        `http://localhost:5050/users/${userId}/courses`,
         {
-          userId,
           courseId,
-          time,
+          time: currentTime,
+          note: note || "",
         }
       );
-      console.log("Courses updated successfully:", response.data);
+      console.log(response.data.message);
     } catch (error) {
-      console.error(
-        "Error updating courses:",
-        error.response?.data || error.message
-      );
+      console.error("Error updating user courses:", error);
     }
   };
 
@@ -368,7 +388,7 @@ const CourseDetails = () => {
                 ref={videoRef}
                 className="rounded-lg"
                 opts={opts}
-                // onReady={onPlayerReady}
+                onReady={onPlayerReady}
                 onStateChange={onPlayerStateChange}
               />
               ;{/* <YoutubePlayer videoId={"zOjov-2OZ0E"} /> */}

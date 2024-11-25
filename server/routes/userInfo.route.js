@@ -105,19 +105,65 @@ router.patch("/:id/savedPost", async (req, res) => {
   }
 });
 
-router.patch(
-  "/courses",
-  wrapRequestHandler(requireLoginMiddleware), // Middleware xác thực người dùng
-  async (req, res) => {
-    try {
-      await userController.updateCourses(req, res);
-    } catch (error) {
-      console.error("Error in courses route:", error);
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: MESSAGES.ERROR_MESSAGES.COURSES.UPDATE_FAILED,
-      });
+// router.patch(
+//   "/courses",
+//   wrapRequestHandler(requireLoginMiddleware), // Middleware xác thực người dùng
+//   async (req, res) => {
+//     try {
+//       await userController.updateCourses(req, res);
+//     } catch (error) {
+//       console.error("Error in courses route:", error);
+//       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+//         message: MESSAGES.ERROR_MESSAGES.COURSES.UPDATE_FAILED,
+//       });
+//     }
+//   }
+// );
+
+router.patch("/:id/courses", async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Kiểm tra ObjectId hợp lệ
+    if (!ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
+
+    const objectId = new ObjectId(userId);
+    const { courseId, time, note } = req.body;
+
+    // Kiểm tra nếu course đã tồn tại
+    const result = await db.collection("users").updateOne(
+      {
+        _id: objectId,
+        "courses.id": courseId, // Kiểm tra xem courseId đã tồn tại trong mảng
+      },
+      {
+        $set: {
+          "courses.$.time": time, // Cập nhật time của course trùng
+          "courses.$.note": note, // Cập nhật note của course trùng
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      // Nếu không tìm thấy course, thêm mới
+      await db.collection("users").updateOne(
+        { _id: objectId },
+        {
+          $addToSet: {
+            courses: { id: courseId, time, note }, // Thêm course mới vào mảng
+          },
+        }
+      );
+      return res.status(200).json({ message: "Course added successfully" });
+    }
+
+    res.status(200).json({ message: "Course updated successfully" });
+  } catch (error) {
+    console.error("Error updating user courses:", error);
+    res.status(500).json({ message: "Error updating courses" });
   }
-);
+});
 
 export default router;
