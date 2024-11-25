@@ -52,20 +52,29 @@ router.post("/", async (req, res) => {
 });
 
 // Update a user by id
-router.patch("/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         const query = { _id: new ObjectId(req.params.id) };
         const updates = {
             $set: {
                 username: req.body.username,
-                email: req.body.email,
-                password: req.body.password,
+                address: req.body.address,
+                avatar: req.body.avatar,
+                cover_photo: req.body.cover_photo,
+                position: req.body.position,
+                skills: req.body.skills,
             },
         };
 
         let collection = await db.collection("users");
         let result = await collection.updateOne(query, updates);
-        res.status(200).send(result);
+
+        if (result.modifiedCount === 0) {
+            throw new Error('No documents matched the query. Updated 0 documents.');
+        }
+
+        const updatedUser = await collection.findOne(query);
+        res.status(200).send(updatedUser);
     } catch (err) {
         console.error(err);
         res.status(500).send("Error updating user");
@@ -88,7 +97,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Update savedPost for a user
-router.patch("/:id/savedPost", async (req, res) => {
+router.put("/:id/savedPost", async (req, res) => {
     try {
         const query = { _id: new ObjectId(req.params.id) };
         const updates = req.body.action === 'remove' 

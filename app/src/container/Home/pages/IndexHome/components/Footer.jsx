@@ -23,7 +23,7 @@ const Footer = () => {
 						>
 							TrongNghia
 						</a>{' '}
-						&{' '}
+						,{' '}
 						<a
 							href='https://github.com/ngcuyen'
 							target='_blank'
@@ -31,6 +31,15 @@ const Footer = () => {
 							className='font-medium underline underline-offset-4'
 						>
 							NgocUyen
+						</a>{' '}
+						&{' '}
+						<a
+							href='https://github.com/tsdevtool'
+							target='_blank'
+							rel='noreferrer'
+							className='font-medium underline underline-offset-4'
+						>
+							ThanhSieu
 						</a>
 					</p>
 

@@ -4,28 +4,29 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/firebase/firebase';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoginStatus } from '@/redux/userReducer/userReducer';
+import axios from 'axios';
+import { HOST_DOMAIN_BE } from '@/helpers/domain';
 
 const Topbar = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const handleLogout = () => {
+	const isLoggedIn = useSelector(state => state.user.isLoggedIn);
+	const handleLogout = async () => {
 		try {
-			signOut(auth);
-			dispatch(setLoginStatus(false));
-			toast.success('Logout successfully');
-			navigate('/login');
+			// const res = await axios.post(`${HOST_DOMAIN_BE}/user/logout`, 'POST', {
+			// 	refresh_token: refresh_token,
+			// });
+			// dispatch(setLoginStatus(false));
+			// localStorage.removeItem('access_token');
+			// navigate('/');
 		} catch (error) {
 			console.log(error);
 		}
@@ -74,6 +75,11 @@ const Topbar = () => {
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						{/* <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem> */}
+						{isLoggedIn ? (
+							<DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+						) : (
+							''
+						)}
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>

@@ -11,6 +11,7 @@ import userInfoRouter from './routes/userInfo.route.js';
 import newsRouter from './routes/news.route.js';
 import dotenv from 'dotenv';
 import { defaultErrorHandler } from './middlewares/error.middleware.js';
+import uploadRouter from './routes/upload.route.js';
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
@@ -35,6 +36,7 @@ app.use('/channels', channelsRouter);
 app.use('/posts', postsRouter);
 app.use('/users', userInfoRouter);
 app.use('/news', newsRouter);
+app.use('/upload', uploadRouter);
 
 app.use(defaultErrorHandler);
 
