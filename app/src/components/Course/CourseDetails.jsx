@@ -34,7 +34,9 @@ const CourseDetails = () => {
   const [selectedLectureIndex, setSelectedLectureIndex] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [note, setNote] = useState("");
   const userId = useSelector((state) => state.user.id);
+  const [isTimeSet, setIsTimeSet] = useState(false);
   // const handleQuizClick = async () => {
   //   // setShowModal(true);
   //   if (!course || !course.lectures[selectedLectureIndex]) {
@@ -175,56 +177,62 @@ const CourseDetails = () => {
     }
   };
 
-  // useEffect(() => {
-  //   async function fetchCourseDetails() {
-  //     try {
-  //       const response = await fetch(`http://localhost:5050/course/${id}`);
-  //       const data = await response.json();
-  //       setCourse(data);
-  //     } catch (error) {
-  //       console.error("Error fetching course details:", error);
-  //     }
-  //   }
-  //   fetchCourseDetails();
-  // }, [id]);
-
-  // Siu
   useEffect(() => {
     async function fetchCourseDetails() {
       try {
-        const response = await axios.get(`http://localhost:5050/course/${id}`);
-        const courseData = response.data;
-
-        const userResponse = await axios.get(
-          `http://localhost:5050/users/${userId}`
-        );
-        const userData = userResponse.data;
-
-        const savedCourse = userData.courses.find((c) => c.id === id);
-        if (savedCourse) {
-          setCurrentTime(parseInt(savedCourse.time, 10));
-        }
-
-        setCourse(courseData);
+        const response = await fetch(`http://localhost:5050/course/${id}`);
+        const data = await response.json();
+        setCourse(data);
       } catch (error) {
         console.error("Error fetching course details:", error);
       }
     }
     fetchCourseDetails();
-  }, [id, userId]);
+  }, [id]);
 
-  const onPlayerReady = (event) => {
-    if (currentTime && videoRef.current) {
-      const player = videoRef.current.getInternalPlayer();
-      player.seekTo(currentTime - 5, true);
-    }
-  };
+  // Siu
+  // useEffect(() => {
+  //   async function fetchCourseDetails() {
+  //     try {
+  //       const response = await axios.get(`http://localhost:5050/course/${id}`);
+  //       const courseData = response.data;
+
+  //       const userResponse = await axios.get(
+  //         `http://localhost:5050/users/${userId}`
+  //       );
+  //       const userData = userResponse.data;
+
+  //       const savedCourse = userData.courses.find((c) => c.id === id);
+  //       if (savedCourse) {
+  //         setCurrentTime(parseInt(savedCourse.time, 10));
+  //         setNote(savedCourse.note || "");
+  //       }
+
+  //       setCourse(courseData);
+  //     } catch (error) {
+  //       console.error("Error fetching course details:", error);
+  //     }
+  //   }
+  //   fetchCourseDetails();
+  // }, [id, userId]);
+
+  // const onPlayerReady = (event) => {
+  //   if (currentTime && videoRef.current) {
+  //     const player = videoRef.current.getInternalPlayer();
+  //     player.seekTo(currentTime, true);
+  //   }
+  // };
 
   const onPlayerStateChange = (event) => {
     // access to player in all event handlers via event.target
     const player = event.target;
+    // if (event.data === 1) {
+    //   // 1 là trạng thái "playing"
+    //   if (currentTime) {
+    //     player.seekTo(currentTime, true); // Chuyển video đến thời gian đã lưu
+    //   }
+    // }
     const courseId = id;
-    const note = "Note";
     // const userId = user;
 
     // let isFirstCheck = false;
@@ -254,7 +262,7 @@ const CourseDetails = () => {
       console.log(userId);
       //save time
       updateUserCourses(courseId, currentTimeVideo, note);
-      console.log("Da luu");
+      console.log(note);
       if (shouldPause) {
         player.pauseVideo();
         handleQuizClick();
@@ -300,7 +308,7 @@ const CourseDetails = () => {
         {
           courseId,
           time: currentTime,
-          note: note || "",
+          note,
         }
       );
       console.log(response.data.message);
@@ -308,6 +316,13 @@ const CourseDetails = () => {
       console.error("Error updating user courses:", error);
     }
   };
+  // useEffect(() => {
+  //   if (course && currentTime && videoRef.current && !isTimeSet) {
+  //     const player = videoRef.current.getInternalPlayer();
+  //     player.seekTo(currentTime, true); // Chuyển video đến thời gian đã lưu
+  //     setIsTimeSet(true); // Đánh dấu rằng thời gian đã được thiết lập
+  //   }
+  // }, [course, currentTime]);
 
   // SIu
   const playLecture = (time) => {
@@ -388,10 +403,23 @@ const CourseDetails = () => {
                 ref={videoRef}
                 className="rounded-lg"
                 opts={opts}
-                onReady={onPlayerReady}
+                // onReady={onPlayerReady}
                 onStateChange={onPlayerStateChange}
               />
               ;{/* <YoutubePlayer videoId={"zOjov-2OZ0E"} /> */}
+            </div>
+            <div className="mt-4">
+              <textarea
+                value={note}
+                onChange={(e) => {
+                  setNote(e.target.value);
+                  updateUserCourses(id, currentTime, e.target.value);
+                }}
+                placeholder="Write your notes here..."
+                className="w-full p-2 border rounded-lg resize-none"
+                style={{ width: "100%" }}
+                rows={3}
+              />
             </div>
             {/* <div className="float-end">
               <button

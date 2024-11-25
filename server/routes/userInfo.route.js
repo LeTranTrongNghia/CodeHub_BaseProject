@@ -124,7 +124,6 @@ router.patch("/:id/courses", async (req, res) => {
   try {
     const userId = req.params.id;
 
-    // Kiểm tra ObjectId hợp lệ
     if (!ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID format" });
     }
@@ -136,12 +135,12 @@ router.patch("/:id/courses", async (req, res) => {
     const result = await db.collection("users").updateOne(
       {
         _id: objectId,
-        "courses.id": courseId, // Kiểm tra xem courseId đã tồn tại trong mảng
+        "courses.id": courseId,
       },
       {
         $set: {
-          "courses.$.time": time, // Cập nhật time của course trùng
-          "courses.$.note": note, // Cập nhật note của course trùng
+          "courses.$.time": time,
+          "courses.$.note": note,
         },
       }
     );
