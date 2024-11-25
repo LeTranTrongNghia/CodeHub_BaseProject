@@ -1,0 +1,11 @@
+<NeonGradientCard>
+				<div className='relative w-full h-full overflow-hidden'>
+					<BorderBeam size={600} duration={0} delay={0} className="absolute inset-0" />
+					<img
+						className='w-full h-full object-cover object-center rounded-[20px]'
+						src='/src/assets/Main.png'
+						alt='preview landing'
+						loading='eager'
+					/>
+				</div>
+			</NeonGradientCard>

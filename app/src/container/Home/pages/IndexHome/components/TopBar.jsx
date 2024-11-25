@@ -7,10 +7,28 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { motion } from 'framer-motion';
 
 const TopBar = () => {
+	const animate = {
+		initial: {
+			y: '-50%',
+			opacity: 0,
+		},
+		open: {
+			y: '0%',
+			opacity: 1,
+			transition: { duration: 1, ease: [0.33, 1, 0.68, 1] },
+		},
+	};
+
 	return (
-		<header className='flex h-20 items-center gap-4 border-b border-gray-800 px-4 md:px-6 justify-between'>
+		<motion.header
+			className='flex h-20 items-center gap-4 border-b border-gray-300 px-4 md:px-6 justify-between'
+			initial="initial"
+			animate="open"
+			variants={animate}
+		>
 			<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
 				<div className='ml-12'>
 					<TooltipProvider>
@@ -44,7 +62,7 @@ const TopBar = () => {
 					</TooltipProvider>
 				</a>
 			</div>
-		</header>
+		</motion.header>
 	);
 };
 export default TopBar;

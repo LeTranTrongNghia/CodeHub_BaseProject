@@ -27,49 +27,41 @@ import { PolarAngleAxis, RadialBar, RadialBarChart } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChartContainer } from '@/components/ui/chart';
 import React from 'react';
+import MaskText from '@/container/Home/pages/IndexHome/common/MaskText';
 
 const InfoLanding = () => {
 	return (
 		<div className='py-16 sm:py-20'>
 			<div className='mx-auto grid max-w-7xl gap-10 px-4 sm:gap-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8'>
 				<div className='lg:order-2'>
-					<h2 className='font-bold text-3xl text-foreground md:text-4xl lg:text-[40px]'>
-						Master Coding, Faster
-					</h2>
-					<p className='mt-6 text-lg text-muted-foreground'>
-						Unlock your full coding potential with our AI-powered platform.
-						Learn at your own pace, master new skills, and build amazing
-						projects.
-					</p>
+					<MaskText phrases={['Master Coding, Faster']} tag='h2'/>
+					<MaskText phrases={['Unlock your full coding potential with our AI-powered platform. Learn at your own pace, master new skills, and build amazing projects.']} tag='p'/>
 					<dl className='mt-6 space-y-4 leading-7'>
 						<div className='relative pl-8'>
 							<dt className='font-semibold'>
 								<Activity className='absolute left-0 top-1 size-5 stroke-purple-700' />
-								<span>Track Your Progress</span>
+								<MaskText phrases={['Track Your Progress']} tag='span'/>
 							</dt>
 							<dd className='text-sm text-muted-foreground'>
-								Stay motivated with detailed learning analytics and time
-								management tools.
+								<MaskText phrases={['Stay motivated with detailed learning analytics and time management tools.']} tag='p'/>
 							</dd>
 						</div>
 						<div className='relative pl-8'>
 							<dt className='font-semibold'>
 								<Code2 className='absolute left-0 top-1 size-5 stroke-purple-700' />
-								<span>Learn Smarter, Not Harder</span>
+								<MaskText phrases={['Learn Smarter, Not Harder']} tag='span'/>
 							</dt>
 							<dd className='text-sm text-muted-foreground'>
-								Dive into interactive lessons, practice with quizzes, and get
-								expert feedback from our AI tutor.
+								<MaskText phrases={['Dive into interactive lessons, practice with quizzes, and get expert feedback from our AI tutor.']} tag='p'/>
 							</dd>
 						</div>
 						<div className='relative pl-8'>
 							<dt className='font-semibold'>
 								<Dices className='absolute left-0 top-1 size-5 stroke-purple-700' />
-								<span>Conquer Coding Challenges</span>
+								<MaskText phrases={['Conquer Coding Challenges']} tag='span'/>
 							</dt>
 							<dd className='text-sm text-muted-foreground'>
-								Solve coding problems, get hints from our AI, and improve your
-								problem-solving skills.
+								<MaskText phrases={['Solve coding problems, get hints from our AI, and improve your problem-solving skills.']} tag='p'/>
 							</dd>
 						</div>
 					</dl>
