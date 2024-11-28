@@ -33,6 +33,7 @@ const Login = () => {
 			});
 			// Chuyển đổi response thành JSON
 			const data = await response.json();
+			console.log('🚀 ~ onFinish ~ data:', data);
 			const { access_token, username, _id, email2 } = data.data;
 			dispatch(setId(_id));
 			const decodedData = jwtDecode(access_token);

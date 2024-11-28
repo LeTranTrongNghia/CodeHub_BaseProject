@@ -1,32 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { useState, useEffect } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { CreatePostDialog } from '@/container/Community/components/createPost_btn';
 import { useNavigate } from 'react-router-dom';
-import { Image, Search, Timer, Flame } from "lucide-react"
-import ChannelsSidebar from './components/ChannelsSidebar'
-import EventsSidebar from './components/EventsSidebar'
-import HeaderCommunity from './components/HeaderCommunity'
+import { Image, Search, Timer, Flame } from 'lucide-react';
+import ChannelsSidebar from './components/ChannelsSidebar';
+import EventsSidebar from './components/EventsSidebar';
+import HeaderCommunity from './components/HeaderCommunity';
 import ChannelOverview from './components/ChannelOverview';
 import NewsCard from './components/NewsCard';
 import { useSelector } from 'react-redux';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+	DropdownMenu,
+	DropdownMenuTrigger,
+	DropdownMenuContent,
+	DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 import ActivitySidebar from './components/ActivitySidebar';
 
 export default function MainFeed() {
 	const navigate = useNavigate();
-	const [selectedChannel, setSelectedChannel] = useState({ name: "General", description: "Community-wide conversations" });
+	const [selectedChannel, setSelectedChannel] = useState({
+		name: 'General',
+		description: 'Community-wide conversations',
+	});
 	const [posts, setPosts] = useState([]);
 	const currentUser = useSelector(state => state.user);
 	const [userData, setUserData] = useState(null);
-	const [activeChannelId, setActiveChannelId] = useState('672c2053df5ed078edd28a8b');
+	const [activeChannelId, setActiveChannelId] = useState(
+		'672c2053df5ed078edd28a8b',
+	);
 	const [channels, setChannels] = useState([]);
 	const [users, setUsers] = useState([]);
 	const [sortOption, setSortOption] = useState('newest');
 	const [searchTerm, setSearchTerm] = useState('');
-	const currentChannel = channels.find(channel => channel._id === activeChannelId);
+	const currentChannel = channels.find(
+		channel => channel._id === activeChannelId,
+	);
 
 	useEffect(() => {
 		const fetchUsers = async () => {
@@ -76,7 +88,9 @@ export default function MainFeed() {
 	useEffect(() => {
 		const fetchPosts = async () => {
 			try {
-				const response = await fetch(`http://localhost:5050/posts?channelId=${activeChannelId}`);
+				const response = await fetch(
+					`http://localhost:5050/posts?channelId=${activeChannelId}`,
+				);
 				if (!response.ok) {
 					throw new Error('Network response was not ok');
 				}
@@ -90,7 +104,7 @@ export default function MainFeed() {
 		fetchPosts();
 	}, [activeChannelId]);
 
-	const handleDeletePost = async (postId) => {
+	const handleDeletePost = async postId => {
 		try {
 			const response = await fetch(`http://localhost:5050/posts/${postId}`, {
 				method: 'DELETE',
@@ -135,11 +149,15 @@ export default function MainFeed() {
 		}
 	};
 
-	const filteredPosts = posts.filter(post => post.channelId === activeChannelId);
+	const filteredPosts = posts.filter(
+		post => post.channelId === activeChannelId,
+	);
 
 	const sortedPosts = () => {
 		if (sortOption === 'newest') {
-			return [...filteredPosts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+			return [...filteredPosts].sort(
+				(a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+			);
 		} else if (sortOption === 'mostLiked') {
 			return [...filteredPosts].sort((a, b) => {
 				if (b.likes.length === a.likes.length) {
@@ -154,14 +172,15 @@ export default function MainFeed() {
 	const searchedPosts = () => {
 		const trimmedSearchTerm = searchTerm.trim();
 		if (!trimmedSearchTerm) return sortedPosts();
-		return sortedPosts().filter(post => 
-			post.userID.includes(trimmedSearchTerm) || 
-			post.content.toLowerCase().includes(trimmedSearchTerm.toLowerCase()) ||
-			post.author.toLowerCase().includes(trimmedSearchTerm.toLowerCase())
+		return sortedPosts().filter(
+			post =>
+				post.userID.includes(trimmedSearchTerm) ||
+				post.content.toLowerCase().includes(trimmedSearchTerm.toLowerCase()) ||
+				post.author.toLowerCase().includes(trimmedSearchTerm.toLowerCase()),
 		);
 	};
 
-	const handlePostClick = async (postId) => {
+	const handlePostClick = async postId => {
 		if (!currentUser) {
 			console.error('Current user is not defined');
 			return;
@@ -175,22 +194,25 @@ export default function MainFeed() {
 		navigate(`/community/post/detail/${postId}`, {
 			state: {
 				currentUserId: currentUser._id,
-				data: userData
-			}
+				data: userData,
+			},
 		});
 	};
 
 	return (
-		<div className="min-h-screen bg-background text-foreground">
+		<div className='min-h-screen bg-background text-foreground'>
 			<HeaderCommunity />
-			<div className="flex">
+			<div className='flex'>
 				<ChannelsSidebar
 					setSelectedChannel={setSelectedChannel}
 					setActiveChannelId={setActiveChannelId}
 					userData={userData}
 					defaultChannelId={activeChannelId}
 				/>
-				<main className="flex-1 p-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 64px)' }}>
+				<main
+					className='flex-1 p-4 overflow-y-auto'
+					style={{ maxHeight: 'calc(100vh - 64px)' }}
+				>
 					<ChannelOverview
 						title={selectedChannel.name}
 						description={selectedChannel.description}
@@ -200,26 +222,32 @@ export default function MainFeed() {
 
 					<CreatePostDialog
 						trigger={
-							<Card className="mb-4">
-								<CardContent className="p-4">
-									<div className="flex items-center space-x-2 mb-2">
+							<Card className='mb-4'>
+								<CardContent className='p-4'>
+									<div className='flex items-center space-x-2 mb-2'>
 										<Avatar>
 											<AvatarImage
-												src={userData ? userData.avatar : "https://via.placeholder.com/150"}
-												alt="User"
+												src={
+													userData
+														? userData.avatar
+														: 'https://via.placeholder.com/150'
+												}
+												alt='User'
 											/>
 											<AvatarFallback>U</AvatarFallback>
 										</Avatar>
 										<Input
-											className="flex-1"
-											placeholder="You need to reach 250 XP to make a post."
+											className='flex-1'
+											placeholder='You need to reach 250 XP to make a post.'
 										/>
 									</div>
-									<div className="flex justify-between items-center">
-										<Button variant="ghost" size="sm">
-											<Image className="mr-2 h-4 w-4" /> Add Image
+									<div className='flex justify-between items-center'>
+										<Button variant='ghost' size='sm'>
+											<Image className='mr-2 h-4 w-4' /> Add Image
 										</Button>
-										<Button size="sm" disabled>Post</Button>
+										<Button size='sm' disabled>
+											Post
+										</Button>
 									</div>
 								</CardContent>
 							</Card>
@@ -229,32 +257,40 @@ export default function MainFeed() {
 						onPostCreated={refreshPosts}
 					/>
 
-					<div className="flex items-center mb-4 justify-between">
+					<div className='flex items-center mb-4 justify-between'>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button variant="outline" className="mr-2">
+								<Button variant='outline' className='mr-2'>
 									Sort Posts
-									{sortOption === 'newest' ? <Timer className="ml-2 h-4 w-4" /> : null}
-									{sortOption === 'mostLiked' ? <Flame className="ml-2 h-4 w-4" /> : null}
+									{sortOption === 'newest' ? (
+										<Timer className='ml-2 h-4 w-4' />
+									) : null}
+									{sortOption === 'mostLiked' ? (
+										<Flame className='ml-2 h-4 w-4' />
+									) : null}
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
 								<DropdownMenuItem onClick={() => setSortOption('newest')}>
-									<Button variant={sortOption === 'newest' ? '' : 'ghost'}>Newest First <Timer className="ml-2 h-4 w-4" /></Button>
+									<Button variant={sortOption === 'newest' ? '' : 'ghost'}>
+										Newest First <Timer className='ml-2 h-4 w-4' />
+									</Button>
 								</DropdownMenuItem>
 								<DropdownMenuItem onClick={() => setSortOption('mostLiked')}>
-									<Button variant={sortOption === 'mostLiked' ? '' : 'ghost'}>Most Liked <Flame className="ml-2 h-4 w-4" /></Button>
+									<Button variant={sortOption === 'mostLiked' ? '' : 'ghost'}>
+										Most Liked <Flame className='ml-2 h-4 w-4' />
+									</Button>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 
-						<div className="relative flex items-center ml-auto w-full max-w-xs">
-							<Search className="absolute left-2 h-4 w-4 text-gray-400" />
+						<div className='relative flex items-center ml-auto w-full max-w-xs'>
+							<Search className='absolute left-2 h-4 w-4 text-gray-400' />
 							<Input
-								className="pl-8 w-full"
-								placeholder="Search by User ID, Username, or Content"
+								className='pl-8 w-full'
+								placeholder='Search by User ID, Username, or Content'
 								value={searchTerm}
-								onChange={(e) => setSearchTerm(e.target.value)}
+								onChange={e => setSearchTerm(e.target.value)}
 							/>
 						</div>
 					</div>
@@ -275,7 +311,9 @@ export default function MainFeed() {
 							currentUserID={userData ? userData._id : null}
 							onClick={() => handlePostClick(post._id)}
 							onDelete={() => handleDeletePost(post._id)}
-							onUpdate={(updatedContent) => handleUpdatePost(post._id, { content: updatedContent })}
+							onUpdate={updatedContent =>
+								handleUpdatePost(post._id, { content: updatedContent })
+							}
 						/>
 					))}
 				</main>
@@ -283,5 +321,5 @@ export default function MainFeed() {
 				<ActivitySidebar />
 			</div>
 		</div>
-	)
+	);
 }
