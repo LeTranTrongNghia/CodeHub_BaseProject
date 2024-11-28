@@ -11,9 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoginStatus } from '@/redux/userReducer/userReducer';
-import axios from 'axios';
-import { HOST_DOMAIN_BE } from '@/helpers/domain';
 
 const Topbar = () => {
 	const navigate = useNavigate();
