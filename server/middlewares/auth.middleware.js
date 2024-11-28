@@ -26,7 +26,7 @@ export const authMiddleware = async (req, res, next) => {
 	try {
 		const user = await verifyToken({
 			token: access_token,
-			secretOrPublicKey: 'Z8X7ERSQRTZMWM7OKVPYGH26LTSH7COV',
+			secretOrPublicKey: process.env.JWT_ACCESS_TOKEN_SECRET,
 		});
 		req.user = user;
 		return next();

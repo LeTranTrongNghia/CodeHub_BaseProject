@@ -15,6 +15,7 @@ import db from '../db/connection.js';
 import dotenv from 'dotenv';
 import User from '../models/schemas/User.schema.js';
 import moment from 'moment';
+import cloudinaryService from './cloudinary.service.js';
 dotenv.config();
 class UserService {
 	// Generate accesstoken
@@ -427,6 +428,44 @@ class UserService {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
 				message: error.message || 'Error in checking token',
+			});
+		}
+	}
+
+	async upload(file, folderName) {
+		const { url } = await cloudinaryService.uploadImage(
+			folderName,
+			file.buffer,
+		);
+		return url;
+	}
+	async updateUserAvatarInDatabase(userId, avatarUrl) {
+		await db
+			.collection('users')
+			.updateOne(
+				{ _id: new ObjectId(userId) },
+				{ $set: { avatar: avatarUrl } },
+			);
+	}
+
+	async updateMeAvatar(id, file) {
+		try {
+			const newAvatarUrl = await this.upload(file, 'avatar_user_codehub');
+			const currentUser = await db.collection('users').findOne({
+				_id: new ObjectId(id),
+			});
+			await Promise.all([
+				currentUser?.avatar
+					? cloudinaryService.deleteImage(currentUser.avatar)
+					: Promise.resolve(),
+				this.updateUserAvatarInDatabase(id, newAvatarUrl),
+			]);
+
+			return { avatarUrl: newAvatarUrl };
+		} catch (error) {
+			throw new ErrorWithStatus({
+				statusCode: error.status || StatusCodes.INTERNAL_SERVER_ERROR,
+				message: error.message || 'Internal Error',
 			});
 		}
 	}

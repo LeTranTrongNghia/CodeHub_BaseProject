@@ -8,6 +8,7 @@ import {
 const uploadRouter = Router();
 
 uploadRouter.post('/single', singleImageUpload, (req, res, next) => {
+	console.log('🚀 ~ uploadRouter.post ~ req:', req);
 	try {
 		uploadController.uploadSingle(req, res);
 	} catch (error) {

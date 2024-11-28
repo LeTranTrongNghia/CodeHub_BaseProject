@@ -16,6 +16,8 @@ import userServices from '../services/user.service.js';
 import { wrapRequestHandler } from '../utils/handler.js';
 // import { sendResponse } from "../config/response.config.js";
 import { ErrorWithStatus } from '../models/errors/Error.schema.js';
+import { singleImageUpload } from '../middlewares/upload.middleware.js';
+import { StatusCodes } from 'http-status-codes';
 
 const userRouter = express.Router();
 
@@ -137,6 +139,22 @@ userRouter.post('/token/check', async (req, res) => {
 		});
 	}
 });
+
+userRouter.post(
+	'/avatar',
+	requireLoginMiddleware,
+	singleImageUpload,
+	async (req, res) => {
+		try {
+			await userController.updateAvatar(req, res);
+		} catch (error) {
+			return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+				message: MESSAGES.ERROR_MESSAGES.UPLOAD.AVATAR,
+			});
+		}
+	},
+);
 
 userRouter.post(
 	'/otp/revalidate',

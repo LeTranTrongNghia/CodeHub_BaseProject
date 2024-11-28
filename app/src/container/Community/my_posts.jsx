@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -25,6 +25,8 @@ import {
 	DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
 import EditProfileDialog from './components/EditProfileDialog';
+import axios from 'axios';
+import { HOST_DOMAIN_BE } from '@/helpers/domain';
 
 export default function MyPosts() {
 	const navigate = useNavigate();
@@ -35,6 +37,9 @@ export default function MyPosts() {
 	const isOwnProfile = currentUser.id === userId;
 	const [sortOption, setSortOption] = useState('newest');
 	const [searchTerm, setSearchTerm] = useState('');
+	const inputRef = useRef(null);
+	const [image, setImage] = useState('');
+	console.log('🚀 ~ MyPosts ~ image:', image);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -129,6 +134,39 @@ export default function MyPosts() {
 		);
 	};
 
+	const handleUploadImage = () => {
+		if (inputRef.current) {
+			inputRef.current.click();
+		}
+	};
+
+	const handleFileChange = async event => {
+		try {
+			const fileObj = event.target.files && event.target.files[0];
+			if (!fileObj) {
+				return;
+			}
+			//  reset file input
+			event.target.value = null;
+
+			let formData = new FormData();
+			formData.append('image', fileObj);
+			const res = await axios.post(
+				`${HOST_DOMAIN_BE}/upload/single`,
+				formData,
+				{
+					headers: {
+						'Content-Type': 'multipart/form-data',
+					},
+				},
+			);
+			const result = res.data.data;
+			setImage(result.imageUrl);
+		} catch (error) {
+			console.log('🚀 ~ handleFileChange ~ error:', error);
+		}
+	};
+
 	return (
 		<div className='min-h-screen bg-background text-foreground'>
 			<HeaderCommunity />
@@ -150,16 +188,25 @@ export default function MyPosts() {
 				>
 					{/* Profile Card Section */}
 					<div className='rounded-xl overflow-hidden bg-white shadow-lg mb-6'>
-						<div className='h-48 bg-gradient-to-r from-orange-400 via-pink-500 via-blue-500 to-green-400' />
+						<div className='h-48 bg-gradient-to-r from-orange-400 via-pink-500 to-green-400' />
 						<div className='px-8 pb-8'>
 							<div className='flex flex-col md:flex-row md:items-end mb-8 gap-4'>
 								<div className='relative -mt-20'>
-									<div className=' w-48 h-48 rounded-full border-4 border-white overflow-hidden bg-white'>
+									<div className=' w-48 h-48 rounded-full border-4 border-white overflow-hidden bg-white  hover:bg-red-800 cursor-pointer'>
 										<img
 											src={userData?.avatar || '/placeholder.svg'}
 											alt='Profile picture'
 											className='w-full h-full object-cover'
+											onClick={handleUploadImage}
 										/>
+										<input
+											name='image'
+											style={{ display: 'none' }}
+											ref={inputRef}
+											type='file'
+											onChange={handleFileChange}
+											multiple
+										></input>
 									</div>
 								</div>
 								<div className='flex-grow mt-4'>

@@ -102,7 +102,8 @@ const userController = {
 		);
 	},
 	updateAvatar: async (req, res) => {
-		const result = await userServices.uploadAvatar(req.user._id, req.file);
+		const result = await userServices.updateMeAvatar(req.user._id, req.file);
+
 		return sendResponse.success(
 			res,
 			result,
@@ -110,7 +111,6 @@ const userController = {
 		);
 	},
 	checkToken: async (req, res) => {
-		console.log('🚀 ~ checkToken: ~ req.body:', req.body);
 		const result = await userServices.checkToken(req.body);
 		return sendResponse.success(
 			res,

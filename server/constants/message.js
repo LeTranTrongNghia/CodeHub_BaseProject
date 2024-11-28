@@ -126,6 +126,7 @@ export const MESSAGES = {
 			BUG: 'Upload bug image failed',
 			SOLUTION: 'Upload solution image failed',
 			TOO_LARGE: 'File too large',
+			AVATAR: 'Upload avatar failed',
 		},
 	},
 	SUCCESS_MESSAGES: {

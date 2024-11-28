@@ -1,9 +1,10 @@
 import pkg from 'cloudinary';
-const { UploadApiResponse, v2: cloudinary } = pkg;
+const { v2: cloudinary } = pkg;
 import { ErrorWithStatus } from '../models/errors/Error.schema.js';
 import { StatusCodes } from 'http-status-codes';
 import { MESSAGES } from '../constants/message.js';
 import streamifier from 'streamifier';
+import { extractPublicId } from 'cloudinary-build-url';
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_NAME,
 	api_key: process.env.CLOUDINARY_KEY,
@@ -64,7 +65,7 @@ class CloudinaryService {
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: error.http_code || StatusCodes.INTERNAL_SERVER_ERROR,
-				message: MESSAGES.ERROR_MESSAGES.GENERAL.USER.UPLOAD_IMAGE,
+				message: MESSAGES.ERROR_MESSAGES.UPLOAD.IMAGE,
 			});
 		}
 	}
