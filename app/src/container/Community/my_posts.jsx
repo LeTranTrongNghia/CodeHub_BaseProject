@@ -169,7 +169,7 @@ export default function MyPosts() {
 									<p className='text-sm text-muted-foreground mb-1'>
 										@{userData?._id || 'Loading...'}
 									</p>
-									<p className='text-muted-foreground mb-4'>
+									<p className='text-muted-foreground mb-4 break-words w-[260px]'>
 										{userData?.address || 'Location'}
 									</p>
 									{isOwnProfile && (

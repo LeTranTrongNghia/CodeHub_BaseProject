@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { toast } from 'react-toastify';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const EditProfileDialog = ({ userData, onProfileUpdate }) => {
   const [open, setOpen] = useState(false);
@@ -24,6 +25,10 @@ const EditProfileDialog = ({ userData, onProfileUpdate }) => {
     skills: [],
   });
   const [newSkill, setNewSkill] = useState('');
+  const [avatarMethod, setAvatarMethod] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(formData.avatar);
+  const fileInputRef = React.useRef(null);
 
   useEffect(() => {
     if (userData) {
@@ -35,6 +40,7 @@ const EditProfileDialog = ({ userData, onProfileUpdate }) => {
         position: userData.position || '',
         skills: userData.skills || [],
       });
+      setPreviewUrl(userData.avatar || '');
     }
   }, [userData]);
 
@@ -44,6 +50,9 @@ const EditProfileDialog = ({ userData, onProfileUpdate }) => {
       ...prev,
       [name]: value
     }));
+    if (name === 'avatar') {
+      setPreviewUrl(value || userData?.avatar || '');
+    }
   };
 
   const handleAddSkill = (e) => {
@@ -62,6 +71,28 @@ const EditProfileDialog = ({ userData, onProfileUpdate }) => {
       ...prev,
       skills: prev.skills.filter(skill => skill !== skillToRemove)
     }));
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setAvatarFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setFormData(prev => ({
+        ...prev,
+        avatar: URL.createObjectURL(file)
+      }));
+    }
+  };
+
+  const handleAvatarMethodChange = (value) => {
+    setAvatarMethod(value);
+    setFormData(prev => ({ ...prev, avatar: '' }));
+    setAvatarFile(null);
+    setPreviewUrl(userData?.avatar || '');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -132,13 +163,60 @@ const EditProfileDialog = ({ userData, onProfileUpdate }) => {
             />
           </div>
           <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="avatar">Avatar URL</Label>
-            <Input
-              id="avatar"
-              name="avatar"
-              value={formData.avatar}
-              onChange={handleInputChange}
-            />
+            <Label>Avatar</Label>
+            <div className="flex flex-col items-center gap-4">
+              <div className="relative w-32 h-32 rounded-full overflow-hidden">
+                <img
+                  src={previewUrl}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <RadioGroup
+                value={avatarMethod}
+                onValueChange={(value) => handleAvatarMethodChange(value)}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="url" id="url" />
+                  <Label htmlFor="url">Use URL</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="upload" id="upload" />
+                  <Label htmlFor="upload">Upload Image</Label>
+                </div>
+              </RadioGroup>
+              {avatarMethod === "url" && (
+                <Input
+                  placeholder="Enter image URL"
+                  name="avatar"
+                  value={formData.avatar}
+                  onChange={handleInputChange}
+                />
+              )}
+              {avatarMethod === "upload" && (
+                <div className="flex flex-col gap-2 w-full">
+                  <Button
+                    onClick={() => fileInputRef.current?.click()}
+                    variant="outline"
+                    type="button"
+                  >
+                    Choose File
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  {avatarFile && (
+                    <span className="text-sm text-center">
+                      {avatarFile.name}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="cover_photo">Cover Photo URL</Label>

@@ -153,6 +153,12 @@ export function CreatePostDialog({
 					/>
 				</div>
 				<div className='p-4'>
+					{/* Image Preview Section */}
+					{image && (
+						<div className='mb-4'>
+							<img src={image} alt='Uploaded preview' className='w-full h-auto rounded' />
+						</div>
+					)}
 					<div className='flex justify-between items-center mb-4'>
 						<div className='text-sm font-semibold'>Add to your post</div>
 						<input
@@ -172,7 +178,7 @@ export function CreatePostDialog({
 							>
 								<Image className='h-6 w-6' />
 							</Button>
-							<Button variant='ghost' size='icon' className='hover:bg-muted'>
+							{/* <Button variant='ghost' size='icon' className='hover:bg-muted'>
 								<Users className='h-6 w-6' />
 							</Button>
 							<Button variant='ghost' size='icon' className='hover:bg-muted'>
@@ -186,7 +192,7 @@ export function CreatePostDialog({
 							</Button>
 							<Button variant='ghost' size='icon' className='hover:bg-muted'>
 								<MoreHorizontal className='h-6 w-6' />
-							</Button>
+							</Button> */}
 						</div>
 					</div>
 					<Button
