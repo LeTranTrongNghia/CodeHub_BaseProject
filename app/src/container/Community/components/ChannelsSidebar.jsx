@@ -46,11 +46,11 @@ const ChannelsSidebar = ({ setSelectedChannel, setActiveChannelId, userData, def
                     <User className="mr-2 h-4 w-4" /> My Posts
                 </Button>
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
                 <Button variant="ghost" className="w-full justify-start">
                     <MessageCircle className="mr-2 h-4 w-4" /> Town Square
                 </Button>
-            </div>
+            </div> */}
             <div className="mb-4">
                 <h3 className="font-semibold mb-2">Channels</h3>
                 {channels.map((channel) => (
