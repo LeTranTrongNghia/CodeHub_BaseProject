@@ -2,18 +2,25 @@ import express from 'express';
 import { ObjectId } from 'mongodb';
 import db from '../db/connection.js';
 import courseController from '../controllers/course.controller.js';
+import { MESSAGES } from '../constants/message.js';
 
 const courseRouter = express.Router();
 
 // Get a list of all courses
 courseRouter.get('/', async (req, res) => {
 	try {
-		let collection = await db.collection('courses');
-		let results = await collection.find({}).toArray();
-		res.send(results).status(200);
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Error retrieving courses');
+		courseController.getPagination(req, res);
+	} catch (error) {
+		if (error instanceof ErrorWithStatus) {
+			return res.status(error.statusCode).json({
+				statusCode: error.statusCode,
+				message: error.message,
+			});
+		}
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.COURSE.GET_ALL,
+		});
 	}
 });
 
@@ -36,27 +43,6 @@ courseRouter.get('/:id', async (req, res) => {
 });
 
 // Create a new course
-// courseRouter.post("/", async (req, res) => {
-//   try {
-//     let newDocument = {
-//       author: req.body.author,
-//       image_cover: req.body.image_cover,
-//       language: req.body.language,
-//       language_short: req.body.language_short,
-//       title: req.body.title,
-//       video_link: req.body.video_link,
-//       video_id: req.body.video_id,
-//       lectures: req.body.lectures,
-//     };
-//     let collection = await db.collection("courses");
-//     let result = await collection.insertOne(newDocument);
-//     res.status(201).send(result);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Error adding course");
-//   }
-// });
-
 courseRouter.post('/', async (req, res) => {
 	try {
 		courseController.create(req, res);
@@ -69,7 +55,7 @@ courseRouter.post('/', async (req, res) => {
 		}
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-			message: MESSAGES.ERROR_MESSAGES.GENERAL.LOGIN,
+			message: MESSAGES.ERROR_MESSAGES.COURSE.CREATE,
 		});
 	}
 });

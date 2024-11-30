@@ -104,13 +104,13 @@ export const MESSAGES = {
 			PASSWORD_INCORRECT: 'Incorrect password.',
 			ACCOUNT_LOCKED: 'Account is locked or banned.',
 		},
-		BUG: {
-			GET_ALL: 'Get all bugs failed',
-			GET_BY_ID: 'Get bug by id failed',
-			CREATE: 'Create bug failed',
-			UPDATE: 'Update bug failed',
-			DELETE: 'Delete bug failed',
-			NOT_FOUND: 'Not found bug document',
+		COURSE: {
+			GET_ALL: 'Get all courses failed',
+			GET_BY_ID: 'Get course by id failed',
+			CREATE: 'Create course failed',
+			UPDATE: 'Update course failed',
+			DELETE: 'Delete course failed',
+			NOT_FOUND: 'Not found course document',
 		},
 		SOLUTION: {
 			GET_ALL: 'Get all solutions failed',

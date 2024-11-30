@@ -52,26 +52,33 @@ class CourseService {
 	}
 
 	// Lấy danh sách các khóa học với phân trang
-	async getCourses(page = 1, limit = 10) {
+	async getCourses(page = 1, per_page = 10) {
 		try {
-			const skip = (page - 1) * limit;
+			// Tính toán skip và limit cho phân trang
+			const skip = (page - 1) * per_page;
+			const limit = per_page;
 
+			// Lấy danh sách các khóa học từ database với phân trang
 			const courses = await db
 				.collection('courses')
-				.find()
+				.find() // Nếu có filter, có thể thêm vào .find({ ...filter })
 				.skip(skip)
 				.limit(limit)
 				.toArray();
 
-			const totalCourses = await db.collection('courses').countDocuments();
+			// Tính tổng số khóa học trong database
+			const totalItems = await db.collection('courses').countDocuments();
 
-			const totalPages = Math.ceil(totalCourses / limit);
+			// Tính số trang dựa trên tổng số khóa học và số mục mỗi trang
+			const totalPages = Math.ceil(totalItems / per_page);
 
+			// Trả về kết quả phân trang
 			return {
-				data: courses,
-				totalCourses,
-				totalPages,
-				currentPage: page,
+				items: courses,
+				page: page,
+				per_page: per_page,
+				total_pages: totalPages,
+				total_items: totalItems,
 			};
 		} catch (error) {
 			throw new ErrorWithStatus({

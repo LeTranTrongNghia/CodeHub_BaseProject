@@ -15,6 +15,15 @@ const courseController = {
 			next(error);
 		}
 	},
+	getPagination: async (req, res) => {
+		const { page, limit } = req.query;
+		const result = await courseServices.getCourses(page, limit);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.COURSE.GET_ALL,
+		);
+	},
 };
 
 export default courseController;
