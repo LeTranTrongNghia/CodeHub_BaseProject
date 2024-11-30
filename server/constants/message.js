@@ -176,12 +176,12 @@ export const MESSAGES = {
 			UPLOAD_MUL_IMAGE: 'Multiple images were uploaded successfully.',
 		},
 
-		BUG: {
-			GET_ALL: 'Get all bugs successfully',
-			GET_BY_ID: 'Get bug by id successfully',
-			UPDATE: 'Update bug successfully',
-			CREATE: 'Create bug successfully',
-			DELETE: 'Delete bug successfully',
+		COURSE: {
+			GET_ALL: 'Get all courses successfully',
+			GET_BY_ID: 'Get course by id successfully',
+			UPDATE: 'Update course successfully',
+			CREATE: 'Create course successfully',
+			DELETE: 'Delete course successfully',
 		},
 		SOLUTION: {
 			GET_ALL: 'Get all solutions successfully',

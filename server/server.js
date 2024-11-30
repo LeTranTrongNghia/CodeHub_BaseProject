@@ -1,17 +1,17 @@
-import express from 'express';
 import cors from 'cors';
-import recordsRouter from './routes/record.js';
-import problemsRouter from './routes/problem.js';
-import coursesRouter from './routes/course.js';
-import authRouter from './routes/auth.route.js';
-import userRouter from './routes/user.route.js';
-import channelsRouter from './routes/channels.js';
-import postsRouter from './routes/posts.js';
-import userInfoRouter from './routes/userInfo.route.js';
-import newsRouter from './routes/news.route.js';
 import dotenv from 'dotenv';
+import express from 'express';
 import { defaultErrorHandler } from './middlewares/error.middleware.js';
+import authRouter from './routes/auth.route.js';
+import channelsRouter from './routes/channels.js';
+import courseRouter from './routes/course.route.js';
+import newsRouter from './routes/news.route.js';
+import postsRouter from './routes/posts.js';
+import problemsRouter from './routes/problem.js';
+import recordsRouter from './routes/record.js';
 import uploadRouter from './routes/upload.route.js';
+import userRouter from './routes/user.route.js';
+import userInfoRouter from './routes/userInfo.route.js';
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
@@ -29,7 +29,7 @@ app.use(express.json());
 // Routes
 app.use('/record', recordsRouter);
 app.use('/problem', problemsRouter);
-app.use('/course', coursesRouter);
+app.use('/course', courseRouter);
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/channels', channelsRouter);
