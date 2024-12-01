@@ -112,14 +112,14 @@ export const MESSAGES = {
 			DELETE: 'Delete course failed',
 			NOT_FOUND: 'Not found course document',
 		},
-		SOLUTION: {
-			GET_ALL: 'Get all solutions failed',
-			GET_BY_ID: 'Get solution by id failed',
-			CREATE: 'Create solution failed',
-			UPDATE: 'Update solution failed',
-			DELETE: 'Delete solution failed',
-			BUG_ID_NOTFOUND: 'Bug ID not found',
-			NOT_FOUND: 'Not found solution document',
+		LECTURE: {
+			GET_ALL: 'Get all lectures failed',
+			GET_BY_ID: 'Get lecture by id failed',
+			CREATE: 'Create lecture failed',
+			UPDATE: 'Update lecture failed',
+			DELETE: 'Delete lecture failed',
+			BUG_ID_NOTFOUND: 'Course ID not found',
+			NOT_FOUND: 'Not found lecture document',
 		},
 		UPLOAD: {
 			IMAGE: 'Upload image failed',
@@ -183,12 +183,12 @@ export const MESSAGES = {
 			CREATE: 'Create course successfully',
 			DELETE: 'Delete course successfully',
 		},
-		SOLUTION: {
-			GET_ALL: 'Get all solutions successfully',
-			GET_BY_ID: 'Get solution by id successfully',
-			UPDATE: 'Update solution successfully',
-			CREATE: 'Create solution successfully',
-			DELETE: 'Delete solution successfully',
+		LECTURE: {
+			GET_ALL: 'Get all lectures successfully',
+			GET_BY_ID: 'Get lecture by id successfully',
+			UPDATE: 'Update lecture successfully',
+			CREATE: 'Create lecture successfully',
+			DELETE: 'Delete lecture successfully',
 		},
 
 		COMMENTS: {

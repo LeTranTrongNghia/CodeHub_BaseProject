@@ -25,7 +25,7 @@ const courseController = {
 		);
 	},
 	getById: async (req, res) => {
-		const result = await courseServices.getCourseById(req.param);
+		const result = await courseServices.getCourseById(req.params.id);
 		return sendResponse.success(
 			res,
 			result,

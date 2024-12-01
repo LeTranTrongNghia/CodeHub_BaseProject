@@ -1,15 +1,15 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
-import db from '../db/connection.js';
-import courseController from '../controllers/course.controller.js';
 import { MESSAGES } from '../constants/message.js';
+import lectureController from '../controllers/lecture.controller.js';
+import db from '../db/connection.js';
 
-const courseRouter = express.Router();
+const lectureRouter = express.Router();
 
 // Get a list of all courses
-courseRouter.get('/', async (req, res) => {
+lectureRouter.get('/', async (req, res) => {
 	try {
-		courseController.getPagination(req, res);
+		lectureController.getPagination(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({
@@ -19,15 +19,15 @@ courseRouter.get('/', async (req, res) => {
 		}
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-			message: MESSAGES.ERROR_MESSAGES.COURSE.GET_ALL,
+			message: MESSAGES.ERROR_MESSAGES.LECTURE.GET_ALL,
 		});
 	}
 });
 
 // Get a single course by id
-courseRouter.get('/:id', async (req, res) => {
+lectureRouter.get('/:id', async (req, res) => {
 	try {
-		courseController.getById(req, res);
+		lectureController.getById(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({
@@ -37,15 +37,17 @@ courseRouter.get('/:id', async (req, res) => {
 		}
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-			message: MESSAGES.ERROR_MESSAGES.COURSE.GET_BY_ID,
+			message: MESSAGES.ERROR_MESSAGES.LECTURE.GET_BY_ID,
 		});
 	}
 });
 
 // Create a new course
-courseRouter.post('/', async (req, res) => {
+lectureRouter.post('/', async (req, res) => {
 	try {
-		courseController.create(req, res);
+		console.log('vào route');
+
+		lectureController.create(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({
@@ -55,13 +57,13 @@ courseRouter.post('/', async (req, res) => {
 		}
 		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
 			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-			message: MESSAGES.ERROR_MESSAGES.COURSE.CREATE,
+			message: MESSAGES.ERROR_MESSAGES.LECTURE.CREATE,
 		});
 	}
 });
 
 // Update a course by id
-courseRouter.patch('/:id', async (req, res) => {
+lectureRouter.patch('/:id', async (req, res) => {
 	try {
 		const query = { _id: new ObjectId(req.params.id) };
 		const updates = {
@@ -87,7 +89,7 @@ courseRouter.patch('/:id', async (req, res) => {
 });
 
 // Delete a course by id
-courseRouter.delete('/:id', async (req, res) => {
+lectureRouter.delete('/:id', async (req, res) => {
 	try {
 		const query = { _id: new ObjectId(req.params.id) };
 
@@ -101,4 +103,4 @@ courseRouter.delete('/:id', async (req, res) => {
 	}
 });
 
-export default courseRouter;
+export default lectureRouter;

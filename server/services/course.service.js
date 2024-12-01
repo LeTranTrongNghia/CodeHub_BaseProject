@@ -3,9 +3,10 @@ import { MESSAGES } from '../constants/message.js';
 import db from '../db/connection.js';
 import { ErrorWithStatus } from '../models/errors/Error.schema.js';
 import Course from '../models/schemas/Course.schema.js';
+import { ObjectId } from 'mongodb';
 
 class CourseService {
-	// Tạo khóa mới
+	// Tạo khóa học mới
 	async createCourse(payload) {
 		const { author, image_cover, language, language_short, title, overview } =
 			payload;
