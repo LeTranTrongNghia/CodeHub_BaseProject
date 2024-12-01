@@ -29,6 +29,22 @@ const lectureController = {
 			MESSAGES.SUCCESS_MESSAGES.LECTURE.GET_BY_ID,
 		);
 	},
+	update: async (req, res) => {
+		const result = await lectureServices.updateLecture(req.params.id, req.body);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.LECTURE.UPDATE,
+		);
+	},
+	delete: async (req, res) => {
+		await lectureServices.deleteLecture(req.params.id);
+		return sendResponse.success(
+			res,
+			'',
+			MESSAGES.SUCCESS_MESSAGES.LECTURE.DELETE,
+		);
+	},
 };
 
 export default lectureController;

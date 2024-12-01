@@ -41,7 +41,7 @@ const courseController = {
 		);
 	},
 	delete: async (req, res) => {
-		const result = await courseServices.deleteCourse(req.params.id);
+		await courseServices.deleteCourse(req.params.id);
 		return sendResponse.success(
 			res,
 			'',

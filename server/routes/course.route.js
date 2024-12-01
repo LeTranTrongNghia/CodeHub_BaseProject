@@ -9,7 +9,7 @@ const courseRouter = express.Router();
 // Get a list of all courses
 courseRouter.get('/', async (req, res) => {
 	try {
-		courseController.getPagination(req, res);
+		await courseController.getPagination(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({
@@ -27,7 +27,7 @@ courseRouter.get('/', async (req, res) => {
 // Get a single course by id
 courseRouter.get('/:id', async (req, res) => {
 	try {
-		courseController.getById(req, res);
+		await courseController.getById(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({
@@ -45,7 +45,7 @@ courseRouter.get('/:id', async (req, res) => {
 // Create a new course
 courseRouter.post('/', async (req, res) => {
 	try {
-		courseController.create(req, res);
+		await courseController.create(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({
@@ -63,7 +63,7 @@ courseRouter.post('/', async (req, res) => {
 // Update a course by id
 courseRouter.put('/:id', async (req, res) => {
 	try {
-		courseController.update(req, res);
+		await courseController.update(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({
@@ -81,7 +81,7 @@ courseRouter.put('/:id', async (req, res) => {
 // Delete a course by id
 courseRouter.delete('/:id', async (req, res) => {
 	try {
-		courseController.delete(req, res);
+		await courseController.delete(req, res);
 	} catch (error) {
 		if (error instanceof ErrorWithStatus) {
 			return res.status(error.statusCode).json({

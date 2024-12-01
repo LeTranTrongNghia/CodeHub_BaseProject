@@ -16,6 +16,23 @@ class LectureService {
 						'All fields (video_link, video_id, course_id, timeline) are required.',
 				});
 			}
+			if (!ObjectId.isValid(course_id)) {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.BAD_REQUEST,
+					message: 'Invalid lecture ID.',
+				});
+			}
+
+			const existingCourse = await db
+				.collection('courses')
+				.findOne({ _id: new ObjectId(course_id) });
+
+			if (!existingCourse) {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.BAD_REQUEST,
+					message: 'Not found course ID.',
+				});
+			}
 
 			const lecture = new Lecture({
 				video_link,
@@ -130,8 +147,6 @@ class LectureService {
 					message: 'Lecture not found.',
 				});
 			}
-
-			return { message: 'Lecture deleted successfully.' };
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
@@ -141,7 +156,6 @@ class LectureService {
 	}
 
 	async getLectureById(lectureId) {
-		console.log('🚀 ~ LectureService ~ getLectureById ~ lectureId:', lectureId);
 		try {
 			if (!ObjectId.isValid(lectureId)) {
 				throw new ErrorWithStatus({
