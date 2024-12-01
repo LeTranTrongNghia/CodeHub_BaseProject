@@ -23,46 +23,74 @@ const TopBar = () => {
 	};
 
 	return (
-		<motion.header
-			className='flex h-20 items-center gap-4 border-b border-gray-300 px-4 md:px-6 justify-between'
-			initial="initial"
-			animate="open"
-			variants={animate}
-		>
-			<nav className='hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6'>
-				<div className='ml-12'>
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button variant='outline' size='icon' aria-label='Home'>
-									<Triangle className='size-5 fill-foreground' />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side='bottom' sideOffset={5}>
-								<p>CodeHub</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</div>
-				<h1 className='ml-2 text-xl font-semibold'>CodeHub</h1>
-			</nav>
-			<div className='mr-12'>
-				<a href='https://github.com/tsdevtool/CodeHub_BaseProject.git'>
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button variant='outline' size='icon' aria-label='Home'>
-									<Github className='size-5 fill-foreground' />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side='bottom' sideOffset={5}>
-								<p>Star on Github</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</a>
-			</div>
-		</motion.header>
+		<div className="relative z-50 bg-white">
+			<motion.header
+				className='flex h-20 items-center gap-4 border-b border-gray-300 px-4 md:px-6 justify-between'
+				initial="initial"
+				animate="open"
+				variants={animate}
+			>
+				<nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
+					<div className="flex items-center space-x-2">
+						<div className='ml-0'>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button variant='outline' size='icon' aria-label='Home'>
+											<Triangle className='size-5 fill-foreground' />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side='bottom' sideOffset={5}>
+										<p>CodeHub</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						</div>
+						<h1 className='ml-2 text-xl font-semibold'>CodeHub</h1>
+					</div>
+
+					<div className="hidden md:flex items-center space-x-8">
+						<a href="#" className="text-gray-600 hover:text-gray-900">
+							Home
+						</a>
+						<a href="#" className="text-gray-600 hover:text-gray-900">
+							Product
+						</a>
+						<a href="#" className="text-gray-600 hover:text-gray-900">
+							Features
+						</a>
+						<a href="#" className="text-gray-600 hover:text-gray-900">
+							Assistant
+						</a>
+						<a href="#" className="text-gray-600 hover:text-gray-900">
+							Pricing
+						</a>
+						<a
+							href="/login"
+							className="bg-[#4945FF] text-white px-4 py-2 rounded-full font-medium hover:bg-[#3f3dd3] transition-colors"
+						>
+							Get Started
+						</a>
+					</div>
+					<div className='mr-0'>
+						<a href='https://github.com/tsdevtool/CodeHub_BaseProject.git'>
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button variant='outline' size='icon' aria-label='Home'>
+											<Github className='size-5 fill-foreground' />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side='bottom' sideOffset={5}>
+										<p>Star on Github</p>
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						</a>
+					</div>
+				</nav>
+			</motion.header>
+		</div>
 	);
 };
 export default TopBar;
