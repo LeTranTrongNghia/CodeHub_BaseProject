@@ -282,8 +282,8 @@ export const MESSAGES = {
 				'At least one field must be specified for updating.',
 		},
 
-		BUGS: {
-			TITLE_IS_REQUIRED: 'Title is required',
+		COURSE: {
+			ALL_FIELD_IS_REQUIRED: 'All field is required',
 			TITLE_MUST_BE_STRING: 'Title must be a string',
 			TITLE_LENGTH_BETWEEN_10_AND_100:
 				'Title length is from 10 to 100 characters',
@@ -294,9 +294,10 @@ export const MESSAGES = {
 			IMAGE_IS_REQUIRED: 'Image is required',
 			IMAGE_MUST_BE_STRING: 'Image must be a string',
 			INVALID_IMAGE: 'Invalid image',
-			UPDATE_ID_IS_REQUIRED: 'Bug id is required',
-			UPDATE_ID_MUST_BE_STRING: 'Bug id must be string',
+			UPDATE_ID_IS_REQUIRED: 'Course id is required',
+			UPDATE_ID_MUST_BE_STRING: 'Course id must be string',
 			STATUS: 'Status is Pending or Public or Deleted',
+			ID_INVALID: 'Id is invalid',
 		},
 
 		UPLOAD: {

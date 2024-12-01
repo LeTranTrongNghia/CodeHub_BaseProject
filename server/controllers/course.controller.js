@@ -24,6 +24,14 @@ const courseController = {
 			MESSAGES.SUCCESS_MESSAGES.COURSE.GET_ALL,
 		);
 	},
+	getById: async (req, res) => {
+		const result = await courseServices.getCourseById(req.param);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.COURSE.GET_BY_ID,
+		);
+	},
 };
 
 export default courseController;

@@ -1,10 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
-import pkg from 'jsonwebtoken';
 import { MESSAGES } from '../constants/message.js';
 import db from '../db/connection.js';
 import { ErrorWithStatus } from '../models/errors/Error.schema.js';
 import Course from '../models/schemas/Course.schema.js';
-const { JsonWebTokenError } = pkg;
 
 class CourseService {
 	// Tạo khóa mới
@@ -94,7 +92,7 @@ class CourseService {
 			if (Object.keys(payload).length === 0) {
 				throw new ErrorWithStatus({
 					statusCode: StatusCodes.BAD_REQUEST,
-					message: MESSAGES.VALIDATION_MESSAGES.COURSE.FIELD_UPDATE_REQUIRED,
+					message: MESSAGES.VALIDATION_MESSAGES.COURSE.ALL_FIELD_IS_REQUIRED,
 				});
 			}
 
@@ -114,7 +112,7 @@ class CourseService {
 			if (result.modifiedCount === 0) {
 				throw new ErrorWithStatus({
 					statusCode: StatusCodes.NOT_FOUND,
-					message: MESSAGES.ERROR_MESSAGES.GENERAL.COURSE_NOT_FOUND,
+					message: MESSAGES.ERROR_MESSAGES.COURSE.NOT_FOUND,
 				});
 			}
 
@@ -126,7 +124,7 @@ class CourseService {
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-				message: MESSAGES.ERROR_MESSAGES.GENERAL.UPDATE_COURSE,
+				message: MESSAGES.ERROR_MESSAGES.COURSE.UPDATE,
 			});
 		}
 	}
@@ -141,7 +139,7 @@ class CourseService {
 			if (result.deletedCount === 0) {
 				throw new ErrorWithStatus({
 					statusCode: StatusCodes.NOT_FOUND,
-					message: MESSAGES.ERROR_MESSAGES.GENERAL.COURSE_NOT_FOUND,
+					message: MESSAGES.ERROR_MESSAGES.COURSE.NOT_FOUND,
 				});
 			}
 
@@ -149,7 +147,38 @@ class CourseService {
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-				message: MESSAGES.ERROR_MESSAGES.GENERAL.DELETE_COURSE,
+				message: MESSAGES.ERROR_MESSAGES.COURSE.DELETE,
+			});
+		}
+	}
+	async getCourseById(courseId) {
+		try {
+			// Kiểm tra ID có hợp lệ không
+			if (!ObjectId.isValid(courseId)) {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.BAD_REQUEST,
+					message: MESSAGES.VALIDATION_MESSAGES.COURSE.ID_INVALID,
+				});
+			}
+
+			// Tìm khóa học theo ID
+			const course = await db
+				.collection('courses')
+				.findOne({ _id: new ObjectId(courseId) });
+
+			// Nếu không tìm thấy, trả về lỗi
+			if (!course) {
+				throw new ErrorWithStatus({
+					statusCode: StatusCodes.NOT_FOUND,
+					message: MESSAGES.VALIDATION_MESSAGES.COURSE.NOT_FOUND,
+				});
+			}
+
+			return course;
+		} catch (error) {
+			throw new ErrorWithStatus({
+				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+				message: MESSAGES.ERROR_MESSAGES.GENERAL.GET_COURSE,
 			});
 		}
 	}

@@ -27,18 +27,18 @@ courseRouter.get('/', async (req, res) => {
 // Get a single course by id
 courseRouter.get('/:id', async (req, res) => {
 	try {
-		let collection = await db.collection('courses');
-		let query = { _id: new ObjectId(req.params.id) };
-		let result = await collection.findOne(query);
-
-		if (!result) {
-			res.status(404).send('Not found');
-		} else {
-			res.status(200).send(result);
+		courseController.getById(req.res);
+	} catch (error) {
+		if (error instanceof ErrorWithStatus) {
+			return res.status(error.statusCode).json({
+				statusCode: error.statusCode,
+				message: error.message,
+			});
 		}
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Error retrieving course');
+		return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+			statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+			message: MESSAGES.ERROR_MESSAGES.COURSE.GET_BY_ID,
+		});
 	}
 });
 
