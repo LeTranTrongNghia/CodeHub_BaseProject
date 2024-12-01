@@ -143,8 +143,7 @@ class CourseService {
 					message: MESSAGES.ERROR_MESSAGES.COURSE.NOT_FOUND,
 				});
 			}
-
-			return { message: 'Course deleted successfully' };
+			return;
 		} catch (error) {
 			throw new ErrorWithStatus({
 				statusCode: StatusCodes.INTERNAL_SERVER_ERROR,

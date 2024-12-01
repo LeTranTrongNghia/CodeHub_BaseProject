@@ -32,6 +32,22 @@ const courseController = {
 			MESSAGES.SUCCESS_MESSAGES.COURSE.GET_BY_ID,
 		);
 	},
+	update: async (req, res) => {
+		const result = await courseServices.updateCourse(req.params.id, req.body);
+		return sendResponse.success(
+			res,
+			result,
+			MESSAGES.SUCCESS_MESSAGES.COURSE.UPDATE,
+		);
+	},
+	delete: async (req, res) => {
+		const result = await courseServices.deleteCourse(req.params.id);
+		return sendResponse.success(
+			res,
+			'',
+			MESSAGES.SUCCESS_MESSAGES.COURSE.DELETE,
+		);
+	},
 };
 
 export default courseController;
