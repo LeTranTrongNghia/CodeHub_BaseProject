@@ -75,7 +75,7 @@ const CommunityPage = React.lazy(() =>
 );
 
 const PlayGroundPage = React.lazy(() =>
-  import("../components/MainHome/Playground.jsx")
+  import("../container/playground/Playground.jsx")
 );
 
 const PostDetailPage = React.lazy(() =>
