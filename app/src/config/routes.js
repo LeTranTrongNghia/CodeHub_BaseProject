@@ -18,6 +18,7 @@ const routes = {
   },
   problemPage: "/problems",
   coursePage: "/courses",
+  courseDetail: "/courseDetail",
   newCourse: "/new-courses/:id",
   contactPage: "/contact",
   solveProblem: "/problems/solve/:id",

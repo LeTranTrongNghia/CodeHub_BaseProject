@@ -59,11 +59,11 @@ const OtpPage = React.lazy(() =>
 );
 
 const CoursePage = React.lazy(() =>
-  import("../components/MainHome/CourseList")
+  import("../components/Course/new/CourseList")
 );
 
 const CourseDetail = React.lazy(() =>
-  import("../components/Course/CourseDetails")
+  import("../components/Course/new/CourseDetails")
 );
 
 const SolveProblemPage = React.lazy(() =>
@@ -142,7 +142,7 @@ const protectedRoute = [
     path: config.routes.coursePage,
     component: CoursePage,
   },
-  { path: config.routes.newCourse, component: CourseDetail },
+  { path: config.routes.courseDetail, component: CourseDetail },
   {
     path: config.routes.problemPage,
     component: ProblemPage,

@@ -43,7 +43,7 @@ const IndexHome = () => {
 				{/* Background Circles */}
 				<BackgroundCircles />
 				<Header />
-				<div className='z-50 mt-20 flex justify-center space-x-2 md:space-x-4'>
+				<div className='z-50 flex justify-center space-x-2 md:space-x-4'>
 					<Button asChild size='sm' className="inline-flex items-center px-6 py-3 rounded-full bg-black text-white font-medium hover:bg-gray-800 transition-colors">
 						<motion.a
 							href='https://youtu.be/qP5ZhibWHJs?si=vZ6eZigD-_90S6VW'
