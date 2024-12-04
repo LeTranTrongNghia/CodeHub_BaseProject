@@ -1,77 +1,71 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-
-import { Link } from "react-router-dom";
-import Sidebar from "../../MainHome/Sidebar";
-import Topbar from "../../MainHome/Topbar";
-import { ChevronLeft, ChevronRight, Play } from 'lucide-react'
+import Sidebar from "../MainHome/Sidebar";
+import Topbar from "../MainHome/Topbar";
+import { Play } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const CourseList = () => {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState([]);
 
-  const userEmail = useSelector((state) => state.user.email);
+  // Fetch current user from Redux store
+  const currentUser = useSelector(state => state.user);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
+  // Fetch all users data
   useEffect(() => {
-    async function fetchUser() {
+    const fetchUsers = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5050/users?email=${userEmail}`
-        );
+        const response = await fetch('http://localhost:5050/users/');
         if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        const userData = await response.json();
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error(error.message);
-      }
-    }
-
-    if (userEmail) {
-      fetchUser();
-    }
-
-    async function fetchCourses() {
-      try {
-        const response = await fetch("http://localhost:5050/course/");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error('Failed to fetch users');
         }
         const data = await response.json();
-        setCourses(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchCourses();
-  }, [userEmail]); // Thêm userEmail vào dependency để khi thay đổi email, useEffect sẽ chạy lại
+        setUsers(data); // Set users data to state
 
-  if (loading) return <div className="container mx-auto p-4">Loading...</div>;
-  if (error) return <div className="container mx-auto p-4">Error: {error}</div>;
+        // Find the current user in the fetched users
+        const foundUser = data.find(user => user._id === currentUser.id);
+        if (foundUser) {
+          setUsers(prevUsers => prevUsers.map(user => 
+            user._id === currentUser.id ? foundUser : user
+          )); // Update users state with the found user
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
+    fetchUsers();
+  }, [currentUser.id]); // Dependency on currentUser.id
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch('http://localhost:5050/course/'); // Replace with your API URL
+      if (!response.ok) {
+        throw new Error('Failed to fetch courses');
+      }
+      const data = await response.json();
+      setCourses(data.data.items); // Accessing the items array from the response
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get the current user's data from the users array
+  const currentUserData = users.find(user => user._id === currentUser.id) || {};
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -81,12 +75,16 @@ const CourseList = () => {
         {/* User Greet */}
         <div className="col-span-4 flex items-center gap-4">
           <div className="h-12 w-12 rounded-full bg-black text-white flex items-center justify-center text-xl">
-            T
+            <img
+              src={currentUserData.avatar || '/placeholder.svg'}
+              alt='Profile picture'
+              className='w-full h-full object-cover rounded-full'
+            />
           </div>
           <div>
-            <h1 className="text-xl font-semibold">Welcome back, TrongNghia</h1>
+            <h1 className="text-xl font-semibold">Welcome back, {currentUserData.username || 'User'}</h1>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Full Stack Web Developer</span>
+              <span className="text-sm text-gray-600">{currentUserData.position}</span>
               <Button variant="link" className="text-sm text-purple-600 p-0">
                 Edit profile
               </Button>
@@ -170,51 +168,24 @@ const CourseList = () => {
             "
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Card 
-                key={i} 
-                className="flex flex-col" 
-                onClick={() => navigate(`/coursedetail`)}
+            {courses.map((course) => (
+              <Card
+                key={course._id}
+                className="flex flex-col"
+                onClick={() => navigate(`/courses/detail/${course._id}`)}
               >
                 <div className="aspect-video relative bg-gray-100 rounded-t-lg">
                   <img
-                    src="/src/assets/cover.png?height=200&width=300"
+                    src={course.image_cover || "/src/assets/cover.png?height=200&width=300"}
                     alt="Course thumbnail"
                     className="object-cover rounded-t-lg w-full h-full"
                   />
                 </div>
                 <div className="p-4 flex-1">
-                  <h3 className="font-semibold mb-2">The Complete Cyber Security Course</h3>
-                  <p className="text-sm text-gray-600 mb-2">Instructor Name</p>
+                  <h3 className="font-semibold mb-2">{course.title}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{course.author}</p>
                   <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded mt-2">
-                    JavaScript
-                  </span>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Popular Courses */}
-        <div className="col-span-4">
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="text-2xl font-bold">Popular for Full Stack Web Developers</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Card key={i} className="flex flex-col">
-                <div className="aspect-video relative bg-gray-100 rounded-t-lg">
-                  <img
-                    src="/src/assets/cover.png?height=200&width=300"
-                    alt="Course thumbnail"
-                    className="object-cover rounded-t-lg w-full h-full"
-                  />
-                </div>
-                <div className="p-4 flex-1">
-                  <h3 className="font-semibold mb-2">The Complete Cyber Security Course</h3>
-                  <p className="text-sm text-gray-600 mb-2">Instructor Name</p>
-                  <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded mt-2">
-                    JavaScript
+                    {course.language_short}
                   </span>
                 </div>
               </Card>

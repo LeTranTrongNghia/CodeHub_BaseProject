@@ -5,12 +5,10 @@ import Header from './components/Header.jsx';
 import InfoLanding from './components/InfoLanding.jsx';
 import PreviewLanding from './components/PreviewLanding.jsx';
 import TopBar from './components/TopBar.jsx';
-import Particles from '@/components/ui/particles';
 import { useEffect, useState } from "react";
-import { Github, ArrowRight } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import AnimatedGradientText from '@/components/ui/animated-gradient-text';
 import { Play } from 'lucide-react'
 import BackgroundCircles from './components/BackgroundCircles.jsx';
 

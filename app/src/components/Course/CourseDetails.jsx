@@ -1,457 +1,192 @@
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Modal } from "antd";
-import axios from "axios";
-import { ChevronLeft, CircleUser } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import YouTube from "react-youtube";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Play, FileText, Clock, ChevronLeft } from 'lucide-react';
 import Sidebar from "../MainHome/Sidebar";
+import Topbar from "../MainHome/Topbar";
+import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CourseDetails = () => {
-  const { id } = useParams();
-  const [course, setCourse] = useState(null);
-  const videoRef = useRef(null);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [quiz, setQuiz] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(null);
-  const [selectedLectureIndex, setSelectedLectureIndex] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  // const handleQuizClick = async () => {
-  //   // setShowModal(true);
-  //   if (!course || !course.lectures[selectedLectureIndex]) {
-  //     console.error("Lecture not found");
-  //     return;
-  //   }
-
-  //   const selectedLecture = course.lectures[selectedLectureIndex];
-  //   const questionObj = await generateQuizQuestion(
-  //     selectedLecture.title_lecture,
-  //     course.title
-  //   );
-
-  //   if (questionObj) {
-  //     setQuiz(questionObj);
-  //     setShowModal(true);
-  //   }
-  // };
-
-  const handleQuizClick = async () => {
-    setIsLoading(true);
-    setShowModal(true);
-    try {
-      if (!course || !course.lectures || selectedLectureIndex === undefined) {
-        console.error("Course or lecture not found");
-        setIsLoading(false);
-        return;
-      }
-
-      const selectedLecture = course.lectures[selectedLectureIndex];
-      if (!selectedLecture) {
-        console.error("Selected lecture is invalid");
-        setIsLoading(false);
-        return;
-      }
-
-      const questionObj = await generateQuizQuestion(
-        selectedLecture.title_lecture,
-        course.title
-      );
-
-      if (questionObj) {
-        setQuiz(questionObj);
-        // setShowModal(true);
-      } else {
-        console.error("Failed to generate quiz question");
-      }
-    } catch (error) {
-      console.error("An error occurred while generating quiz question:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleAnswerSelect = (option) => {
-    setSelectedAnswer(option);
-    const correct = option === quiz.answer;
-    setIsCorrect(correct);
-
-    if (correct) {
-      setTimeout(() => {
-        setShowModal(false);
-        setSelectedAnswer(null);
-        setIsCorrect(null);
-      });
-
-      if (videoRef.current) {
-        const player = videoRef.current.getInternalPlayer();
-        player.playVideo();
-      }
-    }
-  };
-
-  const handleNextClick = async () => {
-    // Reset the state for the next question
-    setIsLoading(true);
-    setSelectedAnswer(null);
-    setIsCorrect(null);
-    try {
-      if (!course || !course.lectures[selectedLectureIndex]) {
-        console.error("Lecture not found");
-        setIsLoading(false);
-        return;
-      }
-      const selectedLecture = course.lectures[selectedLectureIndex];
-
-      // Fetch a new quiz question (replace this with your actual fetching logic)
-      const newQuiz = await generateQuizQuestion(
-        selectedLecture.title_lecture,
-        course.title
-      ); // You should implement this function
-      if (newQuiz) {
-        setQuiz(newQuiz);
-      }
-    } catch (error) {
-      console.error(
-        "An error occurred while fetching the next question:",
-        error
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const generateQuizQuestion = async (lectureTitle, courseTitle) => {
-    try {
-      const API_KEY = import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT;
-      const response = await axios({
-        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
-        method: "post",
-        data: {
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Generate a multiple-choice question based on the course title: "${courseTitle}" and lecture title: "${lectureTitle}". Provide 4 answer choices and specify the correct one. The response['data']['candidates'][0]['content']['parts'][0]['text'] must return in a object {
-											"question": "A flashing red traffic light signifies that a driver should do what?",
-											"A": "stop",
-											"B": "speed up",
-											"C": "proceed with caution",
-											"D": "honk the horn",
-											"answer": "A"
-											} `,
-                },
-              ],
-            },
-          ],
-        },
-      });
-
-      const returnData = JSON.parse(
-        response["data"]["candidates"][0]["content"]["parts"][0]["text"]
-      );
-      return returnData;
-    } catch (error) {
-      console.error("Error generating question:", error);
-      return null;
-    }
-  };
+  const navigate = useNavigate();
+  const { id } = useParams(); // Get course ID from URL
+  const [courseData, setCourseData] = useState(null);
+  const [lectureData, setLectureData] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
-    async function fetchCourseDetails() {
+    const fetchCourseDetails = async () => {
       try {
+        // Fetch course data
         const response = await fetch(`http://localhost:5050/course/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch course data');
+        }
         const data = await response.json();
-        setCourse(data);
-      } catch (error) {
-        console.error("Error fetching course details:", error);
+        setCourseData(data.data); // Ensure this is the correct structure
+        // console.log("Course data:", data.data); // Log course data
+      } catch (err) {
+        setError(err.message); // Set error message
+        console.error("Error fetching course details: ", err.message);
+      } finally {
+        setLoading(false); // Set loading to false
       }
-    }
+    };
+
+
     fetchCourseDetails();
+    fetchLectureDetails();
   }, [id]);
 
-  // Siu
-
-  const onPlayerStateChange = (event) => {
-    // access to player in all event handlers via event.target
-    const player = event.target;
-    // let isFirstCheck = false;
-    const intervalId = setInterval(() => {
-      const currentTimeVideo = Math.floor(player.getCurrentTime());
-      // if (Math.abs(currentTimeVideo - lastTime) > 1) {
-      //   player.seekTo(lastTime, true);
-      // }
-      const firstLectureTime = course?.lectures[0]
-        ? convertTimeToSeconds(course.lectures[0].time)
-        : null;
-      // const shouldPause = course?.lectures.some((lecture) => {
-      //   return currentTimeVideo === convertTimeToSeconds(lecture.time);
-      // });
-      const shouldPause = course?.lectures.some((lecture) => {
-        const lectureTimeInSeconds = convertTimeToSeconds(lecture.time);
-
-        if (lectureTimeInSeconds === firstLectureTime) {
-          return false;
-        }
-
-        return currentTimeVideo === lectureTimeInSeconds;
-      });
-      // console.log(lastTime);
-      console.log(player);
-      console.log(shouldPause);
-      if (shouldPause) {
-        player.pauseVideo();
-        handleQuizClick();
-        // handleEvent();
-        clearInterval(intervalId);
+  const fetchLectureDetails = async () => {
+    try {
+      const response = await fetch(`http://localhost:5050/lecture/`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch lecture data');
       }
-    }, 1000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-    // event.target.pauseVideo();
-  };
-
-  // const onPlayerStateChange = (event) => {
-  //   const player = event.target;
-
-  //   if (event.data === 2) {
-  //     player.playVideo();
-  //   }
-  // };
-
-  const opts = {
-    height: "100%",
-    width: "100%",
-    playerVars: {
-      // https://developers.google.com/youtube/player_parameters
-      autoplay: 1,
-      controls: 0,
-      disablekb: 1,
-    },
-  };
-  const convertTimeToSeconds = (time) => {
-    const [minutes, seconds] = time.split(":").map(Number);
-    return minutes * 60 + seconds;
-  };
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     if (videoRef.current) {
-  //       videoRef.current.pause();
-  //       const videoCurrentTime = Math.floor(videoRef.current.currentTime);
-  //       setCurrentTime(videoCurrentTime);
-  //       console.log(videoRef);
-  //       const shouldPause = course?.lectures.some((lecture) => {
-  //         // console.log(convertTimeToSeconds(lecture.time));
-  //         return videoCurrentTime === convertTimeToSeconds(lecture.time);
-  //       });
-  //       if (shouldPause) {
-  //         console.log("a");
-  //       }
-  //     }
-  //   }, 500);
-  //   return () => clearInterval(interval);
-  // }, [course, currentTime]);
-
-  // SIu
-  const playLecture = (time) => {
-    // const [minutes, seconds] = time.split(":").map(Number);
-    // const startTime = minutes * 60 + seconds;
-    // if (videoRef.current) {
-    //   const videoSrc = new URL(videoRef.current.src);
-    //   videoSrc.searchParams.set("start", startTime);
-    //   videoRef.current.src = videoSrc.toString();
-    //   videoRef.current.play();
-    // }
-    const [minutes, seconds] = time.split(":").map(Number);
-    const startTime = minutes * 60 + seconds;
-
-    if (videoRef.current) {
-      const player = videoRef.current.getInternalPlayer();
-      player.seekTo(startTime, true);
-      player.playVideo();
+      const data = await response.json();
+      // Check if data.data is an array before filtering
+      if (Array.isArray(data.data.items)) {
+        // Filter lectures by course_id matching the current course's id
+        const filteredLectures = data.data.items.filter(lecture => lecture.course_id === id);
+        setLectureData(filteredLectures); // Set filtered lecture data
+        // console.log("Filtered lecture data:", filteredLectures); // Log filtered lecture data
+      } else {
+        console.error("Expected data.data to be an array, but got:", data.data.items);
+        setLectureData([]); // Set to empty array if not an array
+      }
+    } catch (err) {
+      setError(err.message); // Set error message
+      console.error("Error fetching lecture details: ", err.message);
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
-  if (!course) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>; // Loading state
+  if (error) return <div>Error: {error}</div>; // Error state
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="flex min-h-screen w-full flex-col bg-white text-black">
+      <Topbar />
       <Sidebar />
-      <header className="flex h-16 items-center justify-between border-b px-4 md:px-6">
-        <nav className="flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-          <div className="flex ml-14">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <a href="/courses">
-                      <ChevronLeft className="h-4 w-4" />
-                    </a>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" sideOffset={5}>
-                  <p>Back to courses</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </nav>
-        <div className="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </header>
+      <main className="min-h-screen bg-white text-black">
+        <div className="container mx-auto px-4 pt-12 pb-8">
+          {/* Back Button */}
+          <Button className="mb-4" onClick={() => navigate('/courses')}>
+            <ChevronLeft className="mr-2"/>
+            Back to Course List
+          </Button>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              <h1 className="text-4xl font-bold mb-4">
+                {courseData ? courseData.title : "Loading..."}
+              </h1>
+              <p className="text-lg mb-6">
+                {courseData ? courseData.overview : "Loading..."}
+              </p>
 
-      <div className="container mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">{course.title}</h1>
-        <div className="flex flex-col lg:flex-row">
-          <div className="w-full lg:w-2/3 lg:mr-4">
-            <div className="aspect-w-16 aspect-h-9 flex w-full">
-              {/* <iframe
-                ref={videoRef}
-                src={course.video_link}
-                title={course.title}
-                className="rounded-lg"
-                allow="clipboard-read; clipboard-write"
-                allowFullScreen
-              ></iframe> */}
-              <YouTube
-                videoId={course.video_id}
-                ref={videoRef}
-                className="rounded-lg"
-                opts={opts}
-                // onReady={onPlayerReady}
-                onStateChange={onPlayerStateChange}
-              />
-              ;{/* <YoutubePlayer videoId={"zOjov-2OZ0E"} /> */}
+              {/* Course Stats */}
+              <div className="flex flex-wrap items-center gap-4 mb-6">
+                <Badge variant="secondary" className="bg-yellow-200 text-black">
+                  {courseData ? courseData.language : "Loading..."}
+                </Badge>
+              </div>
+
+              {/* Course Creator */}
+              <div className="mb-6 text-blue-600">
+                <span className="text-black">Created by </span>{courseData ? courseData.author : "Loading..."}
+              </div>
+
+              {/* Course Meta */}
+              <div className="flex flex-wrap gap-4 text-sm mb-8">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  Last updated 10/2024
+                </div>
+              </div>
+
+              {/* What You'll Learn */}
+              <Card className="bg-gray-100 border-gray-200">
+                <CardContent className="p-6">
+                  <h2 className="text-2xl font-bold mb-4">What you'll learn</h2>
+                  <div className="space-y-4">
+                    {lectureData && lectureData.length > 0 ? (
+                      lectureData.map((lecture) => (
+                        <div key={lecture._id} className="flex flex-col gap-2">
+                          {lecture.timeline.map((item, index) => (
+                            <div key={index} className="flex gap-2">
+                              <span className="text-blue-600">•</span>
+                              <p>{item.title} - {item.time}</p>
+                            </div>
+                          ))}
+                        </div>
+                      ))
+                    ) : (
+                      <p>No lectures available.</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-            {/* <div className="float-end">
-              <button
-                onClick={handleQuizClick}
-                className="mt-4 bg-slate-800 h-12 w-20 mr-auto rounded-lg text-gray-300 font-bold"
-              >
-                Quiz
-              </button>
-            </div> */}
-          </div>
 
-          {showModal && (
-            <Modal
-              title="Quiz"
-              visible={showModal}
-              onCancel={() => {
-                if (isCorrect) {
-                  setShowModal(false);
-                } else {
-                  alert(
-                    "You must answer correctly before closing the question."
-                  );
-                }
-              }}
-              footer={null}
-            >
-              {isLoading ? (
-                <div className="flex justify-center items-center h-32">
-                  <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" />
-                  <p className="ml-4 text-lg font-medium">Loading...</p>
-                </div>
-              ) : (
-                <>
-                  <h2 className="text-xl font-bold mb-4">{quiz.question}</h2>
-                  <div className="space-y-2">
-                    {["A", "B", "C", "D"].map((option) => (
-                      <button
-                        key={option}
-                        onClick={() => handleAnswerSelect(option)}
-                        disabled={!!selectedAnswer}
-                        className={`p-2 rounded-lg w-full text-left ${
-                          selectedAnswer
-                            ? option === quiz.answer
-                              ? "bg-green-500"
-                              : selectedAnswer === option
-                              ? "bg-red-500"
-                              : "bg-gray-200"
-                            : "bg-gray-200"
-                        }`}
-                      >
-                        {option}: {quiz[option]}
-                      </button>
-                    ))}
+            {/* Course Card */}
+            <div className="lg:col-span-1">
+              <Card className="bg-white shadow-lg sticky top-4">
+                <CardContent className="p-0">
+                  <div className="relative aspect-video bg-gray-900">
+                    <img
+                      src={courseData ? courseData.image_cover : "Loading..."}
+                      alt="Course thumbnail"
+                      className="object-cover w-full h-full"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="rounded-full bg-white/90 p-4">
+                        <Play className="w-8 h-8" />
+                      </div>
+                    </div>
                   </div>
-                  {isCorrect === false && (
-                    <p className="text-red-500 text-center mt-4">
-                      Câu trả lời sai, vui lòng thử lại.
-                    </p>
-                  )}
-                  {/* } */}
-                  <div className="text-end">
-                    <button
-                      onClick={handleNextClick}
-                      className="bg-gray-600 text-gray-200 mt-8 rounded-md h-10 w-20 "
-                    >
-                      Next
-                    </button>
+                  <div className="p-6">
+                    <div className="space-y-3">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" onClick={() => {
+                        navigate(`/courses/detail/lecture/${courseData._id}`, { state: { lectureData, courseData } });
+                      }}>
+                        Enter Course
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                        Save
+                      </Button>
+                    </div>
+                    <div className="mt-6">
+                      <h3 className="font-semibold text-lg mb-4">This course includes:</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Play className="w-4 h-4" />
+                          <span>
+                            {lectureData && lectureData.length > 0
+                              ? (Math.max(...lectureData.flatMap(lecture => lecture.timeline.map(item => {
+                                const [minutes, seconds] = item.time.split(':').map(Number);
+                                return minutes + seconds / 60; // Convert to total minutes
+                              }))) / 60).toFixed(1) // Convert to hours and format to one decimal place
+                              : 0} hours on-demand video
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4" />
+                          <span>{lectureData ? lectureData.reduce((acc, lecture) => acc + lecture.timeline.length, 0) : 0} articles</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </>
-              )}
-            </Modal>
-          )}
-
-          <div className="w-full lg:w-1/3">
-            <h2 className="text-xl font-bold mb-2">Lectures</h2>
-            <div className="flex flex-col space-y-4 h-[calc(100vh-200px)] overflow-y-auto">
-              {course.lectures.map((lecture, index) => (
-                <div
-                  key={`${lecture.title_lecture}-${index}`}
-                  className="bg-white shadow-lg rounded-lg p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <h3 className="text-lg font-bold">
-                      {lecture.title_lecture}
-                    </h3>
-                    <p className="text-gray-600">{lecture.time}</p>
-                  </div>
-                  <button
-                    onClick={() => playLecture(lecture.time)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Play
-                  </button>
-                </div>
-              ))}
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
