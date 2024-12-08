@@ -13,6 +13,7 @@ import recordsRouter from './routes/record.js';
 import uploadRouter from './routes/upload.route.js';
 import userRouter from './routes/user.route.js';
 import userInfoRouter from './routes/userInfo.route.js';
+import progressRouter from './routes/progress.route.js';
 dotenv.config();
 
 const PORT = process.env.PORT || 5050;
@@ -39,6 +40,7 @@ app.use('/posts', postsRouter);
 app.use('/users', userInfoRouter);
 app.use('/news', newsRouter);
 app.use('/upload', uploadRouter);
+app.use('/progress', progressRouter);
 
 app.use(defaultErrorHandler);
 

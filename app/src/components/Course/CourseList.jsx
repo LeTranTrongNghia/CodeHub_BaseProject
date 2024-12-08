@@ -15,6 +15,7 @@ const CourseList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
+  const [lessons, setLessons] = useState([]);
 
   // Fetch current user from Redux store
   const currentUser = useSelector(state => state.user);
@@ -33,7 +34,7 @@ const CourseList = () => {
         // Find the current user in the fetched users
         const foundUser = data.find(user => user._id === currentUser.id);
         if (foundUser) {
-          setUsers(prevUsers => prevUsers.map(user => 
+          setUsers(prevUsers => prevUsers.map(user =>
             user._id === currentUser.id ? foundUser : user
           )); // Update users state with the found user
         }
@@ -51,21 +52,42 @@ const CourseList = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('http://localhost:5050/course/'); // Replace with your API URL
+      const response = await fetch('http://localhost:5050/course/'); // Fetch courses from API
       if (!response.ok) {
         throw new Error('Failed to fetch courses');
       }
       const data = await response.json();
-      setCourses(data.data.items); // Accessing the items array from the response
+      setCourses(data.data.items); // Update state with courses data
     } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      console.error(err.message);
     }
   };
 
   // Get the current user's data from the users array
   const currentUserData = users.find(user => user._id === currentUser.id) || {};
+
+  // Hàm để lấy dữ liệu bài học từ API
+  const fetchLessons = async () => {
+    try {
+      const response = await fetch('http://localhost:5050/progress/'); // Lấy dữ liệu từ API
+      if (!response.ok) {
+        throw new Error('Failed to fetch progress');
+      }
+      const data = await response.json();
+      const userLessons = data.data.items.find(progress => progress.user_id === currentUser.id); // Tìm bài học của user hiện tại
+      if (userLessons) {
+        setLessons(userLessons.lessons); // Cập nhật trạng thái với bài học của user
+      } else {
+        setLessons([]); // Nếu không tìm thấy bài học, đặt lessons thành mảng rỗng
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchLessons(); // Gọi hàm fetchLessons khi component mount
+  }, [currentUser.id]); // Phụ thuộc vào currentUser.id
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -115,32 +137,45 @@ const CourseList = () => {
         {/* Learning Section */}
         <div className="col-span-4">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Let's start learning</h2>
+            <h2 className="text-2xl font-bold">Completed Lessons</h2>
             <Button variant="link" className="text-purple-600">
               My learning
             </Button>
           </div>
-          <Card className="w-80">
-            <img
-              className="object-cover w-full h-full"
-              src='/src/assets/cover.png'
-              alt='preview landing'
-              loading='eager'
-            />
-            <div className="relative bg-black aspect-video rounded-t-lg">
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-              >
-                <Play className="h-6 w-6" />
-              </Button>
-            </div>
-            <div className="p-4 mt-4">
-              <p className="text-sm text-gray-600">Introduction to Cloud Computing</p>
-              <h3 className="font-semibold">1. Introduction</h3>
-            </div>
-          </Card>
+
+          {/* Display lessons in the Completed Lessons section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-4">
+            {lessons.length > 0 ? (
+              lessons.map((lesson) => {
+                const course = courses.find(course => course._id === lesson.course_id);
+                return (
+                  <Card key={lesson.course_id} className="flex flex-col">
+                    <img
+                      className="object-cover w-full h-40"
+                      src={course ? course.image_cover : '/src/assets/cover.png'}
+                      alt='preview landing'
+                      loading='eager'
+                    />
+                    <div className="relative bg-black aspect-video rounded-t-lg">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                      >
+                        <Play className="h-6 w-6" />
+                      </Button>
+                    </div>
+                    <div className="p-4 mt-4">
+                      <p className="text-sm text-gray-600">{lesson.lecture_name}</p>
+                      <h3 className="font-semibold">{course ? course.title : 'Course not found'}</h3>
+                    </div>
+                  </Card>
+                );
+              })
+            ) : (
+              <p>No lessons available.</p>
+            )}
+          </div>
         </div>
 
         {/* Business Banner */}
@@ -164,7 +199,9 @@ const CourseList = () => {
           <h2 className="text-2xl font-bold mb-4">What to learn next</h2>
           <p className="mb-4">
             Because you viewed "
-            <span className="text-purple-600">The Complete Cyber Security Course : Hackers Exposed!</span>
+            <span className="text-purple-600">
+              {lessons.length > 0 ? courses.find(course => course._id === lessons[lessons.length - 1].course_id)?.title : 'No course found'}
+            </span>  
             "
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">

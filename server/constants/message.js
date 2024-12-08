@@ -127,6 +127,15 @@ export const MESSAGES = {
 			SOLUTION: 'Upload solution image failed',
 			TOO_LARGE: 'File too large',
 		},
+		PROGRESS: {
+			GET_ALL: 'Get all progress failed',
+			GET_BY_ID: 'Get progress by id failed',
+			GET_BY_USER_ID: 'Get progress by user id failed',
+			CREATE: 'Create progress failed',
+			UPDATE: 'Update progress failed', 
+			DELETE: 'Delete progress failed',
+			NOT_FOUND: 'Not found progress document',
+		},
 	},
 	SUCCESS_MESSAGES: {
 		LOGIN: 'Login successfully.',
@@ -236,6 +245,14 @@ export const MESSAGES = {
 		REACTION: {
 			LIKE_SUCCESSFULLY: 'Liked successfully',
 			UNLIKE_SUCCESSFULLY: 'Unliked successfully',
+		},
+		PROGRESS: {
+			GET_ALL: 'Get all progress successfully',
+			GET_BY_ID: 'Get progress by id successfully',
+			GET_BY_USER_ID: 'Get progress by user id successfully',
+			UPDATE: 'Update progress successfully',
+			CREATE: 'Create progress successfully',
+			DELETE: 'Delete progress successfully',
 		},
 	},
 	VALIDATION_MESSAGES: {

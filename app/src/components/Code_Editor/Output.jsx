@@ -23,6 +23,7 @@ import { ChartContainer } from '@/components/ui/chart';
 import { Card, CardContent } from '@/components/ui/card';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Output = ({ editorRef, language }) => {
 	const [form, setForm] = useState({
@@ -51,6 +52,7 @@ const Output = ({ editorRef, language }) => {
 	const [performanceRating, setPerformanceRating] = useState(0);
 	const [clarityRating, setClarityRating] = useState(0);
 	const [generatingAnswer, setGeneratingAnswer] = useState(false);
+	const id = useSelector(state => state.user.id);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -250,11 +252,60 @@ const Output = ({ editorRef, language }) => {
 		if (passedTests === form.testCases.length) {
 			toast.success('Congratulations! All test cases are passed! 🎉🎉🎉');
 			requestRating();
-			// requestCodeReview();
+			updateProgress();
 		} else {
 			toast.error(
 				`You passed ${passedTests} out of ${form.testCases.length} test cases.`,
 			);
+		}
+	};
+
+	const updateProgress = async () => {
+		try {
+			// Fetch all progress entries
+			const response = await fetch('http://localhost:5050/progress/');
+			if (!response.ok) {
+				throw new Error(`An error occurred: ${response.statusText}`);
+			}
+			const allProgress = await response.json();
+
+			// Find the progress item for the current user
+			const userProgress = allProgress.data.items.find(progress => progress.user_id === id);
+			
+			if (!userProgress) {
+				console.error('No progress found for current user');
+				return;
+			}
+
+			// Create new exercise entry
+			const newExercise = {
+				exercise_id: params.id, // Current problem ID
+				completion_date: new Date()
+			};
+
+			// Add new exercise to existing exercises array
+			const updatedExercises = [...userProgress.exercises, newExercise];
+
+			// Update progress with new exercises array
+			const updateResponse = await fetch(`http://localhost:5050/progress/${userProgress._id}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					exercises: updatedExercises
+				}),
+			});
+
+			if (!updateResponse.ok) {
+				throw new Error(`An error occurred: ${updateResponse.statusText}`);
+			}
+
+			const data = await updateResponse.json();
+			console.log('Progress updated:', data);
+
+		} catch (error) {
+			console.error('Error updating progress:', error);
 		}
 	};
 

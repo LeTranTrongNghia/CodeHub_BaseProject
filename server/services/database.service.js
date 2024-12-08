@@ -13,6 +13,7 @@ class DatabaseServices {
 			},
 		});
 		this.db = this.client.db('auth-user');
+		this.progress = this.db.collection('progress');
 	}
 	async connect() {
 		try {

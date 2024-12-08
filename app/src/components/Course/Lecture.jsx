@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { ChevronLeft } from 'lucide-react'
+import { useSelector } from 'react-redux';
 
 export default function Lecture() {
   const location = useLocation();
@@ -32,8 +33,9 @@ export default function Lecture() {
   const [quizAnswers, setQuizAnswers] = useState({});
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const navigate = useNavigate();
+  const id = useSelector(state => state.user.id); // Get the user ID from Redux
 
-  // console.log("title: ", courseData.title);
+  // console.log("title: ", currentTitle);
   // Log the video_id of each lecture in lectureData
   useEffect(() => {
     if (lectureData && lectureData.length > 0) {
@@ -82,19 +84,20 @@ export default function Lecture() {
     }
     setSelectedItem(item);
 
+    // Update currentTitle to the title of the selected item
+    setCurrentTitle(item.title);
+
     const currentIndex = lecture.timeline.findIndex(timelineItem => timelineItem === item);
 
     if (currentIndex > 0) {
       // Convert time to seconds
       const [minutes, seconds] = lecture.timeline[currentIndex - 1].time.split(':').map(Number);
       const secondsValue = minutes * 60 + seconds;
-      // console.log("Previous timeline item time in seconds:", secondsValue);
       setTotalSeconds(secondsValue);
     } else {
       // Convert time to seconds for the first item
       const [minutes, seconds] = lecture.timeline[0].time.split(':').map(Number);
       const secondsValue = minutes * 60 + seconds;
-      // console.log("Previous timeline item time in seconds:", secondsValue);
       setTotalSeconds(secondsValue);
     }
     await handleGenerateQuiz();
@@ -109,6 +112,7 @@ export default function Lecture() {
       handlePlayClick(selectedItem.videoId, selectedItem.time);
       setIsDialogOpen(false); // Close dialog on correct answer
       toast.success("Correct answer!"); // Show success toast
+      updateProgress(); // Gọi hàm updateProgress để lưu bài học
     } else {
       toast.error("Incorrect answer, please try again."); // Show error toast
       setIsDialogOpen(true); // Keep dialog open
@@ -177,6 +181,66 @@ export default function Lecture() {
         }); // Set the answers from the response
         setCorrectAnswer(quizQuestion.answer); // Store the correct answer
       }
+    }
+  };
+
+  const updateProgress = async () => {
+    try {
+      // Fetch all progress entries
+      const response = await fetch('http://localhost:5050/progress/');
+      if (!response.ok) {
+        throw new Error(`An error occurred: ${response.statusText}`);
+      }
+      const allProgress = await response.json();
+
+      // Find the progress item for the current user
+      const userProgress = allProgress.data.items.find(progress => progress.user_id === id);
+      
+      if (!userProgress) {
+        console.error('No progress found for current user');
+        return;
+      }
+
+      // Check if the lecture has already been learned
+      const hasLearnedLecture = userProgress.lessons.some(lesson => 
+        lesson.lecture_name === currentTitle && lesson.course_id === courseData.id
+      );
+
+      if (hasLearnedLecture) {
+        console.log('Lecture has already been learned. No new lesson created.');
+        return; // Exit if the lecture has already been learned
+      }
+
+      // Create new lesson entry
+      const newLesson = {
+        course_id: courseData._id, // Ensure this is set correctly
+        lecture_name: currentTitle, // Tên bài học hiện tại
+        completion_date: new Date() // Ngày hoàn thành
+      };
+
+      // Add new lesson to existing lessons array
+      const updatedLessons = [...userProgress.lessons, newLesson];
+
+      // Update progress with new lessons array
+      const updateResponse = await fetch(`http://localhost:5050/progress/${userProgress._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lessons: updatedLessons
+        }),
+      });
+
+      if (!updateResponse.ok) {
+        throw new Error(`An error occurred: ${updateResponse.statusText}`);
+      }
+
+      const data = await updateResponse.json();
+      console.log('Progress updated:', data);
+
+    } catch (error) {
+      console.error('Error updating progress:', error);
     }
   };
 
