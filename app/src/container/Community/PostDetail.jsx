@@ -149,6 +149,7 @@ export default function PostDetail() {
 										</span>
 									</div>
 									<div className='mt-2'>{renderContent(post.content)}</div>
+									<img src={post.imageUrl} alt='post image' />
 								</div>
 							</div>
 						</CardContent>

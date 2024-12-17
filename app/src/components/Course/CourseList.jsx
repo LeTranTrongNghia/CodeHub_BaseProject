@@ -107,9 +107,9 @@ const CourseList = () => {
             <h1 className="text-xl font-semibold">Welcome back, {currentUserData.username || 'User'}</h1>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">{currentUserData.position}</span>
-              <Button variant="link" className="text-sm text-purple-600 p-0">
+              {/* <Button variant="link" className="text-sm text-purple-600 p-0">
                 Edit profile
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
@@ -146,32 +146,35 @@ const CourseList = () => {
           {/* Display lessons in the Completed Lessons section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mt-4">
             {lessons.length > 0 ? (
-              lessons.map((lesson) => {
-                const course = courses.find(course => course._id === lesson.course_id);
-                return (
-                  <Card key={lesson.course_id} className="flex flex-col">
-                    <img
-                      className="object-cover w-full h-40"
-                      src={course ? course.image_cover : '/src/assets/cover.png'}
-                      alt='preview landing'
-                      loading='eager'
-                    />
-                    <div className="relative bg-black aspect-video rounded-t-lg">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                      >
-                        <Play className="h-6 w-6" />
-                      </Button>
-                    </div>
-                    <div className="p-4 mt-4">
-                      <p className="text-sm text-gray-600">{lesson.lecture_name}</p>
-                      <h3 className="font-semibold">{course ? course.title : 'Course not found'}</h3>
-                    </div>
-                  </Card>
-                );
-              })
+              lessons
+                .sort((a, b) => new Date(b.completion_date) - new Date(a.completion_date)) // Sắp xếp theo completion_date giảm dần
+                .slice(0, 5) // Chỉ lấy 5 bài gần nhất
+                .map((lesson) => {
+                  const course = courses.find(course => course._id === lesson.course_id);
+                  return (
+                    <Card key={lesson.course_id} className="flex flex-col">
+                      <img
+                        className="object-cover w-full h-40"
+                        src={course ? course.image_cover : '/src/assets/cover.png'}
+                        alt="preview landing"
+                        loading="eager"
+                      />
+                      <div className="relative bg-black aspect-video rounded-t-lg">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                        >
+                          <Play className="h-6 w-6" />
+                        </Button>
+                      </div>
+                      <div className="p-4 mt-4">
+                        <p className="text-sm text-gray-600">{lesson.lecture_name}</p>
+                        <h3 className="font-semibold">{course ? course.title : "Course not found"}</h3>
+                      </div>
+                    </Card>
+                  );
+                })
             ) : (
               <p>No lessons available.</p>
             )}
@@ -201,10 +204,10 @@ const CourseList = () => {
             Because you viewed "
             <span className="text-purple-600">
               {lessons.length > 0 ? courses.find(course => course._id === lessons[lessons.length - 1].course_id)?.title : 'No course found'}
-            </span>  
+            </span>
             "
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-5 gap-4">
             {courses.map((course) => (
               <Card
                 key={course._id}
