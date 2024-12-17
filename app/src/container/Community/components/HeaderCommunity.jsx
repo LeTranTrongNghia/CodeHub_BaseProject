@@ -25,12 +25,12 @@ const HeaderCommunity = () => {
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent side='bottom' sideOffset={5}>
-                                <p>CodeHub</p>
+                                <p>DevLab</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                 </div>
-                <h1 className="text-2xl font-bold">CodeHub</h1>
+                <h1 className="text-2xl font-bold">DevLab</h1>
                 <nav className="hidden md:flex space-x-4">
                     <Button variant="ghost"><a href="/courses">Learn</a></Button>
                     <Button variant="ghost"><a href="/problems">Practice</a></Button>

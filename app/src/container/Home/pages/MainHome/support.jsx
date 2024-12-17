@@ -23,7 +23,7 @@ const ContactPage = () => {
 		const templateParams = {
 			from_name: name,
 			user_email: email,
-			to_name: 'TrongNghia from CodeHub',
+			to_name: 'TrongNghia from DevLab',
 			message: message,
 		};
 
@@ -57,7 +57,7 @@ const ContactPage = () => {
 							<p className='text-sm text-muted-foreground'>
 								<p>
 									<a href='/' className='underline text-black'>
-										CodeHub
+										DevLab
 									</a>{' '}
 									is all about empowering you to learn and create with AI. Feel
 									free to reach out with any questions, feedback, or

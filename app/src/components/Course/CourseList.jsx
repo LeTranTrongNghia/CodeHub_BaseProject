@@ -117,9 +117,9 @@ const CourseList = () => {
         {/* Hero Banner */}
         <div className="col-span-4 relative bg-purple-500 rounded-lg overflow-hidden h-[300px] flex">
           <Card className="w-1/2 z-10 bg-white p-6 rounded-lg m-10">
-            <h2 className="text-2xl font-bold mb-2">Master Programming with CodeHub</h2>
+            <h2 className="text-2xl font-bold mb-2">Master Programming with DevLab</h2>
             <p className="text-gray-600 mb-4">
-              From basics to advanced, CodeHub provides interactive courses and intelligent support to accelerate your coding journey.
+              From basics to advanced, DevLab provides interactive courses and intelligent support to accelerate your coding journey.
             </p>
             <Button variant="default" className="bg-black text-white hover:bg-gray-800">
               Learn more

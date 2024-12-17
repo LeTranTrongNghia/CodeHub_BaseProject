@@ -41,12 +41,12 @@ const TopBar = () => {
 										</Button>
 									</TooltipTrigger>
 									<TooltipContent side='bottom' sideOffset={5}>
-										<p>CodeHub</p>
+										<p>DevLab</p>
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
 						</div>
-						<h1 className='ml-2 text-xl font-semibold'>CodeHub</h1>
+						<h1 className='ml-2 text-xl font-semibold'>DevLab</h1>
 					</div>
 
 					<div className="hidden md:flex items-center space-x-8">
@@ -73,7 +73,7 @@ const TopBar = () => {
 						</a>
 					</div>
 					<div className='mr-0'>
-						<a href='https://github.com/tsdevtool/CodeHub_BaseProject.git'>
+						<a href='https://github.com/LeTranTrongNghia/CodeHub_BaseProject.git'>
 							<TooltipProvider>
 								<Tooltip>
 									<TooltipTrigger asChild>

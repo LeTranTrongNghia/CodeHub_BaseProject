@@ -44,7 +44,7 @@ const Footer = () => {
 					</p>
 
 					<div className='flex items-center gap-3'>
-						<a href='https://github.com/tsdevtool/CodeHub_BaseProject.git'>
+						<a href='https://github.com/LeTranTrongNghia/CodeHub_BaseProject.git'>
 							<TooltipProvider>
 								<Tooltip>
 									<TooltipTrigger asChild>

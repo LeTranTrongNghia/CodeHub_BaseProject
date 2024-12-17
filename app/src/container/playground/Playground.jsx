@@ -280,7 +280,7 @@ const FileUploadAndDisplay = () => {
 				break;
 			default:
 				promptPrefix =
-					'Pretending you are an AI coding assistant named CodeHub.';
+					'Pretending you are an AI coding assistant named DevLab.';
 				break;
 		}
 
@@ -427,7 +427,7 @@ const FileUploadAndDisplay = () => {
 						{
 							parts: [
 								{
-									text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and provide a detailed review based on these categories:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\n\nGive me a detailed review for each category. Answer in this format. Keep it brief and concise, short and simple:\n\nSyntax analysis: ...\nFunction definition check: ...\nLogic analysis: ...\nEfficiency: ...\nReadability: ...\nRecommendations: ...\n\nCode:\n${selectedFile.content}`,
+									text: `Imagine you are an AI coding assistant named DevLab. Analyze the following file contents and provide a detailed review based on these categories:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\n\nGive me a detailed review for each category. Answer in this format. Keep it brief and concise, short and simple:\n\nSyntax analysis: ...\nFunction definition check: ...\nLogic analysis: ...\nEfficiency: ...\nReadability: ...\nRecommendations: ...\n\nCode:\n${selectedFile.content}`,
 								},
 							],
 						},

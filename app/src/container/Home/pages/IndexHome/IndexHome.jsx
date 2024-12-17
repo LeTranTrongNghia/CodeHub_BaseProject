@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Play } from 'lucide-react'
 import BackgroundCircles from './components/BackgroundCircles.jsx';
+import PlanOptions from './components/PlanOptions.jsx';
 
 const IndexHome = () => {
 	const [color, setColor] = useState("#000000");
@@ -56,7 +57,7 @@ const IndexHome = () => {
 					</Button>
 					<Button asChild size='sm' className="inline-flex items-center px-6 py-3 rounded-full bg-black text-white font-medium hover:bg-gray-800 transition-colors">
 						<motion.a
-							href='https://github.com/LeTranTrongNghia/CodeHub_BaseProject'
+							href='https://github.com/LeTranTrongNghia/CodeHub_BaseProject.git'
 							initial="initial"
 							animate="open"
 							variants={animate}
@@ -72,6 +73,7 @@ const IndexHome = () => {
 			</section>
 			<BentoGrid />
 			<InfoLanding />
+			<PlanOptions />
 			<Footer />
 		</ReactLenis>
 	);

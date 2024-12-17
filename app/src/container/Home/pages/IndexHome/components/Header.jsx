@@ -33,7 +33,7 @@ const Header = () => {
 						<span
 							className={`inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`}
 						>
-							Introducing CodeHub
+							Introducing DevLab
 						</span>
 						<ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
 					</AnimatedGradientText>
@@ -43,7 +43,7 @@ const Header = () => {
 					Unlock{' '}
 					<span className="text-[#4945FF] font-extrabold">programming</span> mastery through{' '}
 					AI learning platform{' '}
-					<SparklesText className="text-[#4945FF]" text="CodeHub" />
+					<SparklesText className="text-[#4945FF]" text="DevLab" />
 				</motion.h1>
 
 				<motion.p variants={animate} className="text-xl text-gray-600 max-w-2xl mx-auto">
