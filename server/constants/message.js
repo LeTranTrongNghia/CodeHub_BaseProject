@@ -104,28 +104,37 @@ export const MESSAGES = {
 			PASSWORD_INCORRECT: 'Incorrect password.',
 			ACCOUNT_LOCKED: 'Account is locked or banned.',
 		},
-		BUG: {
-			GET_ALL: 'Get all bugs failed',
-			GET_BY_ID: 'Get bug by id failed',
-			CREATE: 'Create bug failed',
-			UPDATE: 'Update bug failed',
-			DELETE: 'Delete bug failed',
-			NOT_FOUND: 'Not found bug document',
+		COURSE: {
+			GET_ALL: 'Get all courses failed',
+			GET_BY_ID: 'Get course by id failed',
+			CREATE: 'Create course failed',
+			UPDATE: 'Update course failed',
+			DELETE: 'Delete course failed',
+			NOT_FOUND: 'Not found course document',
 		},
-		SOLUTION: {
-			GET_ALL: 'Get all solutions failed',
-			GET_BY_ID: 'Get solution by id failed',
-			CREATE: 'Create solution failed',
-			UPDATE: 'Update solution failed',
-			DELETE: 'Delete solution failed',
-			BUG_ID_NOTFOUND: 'Bug ID not found',
-			NOT_FOUND: 'Not found solution document',
+		LECTURE: {
+			GET_ALL: 'Get all lectures failed',
+			GET_BY_ID: 'Get lecture by id failed',
+			CREATE: 'Create lecture failed',
+			UPDATE: 'Update lecture failed',
+			DELETE: 'Delete lecture failed',
+			BUG_ID_NOTFOUND: 'Course ID not found',
+			NOT_FOUND: 'Not found lecture document',
 		},
 		UPLOAD: {
 			IMAGE: 'Upload image failed',
 			BUG: 'Upload bug image failed',
 			SOLUTION: 'Upload solution image failed',
 			TOO_LARGE: 'File too large',
+		},
+		PROGRESS: {
+			GET_ALL: 'Get all progress failed',
+			GET_BY_ID: 'Get progress by id failed',
+			GET_BY_USER_ID: 'Get progress by user id failed',
+			CREATE: 'Create progress failed',
+			UPDATE: 'Update progress failed', 
+			DELETE: 'Delete progress failed',
+			NOT_FOUND: 'Not found progress document',
 		},
 	},
 	SUCCESS_MESSAGES: {
@@ -176,19 +185,19 @@ export const MESSAGES = {
 			UPLOAD_MUL_IMAGE: 'Multiple images were uploaded successfully.',
 		},
 
-		BUG: {
-			GET_ALL: 'Get all bugs successfully',
-			GET_BY_ID: 'Get bug by id successfully',
-			UPDATE: 'Update bug successfully',
-			CREATE: 'Create bug successfully',
-			DELETE: 'Delete bug successfully',
+		COURSE: {
+			GET_ALL: 'Get all courses successfully',
+			GET_BY_ID: 'Get course by id successfully',
+			UPDATE: 'Update course successfully',
+			CREATE: 'Create course successfully',
+			DELETE: 'Delete course successfully',
 		},
-		SOLUTION: {
-			GET_ALL: 'Get all solutions successfully',
-			GET_BY_ID: 'Get solution by id successfully',
-			UPDATE: 'Update solution successfully',
-			CREATE: 'Create solution successfully',
-			DELETE: 'Delete solution successfully',
+		LECTURE: {
+			GET_ALL: 'Get all lectures successfully',
+			GET_BY_ID: 'Get lecture by id successfully',
+			UPDATE: 'Update lecture successfully',
+			CREATE: 'Create lecture successfully',
+			DELETE: 'Delete lecture successfully',
 		},
 
 		COMMENTS: {
@@ -237,6 +246,14 @@ export const MESSAGES = {
 			LIKE_SUCCESSFULLY: 'Liked successfully',
 			UNLIKE_SUCCESSFULLY: 'Unliked successfully',
 		},
+		PROGRESS: {
+			GET_ALL: 'Get all progress successfully',
+			GET_BY_ID: 'Get progress by id successfully',
+			GET_BY_USER_ID: 'Get progress by user id successfully',
+			UPDATE: 'Update progress successfully',
+			CREATE: 'Create progress successfully',
+			DELETE: 'Delete progress successfully',
+		},
 	},
 	VALIDATION_MESSAGES: {
 		TITLE: 'Validation error.',
@@ -282,8 +299,8 @@ export const MESSAGES = {
 				'At least one field must be specified for updating.',
 		},
 
-		BUGS: {
-			TITLE_IS_REQUIRED: 'Title is required',
+		COURSE: {
+			ALL_FIELD_IS_REQUIRED: 'All field is required',
 			TITLE_MUST_BE_STRING: 'Title must be a string',
 			TITLE_LENGTH_BETWEEN_10_AND_100:
 				'Title length is from 10 to 100 characters',
@@ -294,9 +311,10 @@ export const MESSAGES = {
 			IMAGE_IS_REQUIRED: 'Image is required',
 			IMAGE_MUST_BE_STRING: 'Image must be a string',
 			INVALID_IMAGE: 'Invalid image',
-			UPDATE_ID_IS_REQUIRED: 'Bug id is required',
-			UPDATE_ID_MUST_BE_STRING: 'Bug id must be string',
+			UPDATE_ID_IS_REQUIRED: 'Course id is required',
+			UPDATE_ID_MUST_BE_STRING: 'Course id must be string',
 			STATUS: 'Status is Pending or Public or Deleted',
+			ID_INVALID: 'Id is invalid',
 		},
 
 		UPLOAD: {

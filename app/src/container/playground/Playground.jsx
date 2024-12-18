@@ -45,7 +45,8 @@ import { CODE_SNIPPETS } from '@/container/Workspace/Code_Editor/constant/consta
 import { executeCode } from '/src/container/Workspace/Code_Editor/constant/api';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import Sidebar from './Sidebar';
+import Sidebar from '../../components/MainHome/Sidebar';
+import Config from './components/Config';
 
 const FileUploadAndDisplay = () => {
 	const [files, setFiles] = useState([]);
@@ -54,6 +55,7 @@ const FileUploadAndDisplay = () => {
 	const [chatHistory, setChatHistory] = useState([]);
 	const [generatingAnswer, setGeneratingAnswer] = useState(false);
 	const [error, setError] = useState('');
+	const [fileTree, setFileTree] = useState([]);
 
 	const fileInputRef = React.useRef(null);
 
@@ -104,53 +106,53 @@ const FileUploadAndDisplay = () => {
 			const fileContents = await Promise.all(allowedFiles.map(readFileContent));
 			setFiles(fileContents);
 			setSelectedFile(null);
+
+			// Create file tree structure
+			const tree = createFileTree(allowedFiles);
+			setFileTree(tree);
 		}
 	};
 
-	// const handleFileSelect = (fileName) => {
-	//     const file = files.find(f => f.name === fileName);
-	//     if (file) {
-	//         setSelectedFile(file); // Update the selected file state
-	//         console.log('Selected File Name:', file.name); // Log the file name
-	//         console.log('Selected File Content:', file.content); // Log the file content
+	const createFileTree = files => {
+		const tree = [];
+		const paths = {};
 
-	//         setValue(file.content);
+		// First, collect all paths and their file names
+		files.forEach(file => {
+			const path = file.webkitRelativePath || file.name;
+			paths[path] = file;
+		});
 
-	//         // Call requestRating after setting the file
-	//         requestRating();
+		// Then build the tree structure
+		Object.keys(paths).forEach(path => {
+			const parts = path.split('/');
+			let currentLevel = tree;
 
-	//         // Determine the file extension and set the language accordingly
-	//         const extension = file.name.split('.').pop().toLowerCase();
-	//         let selectedLanguage = '';
+			parts.forEach((part, index) => {
+				const isLast = index === parts.length - 1;
+				const existing = currentLevel.find(item => 
+					Array.isArray(item) ? item[0] === part : item === part
+				);
 
-	//         switch (extension) {
-	//             case 'py':
-	//                 selectedLanguage = 'python';
-	//                 break;
-	//             case 'js':
-	//                 selectedLanguage = 'javascript';
-	//                 break;
-	//             case 'ts':
-	//                 selectedLanguage = 'typescript';
-	//                 break;
-	//             case 'java':
-	//                 selectedLanguage = 'java';
-	//                 break;
-	//             case 'cs':
-	//                 selectedLanguage = 'csharp';
-	//                 break;
-	//             case 'php':
-	//                 selectedLanguage = 'php';
-	//                 break;
-	//             default:
-	//                 selectedLanguage = 'unknown'; // Default case if needed
-	//                 break;
-	//         }
+				if (!existing) {
+					if (isLast) {
+						// It's a file
+						currentLevel.push(part);
+					} else {
+						// It's a directory
+						const newFolder = [part, []];
+						currentLevel.push(newFolder);
+						currentLevel = newFolder[1];
+					}
+				} else if (Array.isArray(existing)) {
+					// Navigate into existing directory
+					currentLevel = existing[1];
+				}
+			});
+		});
 
-	//         setLanguage(selectedLanguage); // Update the language state
-	//         console.log('Selected Language:', selectedLanguage); // Log the selected language
-	//     }
-	// };
+		return tree;
+	};
 
 	const handleFileSelect = fileName => {
 		const file = files.find(f => f.name === fileName);
@@ -278,7 +280,7 @@ const FileUploadAndDisplay = () => {
 				break;
 			default:
 				promptPrefix =
-					'Pretending you are an AI coding assistant named CodeHub.';
+					'Pretending you are an AI coding assistant named DevLab.';
 				break;
 		}
 
@@ -425,7 +427,7 @@ const FileUploadAndDisplay = () => {
 						{
 							parts: [
 								{
-									text: `Imagine you are an AI coding assistant named CodeHub. Analyze the following file contents and provide a detailed review based on these categories:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\n\nGive me a detailed review for each category. Answer in this format. Keep it brief and concise, short and simple:\n\nSyntax analysis: ...\nFunction definition check: ...\nLogic analysis: ...\nEfficiency: ...\nReadability: ...\nRecommendations: ...\n\nCode:\n${selectedFile.content}`,
+									text: `Imagine you are an AI coding assistant named DevLab. Analyze the following file contents and provide a detailed review based on these categories:\n\nSyntax analysis\nFunction definition check\nLogic analysis\nEfficiency\nReadability.\n\nGive me a detailed review for each category. Answer in this format. Keep it brief and concise, short and simple:\n\nSyntax analysis: ...\nFunction definition check: ...\nLogic analysis: ...\nEfficiency: ...\nReadability: ...\nRecommendations: ...\n\nCode:\n${selectedFile.content}`,
 								},
 							],
 						},
@@ -635,239 +637,101 @@ const FileUploadAndDisplay = () => {
 						className='ml-auto gap-1.5 text-sm'
 					>
 						<Github className='size-3.5' />
-						<a href='https://github.com/tsdevtool/CodeHub_BaseProject.git'>
+						<a href='https://github.com/LeTranTrongNghia/CodeHub_BaseProject.git'>
 							Learn more
 						</a>
 					</Button>
 				</header>
 				<main
 					className='grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-3 lg:grid-cols-3'
-					style={{ gridTemplateColumns: '20rem 0.8fr 1fr' }}
+					style={{ gridTemplateColumns: '20rem 1fr 0.5fr' }}
 				>
-					{/* Setting */}
-					<div className='relative hidden flex-col items-start gap-8 md:flex max-w-[20rem]'>
-						<form className='grid w-full items-start gap-6'>
-							<fieldset className='grid gap-6 rounded-lg border p-4'>
-								<legend className='-ml-1 px-1 text-sm font-medium'>
-									Infomation
-								</legend>
+					<Config 
+						selectedModel={selectedModel}
+						setSelectedModel={setSelectedModel}
+						handleFileChange={handleFileChange}
+						fileInputRef={fileInputRef}
+						selectedFile={selectedFile}
+						handleFileSelect={handleFileSelect}
+						files={files}
+						requestRating={requestRating}
+						generatingAnswer={generatingAnswer}
+						correctnessRating={correctnessRating}
+						performanceRating={performanceRating}
+						clarityRating={clarityRating}
+						data={data}
+						fileTree={fileTree}
+					/>
 
-								<div className='grid gap-3'>
-									<Label htmlFor='model'>Model</Label>
-									<Select onValueChange={value => setSelectedModel(value)}>
-										<SelectTrigger
-											id='model'
-											className='items-start [&_[data-description]]:hidden'
-										>
-											<SelectValue placeholder='Select a model' />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value='syntax'>
-												<div className='flex items-start gap-3 text-muted-foreground'>
-													<Rabbit className='size-5' />
-													<div className='grid gap-0.5'>
-														<p>
-															Neural{' '}
-															<span className='font-medium text-foreground'>
-																Genesis
-															</span>
-														</p>
-														<p className='text-xs' data-description>
-															Code Syntax and Debugging Expert
-														</p>
-													</div>
-												</div>
-											</SelectItem>
-											<SelectItem value='algorithm'>
-												<div className='flex items-start gap-3 text-muted-foreground'>
-													<Bird className='size-5' />
-													<div className='grid gap-0.5'>
-														<p>
-															Neural{' '}
-															<span className='font-medium text-foreground'>
-																Explorer
-															</span>
-														</p>
-														<p className='text-xs' data-description>
-															Algorithm and Data Structure Guru
-														</p>
-													</div>
-												</div>
-											</SelectItem>
-											<SelectItem value='quality'>
-												<div className='flex items-start gap-3 text-muted-foreground'>
-													<Turtle className='size-5' />
-													<div className='grid gap-0.5'>
-														<p>
-															Neural{' '}
-															<span className='font-medium text-foreground'>
-																Quantum
-															</span>
-														</p>
-														<p className='text-xs' data-description>
-															Code Quality and Collaboration Mentor
-														</p>
-													</div>
-												</div>
-											</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
-
-								<div className='grid gap-3'>
-									<Label htmlFor='file'>Upload your code files</Label>
-									<Input
-										id='file'
-										type='file'
-										onChange={handleFileChange}
-										multiple
-										ref={fileInputRef} // Attach the ref
-									/>
-								</div>
-							</fieldset>
-							<fieldset className='grid gap-6 rounded-lg border p-4'>
-								<legend className='-ml-1 px-1 text-sm font-medium'>
-									Result
-								</legend>
-								<div className='grid gap-3'>
-									<Label htmlFor='role'>Files</Label>
-									<Select
-										value={selectedFile ? selectedFile.name : ''}
-										onValueChange={handleFileSelect}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder='Select a file' />
-										</SelectTrigger>
-										<SelectContent>
-											{files.map((file, index) => (
-												<SelectItem key={index} value={file.name}>
-													{file.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-
-								<div className='grid gap-3'>
-									<div className='flex justify-between items-center'>
-										<Label htmlFor='content' className='flex-shrink-0'>
-											Overall Review
-										</Label>
+					{/* Editor - Now wider */}
+					<div className='relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1'>
+						<Badge variant='outline' className='absolute right-3 top-3'>
+							Editor
+						</Badge>
+						<div className='flex-1 overflow-auto p-4 mt-4 mb-4'>
+							<div className='w-full h-full'>
+								<Editor
+									height='60vh'
+									defaultLanguage={language}
+									defaultValue={CODE_SNIPPETS[language]}
+									theme='vs-dark'
+									onMount={editor => {
+										editorRef.current = editor;
+									}}
+									value={value}
+									onChange={newValue => setValue(newValue)}
+								/>
+								<div className='flex flex-col w-full mt-4'>
+									<div className='flex justify-between items-center mb-4'>
 										<TooltipProvider>
 											<Tooltip>
-												<TooltipTrigger asChild>
+												<TooltipTrigger>
 													<Button
-														variant='ghost'
-														size='icon'
-														onClick={requestRating}
-														disabled={generatingAnswer}
+														className='bg-green-500 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-green-700 transition-all duration-300'
+														onClick={runCode}
 													>
-														{generatingAnswer ? (
-															'...'
-														) : (
-															<RotateCw className='size-4' />
-														)}
+														Run Code
 													</Button>
 												</TooltipTrigger>
-												<TooltipContent side='top'>
-													Reload rating
+												<TooltipContent side="right">
+													Run code function will only execute code in the current file, it can't run the whole project.
 												</TooltipContent>
 											</Tooltip>
 										</TooltipProvider>
 									</div>
-									<Card className='max-w'>
-										<CardContent className='flex gap-4 p-4'>
-											<div className='grid items-center gap-2'>
-												{['Correctness', 'Performance', 'Clarity'].map(
-													(criteria, idx) => (
-														<div
-															key={idx}
-															className='grid flex-1 auto-rows-min gap-0.5'
-														>
-															<div className='text-sm text-muted-foreground'>
-																{criteria}
-															</div>
-															<div
-																className={`flex items-baseline gap-1 text-xl font-bold tabular-nums leading-none ${
-																	idx === 0
-																		? 'text-[#e88c30]'
-																		: idx === 1
-																		? 'text-[#2eb88a]'
-																		: 'text-[#2662d9]'
-																}`}
-															>
-																{criteria === 'Correctness'
-																	? correctnessRating !== null
-																		? `${correctnessRating}/100`
-																		: 'N/A'
-																	: criteria === 'Performance'
-																	? performanceRating !== null
-																		? `${performanceRating}/100`
-																		: 'N/A'
-																	: criteria === 'Clarity'
-																	? clarityRating !== null
-																		? `${clarityRating}/100`
-																		: 'N/A'
-																	: 'N/A'}
-																<span className='text-sm font-normal text-muted-foreground'>
-																	points
-																</span>
-															</div>
-														</div>
-													),
-												)}
+									{isError && (
+										<div className='text-red-500 text-sm mb-2'>
+											{errorMessage}
+										</div>
+									)}
+
+									<div
+										className={`h-full p-2 rounded-md border-gray-300 border ${
+											isError ? 'border-red-500 text-red-400' : ''
+										}`}
+									>
+										{isLoading ? (
+											<div className='text-center mt-2'>
+												<i className='fas fa-spinner fa-spin'></i> Running
+												code...
 											</div>
-											<ChartContainer
-												config={{
-													Correctness: {
-														label: 'Correctness',
-														color: 'hsl(var(--chart-3))',
-													},
-													Performance: {
-														label: 'Performance',
-														color: 'hsl(var(--chart-2))',
-													},
-													Clarity: {
-														label: 'Clarity',
-														color: 'hsl(var(--chart-1))',
-													},
-												}}
-												className='mx-auto aspect-square w-full max-w-[80%]'
-											>
-												<RadialBarChart
-													margin={{
-														left: -10,
-														right: -10,
-														top: -10,
-														bottom: -10,
-													}}
-													data={data}
-													innerRadius='20%'
-													barSize={24}
-													startAngle={90}
-													endAngle={450}
-												>
-													<PolarAngleAxis
-														type='number'
-														domain={[0, 100]}
-														dataKey='value'
-														tick={false}
-													/>
-													<RadialBar
-														dataKey='value'
-														background
-														cornerRadius={5}
-													/>
-												</RadialBarChart>
-											</ChartContainer>
-										</CardContent>
-									</Card>
+										) : output ? (
+											output.map((line, i) => (
+												<div key={i} className='text-sm'>
+													{line}
+												</div>
+											))
+										) : (
+											// eslint-disable-next-line react/no-unescaped-entities
+											<div>Click "Run Code" to see the output here</div>
+										)}
+									</div>
 								</div>
-							</fieldset>
-						</form>
+							</div>
+						</div>
 					</div>
 
-					{/* AI Chat */}
+					{/* AI Chat - Now narrower */}
 					<div className='relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1'>
 						<Badge variant='outline' className='absolute right-3 top-3'>
 							Output
@@ -976,65 +840,6 @@ const FileUploadAndDisplay = () => {
 								</Button>
 							</div>
 						</form>
-					</div>
-
-					{/* Editor */}
-					<div className='relative flex h-full min-h-[50vh] flex-col rounded-xl border mt-2 p-4 flex-1'>
-						<Badge variant='outline' className='absolute right-3 top-3'>
-							Editor
-						</Badge>
-						<div className='flex-1 overflow-auto p-4 mt-4 mb-4'>
-							<div className='w-full h-full'>
-								<Editor
-									height='50vh'
-									defaultLanguage={language}
-									defaultValue={CODE_SNIPPETS[language]}
-									theme='vs-dark'
-									onMount={editor => {
-										editorRef.current = editor;
-									}}
-									value={value}
-									onChange={newValue => setValue(newValue)}
-								/>
-								<div className='flex flex-col w-full mt-4'>
-									<div className='flex justify-between items-center mb-4'>
-										<button
-											className='bg-green-500 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 hover:bg-green-700 transition-all duration-300'
-											onClick={runCode}
-										>
-											Run Code
-										</button>
-									</div>
-									{isError && (
-										<div className='text-red-500 text-sm mb-2'>
-											{errorMessage}
-										</div>
-									)}
-
-									<div
-										className={`h-full p-2 rounded-md border-gray-300 border ${
-											isError ? 'border-red-500 text-red-400' : ''
-										}`}
-									>
-										{isLoading ? (
-											<div className='text-center mt-2'>
-												<i className='fas fa-spinner fa-spin'></i> Running
-												code...
-											</div>
-										) : output ? (
-											output.map((line, i) => (
-												<div key={i} className='text-sm'>
-													{line}
-												</div>
-											))
-										) : (
-											// eslint-disable-next-line react/no-unescaped-entities
-											<div>Click "Run Code" to see the output here</div>
-										)}
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</main>
 			</div>

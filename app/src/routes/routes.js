@@ -59,11 +59,15 @@ const OtpPage = React.lazy(() =>
 );
 
 const CoursePage = React.lazy(() =>
-  import("../components/MainHome/CourseList")
+  import("../components/Course/CourseList")
 );
 
 const CourseDetail = React.lazy(() =>
   import("../components/Course/CourseDetails")
+);
+
+const Lecture = React.lazy(() =>
+  import("../components/Course/Lecture")
 );
 
 const SolveProblemPage = React.lazy(() =>
@@ -75,7 +79,7 @@ const CommunityPage = React.lazy(() =>
 );
 
 const PlayGroundPage = React.lazy(() =>
-  import("../components/MainHome/Playground.jsx")
+  import("../container/playground/Playground.jsx")
 );
 
 const PostDetailPage = React.lazy(() =>
@@ -142,7 +146,14 @@ const protectedRoute = [
     path: config.routes.coursePage,
     component: CoursePage,
   },
-  { path: config.routes.newCourse, component: CourseDetail },
+  {
+    path: config.routes.courseDetail,
+    component: CourseDetail,
+  },
+  {
+    path: config.routes.lecture,
+    component: Lecture,
+  },
   {
     path: config.routes.problemPage,
     component: ProblemPage,

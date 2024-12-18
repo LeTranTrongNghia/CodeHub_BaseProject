@@ -18,6 +18,8 @@ const routes = {
   },
   problemPage: "/problems",
   coursePage: "/courses",
+  courseDetail: "/courses/detail/:id",
+  lecture: "/courses/detail/lecture/:id",
   newCourse: "/new-courses/:id",
   contactPage: "/contact",
   solveProblem: "/problems/solve/:id",

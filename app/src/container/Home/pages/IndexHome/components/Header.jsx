@@ -1,7 +1,7 @@
-import { Github, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import AnimatedGradientText from '@/components/ui/animated-gradient-text';
+import SparklesText from "@/components/ui/sparkles-text";
+import AnimatedGradientText from "@/components/ui/animated-gradient-text";
+import { ChevronRight } from "lucide-react";
 
 const Header = () => {
 	const animate = {
@@ -9,90 +9,48 @@ const Header = () => {
 			y: '-50%',
 			opacity: 0,
 		},
-		open: (i) => ({
+		open: {
 			y: '0%',
 			opacity: 1,
-			transition: { duration: 1, delay: 0.1 * i, ease: [0.33, 1, 0.68, 1] },
-		}),
+			transition: { duration: 1, ease: [0.33, 1, 0.68, 1] },
+		},
 	};
 
 	return (
-		<section className='space-y-6 py-12 sm:py-20 lg:py-20'>
-			<div className='container flex max-w-5xl flex-col items-center gap-5 text-center'>
-				<motion.div
-					initial="initial"
-					animate="open"
-					variants={animate}
-					custom={0}
-				>
+		<main className="flex flex-col items-center justify-center py-8 px-6 text-center">
+			<motion.div
+				className="max-w-4xl mx-auto space-y-8"
+				initial="initial"
+				animate="open"
+				variants={{
+					initial: {},
+					open: { transition: { staggerChildren: 0.2 } },
+				}}
+			>
+				<motion.div variants={animate} className="flex items-center justify-center space-x-2">
 					<AnimatedGradientText>
-						<span className='mr-3'>🎉</span> 
-						<span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500'>
-							Introducing on
+						🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
+						<span
+							className={`inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`}
+						>
+							Introducing DevLab
 						</span>
-						<Github className='ml-3 h-4 w-4' />
+						<ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
 					</AnimatedGradientText>
 				</motion.div>
-				<motion.h1
-					variants={animate}
-					initial="initial"
-					animate="open"
-					custom={1}
-					className='font-bold text-6xl sm:text-7xl md:text-8xl lg:text-[96px]'
-				>
-					Learn to Code with
-				</motion.h1>
-				<motion.h1
-					variants={animate}
-					initial="initial"
-					animate="open"
-					custom={2}
-					className='font-bold text-6xl sm:text-7xl md:text-8xl lg:text-[96px]'
-				>
-					<span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500 font-bold'>
-						CodeHub
-					</span>
+
+				<motion.h1 variants={animate} className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900">
+					Unlock{' '}
+					<span className="text-[#4945FF] font-extrabold">programming</span> mastery through{' '}
+					AI learning platform{' '}
+					<SparklesText className="text-[#4945FF]" text="DevLab" />
 				</motion.h1>
 
-				<motion.p
-					variants={animate}
-					initial="initial"
-					animate="open"
-					custom={3}
-					className='mt-4 max-w-2xl leading-normal text-muted-foreground text-2xl sm:text-2xl sm:leading-10'
-				>
-					The platform that helps you learn how to code in different programming
-					languages with CodeHub AI assistant.
+				<motion.p variants={animate} className="text-xl text-gray-600 max-w-2xl mx-auto">
+					Sharpen your coding skills, analyze your code instantly, and gain AI-powered insights for rapid improvement.
 				</motion.p>
-
-				<div className='mt-4 flex justify-center space-x-2 md:space-x-4'>
-					<Button asChild size='sm'>
-						<motion.a
-							href='/login'
-							initial="initial"
-							animate="open"
-							variants={animate}
-							custom={4}
-						>
-							<span>Explore now</span>
-							<ArrowRight className='ml-3 h-4 w-4' />
-						</motion.a>
-					</Button>
-					<Button asChild size='sm' className=''>
-						<motion.a
-							href='https://github.com/LeTranTrongNghia/CodeHub_BaseProject'
-							initial="initial"
-							animate="open"
-							variants={animate}
-							custom={4}
-						>
-							<Github className='h-4 w-4' />
-							<span className='ml-3'>Star on Github</span>
-						</motion.a>
-					</Button>
-				</div>
-			</div>
-		</section>
+			</motion.div>
+		</main>
 	);
 };
 

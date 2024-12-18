@@ -20,6 +20,7 @@ import {
 	setAdminStatus,
 	setLoginStatus,
 	setUsername,
+	setId,
 } from '@/redux/userReducer/userReducer';
 import Spline from '@splinetool/react-spline';
 import { jwtDecode } from 'jwt-decode';
@@ -30,7 +31,7 @@ import {
 	Code2,
 	CreditCard,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -39,6 +40,9 @@ const MainHome = () => {
 	const [problems, setProblems] = useState([]);
 	const [filteredProblems, setFilteredProblems] = useState([]);
 	const username = useSelector(state => state.user.username);
+	const id = useSelector(state => state.user.id);
+	const [progressCreated, setProgressCreated] = useState(false);
+	const hasRun = useRef(false);
 
 	const processTokenFromURL = () => {
 		console.log('vào hàm xử lý param');
@@ -88,6 +92,64 @@ const MainHome = () => {
 		}
 		getProblems();
 	}, []);
+
+	useEffect(() => {
+		if (id) {
+			createProgress();
+		}
+	}, [id]);
+
+	const createProgress = async () => {
+		if (hasRun.current) {
+			console.log('createProgress has already run. Exiting function.');
+			return; // Prevent duplicate calls
+		}
+		hasRun.current = true;
+		setProgressCreated(true);
+		console.log('createProgress called');
+
+		try {
+			// Fetch all progress entries
+			const response = await fetch('http://localhost:5050/progress/');
+			if (!response.ok) {
+				throw new Error(`An error occurred: ${response.statusText}`);
+			}
+			const allProgress = await response.json();
+
+			// Log items with the current user ID
+			const userProgressItems = allProgress.data.items.filter(progress => progress.user_id === id);
+			console.log('User progress items before creation:', userProgressItems);
+
+			// If progress exists for the current user ID, do not create a new one
+			if (userProgressItems.length > 0) {
+				console.log('Progress already exists for this user ID. No new progress created.');
+				return;
+			}
+
+			// Proceed to create new progress with empty lessons and exercises
+			const progressData = {
+				user_id: id, // Current user ID
+				lessons: [], // Empty lessons array
+				exercises: [], // Empty exercises array
+			};
+
+			const createResponse = await fetch('http://localhost:5050/progress/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(progressData),
+			});
+			if (!createResponse.ok) {
+				throw new Error(`An error occurred: ${createResponse.statusText}`);
+			}
+			const data = await createResponse.json();
+			console.log('Progress created:', data);
+
+		} catch (error) {
+			console.error('Error creating progress:', error);
+		}
+	};
 
 	return (
 		<>

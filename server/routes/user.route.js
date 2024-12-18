@@ -102,7 +102,7 @@ userRouter.post(
 	refreshTokenValidator,
 	async (req, res) => {
 		try {
-			userController.logout(req, res);
+			await userController.logout(req, res);
 		} catch (error) {
 			console.log('🚀 ~ error:', error);
 		}

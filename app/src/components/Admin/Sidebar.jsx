@@ -35,7 +35,7 @@ const Sidebar = () => {
 							</Button>
 						</TooltipTrigger>
 						<TooltipContent side='right' sideOffset={5}>
-							<p>CodeHub Admin</p>
+							<p>DevLab Admin</p>
 						</TooltipContent>
 					</Tooltip>
 				</TooltipProvider>
